@@ -9,12 +9,12 @@ pydantic==2.5.0
 # CORS support
 python-multipart==0.0.6
 
-# LangChain and LangGraph for AI agents
-langgraph==0.2.0
-langchain==0.2.0
+# LangChain and LangGraph for AI agents (compatible versions)
 langchain-google-genai==1.0.10
-langchain-community==0.2.0
-langchain-core==0.2.0
+langchain-community==0.3.0
+langchain-core==0.3.0
+langchain==0.3.0
+langgraph==0.2.0
 
 # Neo4j for Knowledge Graph
 neo4j==5.14.1
