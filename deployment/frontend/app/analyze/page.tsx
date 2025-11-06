@@ -25,14 +25,60 @@ export default function AnalyzePage() {
     setAnomalyId(targetId)
 
     try {
-      const response = await axios.post(`${API_URL}/api/analyze`, {
-        anomaly_id: targetId
-      })
-      setResult(response.data)
+      // Backend expects specific format with required fields
+      const payload = {
+        anomaly_id: targetId,
+        timestamp: new Date().toISOString(),
+        reconstruction_error: 0.4397,  // Mock value for demo
+        top_contributing_features: [
+          { feature_name: "Rotational speed [rpm]", error: 0.2156 },
+          { feature_name: "Torque [Nm]", error: 0.1534 },
+          { feature_name: "Tool wear [min]", error: 0.0707 }
+        ],
+        severity: "high",
+        metadata: { source: "frontend_demo" }
+      }
+      
+      const response = await axios.post(`${API_URL}/api/rca/analyze`, payload)
+      
+      // Backend returns workflow_id, need to poll for results
+      const workflowId = response.data.workflow_id
+      
+      // Poll for results
+      await pollForResults(workflowId)
+      
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Analysis failed. Please try again.')
+      console.error('Analysis error:', err)
+      setError(err.response?.data?.detail || err.message || 'Analysis failed. Please try again.')
     } finally {
       setLoading(false)
+    }
+  }
+  
+  const pollForResults = async (workflowId: string, maxAttempts = 60) => {
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds
+      
+      try {
+        // Check status
+        const statusResponse = await axios.get(`${API_URL}/api/rca/status/${workflowId}`)
+        
+        if (statusResponse.data.status === 'completed') {
+          // Get results
+          const resultResponse = await axios.get(`${API_URL}/api/rca/result/${workflowId}`)
+          setResult(resultResponse.data)
+          return
+        } else if (statusResponse.data.status === 'failed') {
+          setError('Analysis failed on the server')
+          return
+        }
+        // If processing, continue polling
+      } catch (err: any) {
+        console.error('Polling error:', err)
+        if (attempt === maxAttempts - 1) {
+          setError('Analysis timed out. Please try again.')
+        }
+      }
     }
   }
 
@@ -154,12 +200,32 @@ export default function AnalyzePage() {
             <div className="p-8 bg-gradient-to-br from-slate-800/50 to-purple-900/50 backdrop-blur-lg rounded-2xl border border-white/10 shadow-xl">
               <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-3">
                 <span>📋</span>
-                Job Information
+                Analysis Information
               </h2>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-                  <p className="text-sm text-gray-400 mb-2 uppercase tracking-wide">Job ID</p>
-                  <p className="font-mono text-sm text-blue-400 break-all">{result.job_id}</p>
+                  <p className="text-sm text-gray-400 mb-2 uppercase tracking-wide">Workflow ID</p>
+                  <p className="font-mono text-sm text-blue-400 break-all">{result.workflow_id}</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                  <p className="text-sm text-gray-400 mb-2 uppercase tracking-wide">Anomaly ID</p>
+                  <p className="font-mono text-sm text-purple-400">{result.anomaly_id}</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-xl border border-white/10">
+                  <p className="text-sm text-gray-400 mb-2 uppercase tracking-wide">Severity</p>
+                  <span 
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold"
+                    style={{
+                      background: result.severity === 'high' ? 'rgba(255, 152, 0, 0.2)' : 
+                                 result.severity === 'critical' ? 'rgba(244, 67, 54, 0.2)' : 
+                                 'rgba(255, 193, 7, 0.2)',
+                      color: result.severity === 'high' ? '#FF9800' : 
+                             result.severity === 'critical' ? '#F44336' : 
+                             '#FFC107'
+                    }}
+                  >
+                    {result.severity.toUpperCase()}
+                  </span>
                 </div>
                 <div className="p-4 bg-white/5 rounded-xl border border-white/10">
                   <p className="text-sm text-gray-400 mb-2 uppercase tracking-wide">Status</p>
@@ -173,53 +239,166 @@ export default function AnalyzePage() {
 
             {/* Root Cause */}
             {result.root_cause && (
-              <div className="p-8 bg-gradient-to-br from-orange-500/10 to-red-500/10 backdrop-blur-lg rounded-2xl border border-orange-500/30 shadow-xl">
+              <div 
+                className="p-8 backdrop-blur-lg rounded-2xl shadow-xl"
+                style={{
+                  background: 'rgba(255, 152, 0, 0.1)',
+                  border: '1px solid rgba(255, 152, 0, 0.3)'
+                }}
+              >
                 <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-3">
                   <span className="text-3xl">🔍</span>
-                  Root Cause Identified
+                  <span style={{ color: '#FF9800' }}>Root Cause Identified</span>
                 </h2>
                 <p className="text-xl text-gray-200 leading-relaxed">{result.root_cause}</p>
+                
+                {result.causal_chain && result.causal_chain.length > 0 && (
+                  <div className="mt-6">
+                    <p className="text-sm font-semibold text-gray-400 mb-3">Causal Chain:</p>
+                    <div className="space-y-2">
+                      {result.causal_chain.map((step: string, idx: number) => (
+                        <div key={idx} className="flex items-start gap-3 p-3 bg-white/5 rounded-lg">
+                          <span className="text-orange-400 font-bold">{idx + 1}.</span>
+                          <span className="text-gray-300">{step}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
             {/* Confidence Scores */}
-            {result.confidence && (
-              <div className="p-8 bg-gradient-to-br from-slate-800/50 to-purple-900/50 backdrop-blur-lg rounded-2xl border border-white/10 shadow-xl">
+            <div className="p-8 bg-gradient-to-br from-slate-800/50 to-purple-900/50 backdrop-blur-lg rounded-2xl border border-white/10 shadow-xl">
+              <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-3">
+                <span>📊</span>
+                <span style={{ color: '#1976D2' }}>Agent Confidence Scores</span>
+              </h2>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  { label: 'Diagnostic', value: result.diagnostic_confidence, color: { from: '#1976D2', to: '#00BCD4' } },
+                  { label: 'Reasoning', value: result.reasoning_confidence, color: { from: '#9C27B0', to: '#E91E63' } },
+                  { label: 'Planning', value: result.planning_confidence, color: { from: '#4CAF50', to: '#8BC34A' } }
+                ].map(({ label, value, color }) => {
+                  const percentage = ((value || 0) * 100).toFixed(1)
+                  
+                  return (
+                    <div 
+                      key={label} 
+                      className="p-6 rounded-xl text-center transform hover:scale-105 transition-all duration-300"
+                      style={{ background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)' }}
+                    >
+                      <p className="text-sm text-gray-400 mb-3 uppercase tracking-wide">{label}</p>
+                      <div 
+                        className="text-5xl font-bold mb-3"
+                        style={{
+                          background: `linear-gradient(90deg, ${color.from}, ${color.to})`,
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          backgroundClip: 'text'
+                        }}
+                      >
+                        {percentage}%
+                      </div>
+                      <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full rounded-full transition-all duration-1000"
+                          style={{ 
+                            width: `${percentage}%`,
+                            background: `linear-gradient(90deg, ${color.from}, ${color.to})`
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Symptoms & Affected Entities */}
+            {(result.symptoms?.length > 0 || result.affected_entities?.length > 0) && (
+              <div className="grid md:grid-cols-2 gap-6">
+                {result.symptoms?.length > 0 && (
+                  <div 
+                    className="p-6 rounded-2xl backdrop-blur-lg"
+                    style={{ background: 'rgba(25, 118, 210, 0.1)', border: '1px solid rgba(25, 118, 210, 0.3)' }}
+                  >
+                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: '#1976D2' }}>
+                      <span>🔬</span> Symptoms Detected
+                    </h3>
+                    <ul className="space-y-2">
+                      {result.symptoms.map((symptom: string, idx: number) => (
+                        <li key={idx} className="flex items-start gap-2 text-gray-300">
+                          <span className="text-blue-400">•</span>
+                          <span>{symptom}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {result.affected_entities?.length > 0 && (
+                  <div 
+                    className="p-6 rounded-2xl backdrop-blur-lg"
+                    style={{ background: 'rgba(156, 39, 176, 0.1)', border: '1px solid rgba(156, 39, 176, 0.3)' }}
+                  >
+                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2" style={{ color: '#9C27B0' }}>
+                      <span>⚙️</span> Affected Entities
+                    </h3>
+                    <ul className="space-y-2">
+                      {result.affected_entities.map((entity: string, idx: number) => (
+                        <li key={idx} className="flex items-start gap-2 text-gray-300">
+                          <span className="text-purple-400">•</span>
+                          <span>{entity}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Recommended Actions */}
+            {result.recommended_actions?.length > 0 && (
+              <div 
+                className="p-8 backdrop-blur-lg rounded-2xl shadow-xl"
+                style={{ background: 'rgba(76, 175, 80, 0.1)', border: '1px solid rgba(76, 175, 80, 0.3)' }}
+              >
                 <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-3">
-                  <span>📊</span>
-                  Agent Confidence Scores
+                  <span>🛠️</span>
+                  <span style={{ color: '#4CAF50' }}>Recommended Actions</span>
                 </h2>
-                <div className="grid md:grid-cols-3 gap-6">
-                  {Object.entries(result.confidence).map(([agent, score]: [string, any], index) => {
-                    const colors = [
-                      { from: 'from-blue-500', to: 'to-cyan-500', text: 'text-blue-400' },
-                      { from: 'from-purple-500', to: 'to-pink-500', text: 'text-purple-400' },
-                      { from: 'from-green-500', to: 'to-emerald-500', text: 'text-green-400' },
-                    ][index % 3]
-                    
-                    const percentage = (score * 100).toFixed(1)
-                    
-                    return (
-                      <div key={agent} className="p-6 bg-white/5 rounded-xl border border-white/10 text-center transform hover:scale-105 transition-all duration-300">
-                        <p className="text-sm text-gray-400 mb-3 uppercase tracking-wide capitalize">{agent}</p>
-                        <div className={`text-5xl font-bold bg-gradient-to-r ${colors.from} ${colors.to} bg-clip-text text-transparent mb-3`}>
-                          {percentage}%
-                        </div>
-                        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                          <div 
-                            className={`h-full bg-gradient-to-r ${colors.from} ${colors.to} rounded-full transition-all duration-1000`}
-                            style={{ width: `${percentage}%` }}
-                          ></div>
+                <div className="space-y-4">
+                  {result.recommended_actions.map((action: any, idx: number) => (
+                    <div 
+                      key={idx} 
+                      className="p-4 rounded-lg"
+                      style={{ background: 'rgba(76, 175, 80, 0.1)', border: '1px solid rgba(76, 175, 80, 0.2)' }}
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="text-green-400 font-bold text-lg">{idx + 1}</span>
+                        <div className="flex-1">
+                          <p className="text-white font-semibold mb-1">
+                            {action.action || action.description || action}
+                          </p>
+                          {action.priority && (
+                            <span className="text-xs px-2 py-1 rounded" style={{ 
+                              background: action.priority === 'high' ? 'rgba(255, 152, 0, 0.2)' : 'rgba(76, 175, 80, 0.2)',
+                              color: action.priority === 'high' ? '#FF9800' : '#4CAF50'
+                            }}>
+                              {action.priority} priority
+                            </span>
+                          )}
                         </div>
                       </div>
-                    )
-                  })}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-            {/* Explanation */}
-            {result.explanation && (
+            {/* Detailed Explanation */}
+            {result.final_explanation && (
               <div className="p-8 bg-gradient-to-br from-slate-800/50 to-purple-900/50 backdrop-blur-lg rounded-2xl border border-white/10 shadow-xl">
                 <h2 className="text-2xl font-bold mb-6 text-white flex items-center gap-3">
                   <span>📝</span>
@@ -227,7 +406,7 @@ export default function AnalyzePage() {
                 </h2>
                 <div className="p-6 bg-slate-900/50 rounded-xl border border-white/10">
                   <pre className="whitespace-pre-wrap text-sm text-gray-300 leading-relaxed font-mono">
-                    {result.explanation}
+                    {result.final_explanation}
                   </pre>
                 </div>
               </div>
