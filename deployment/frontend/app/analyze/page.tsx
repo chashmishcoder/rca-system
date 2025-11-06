@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://rca-backend-5jlv.onrender.com'
 
 export default function AnalyzePage() {
   const [anomalyId, setAnomalyId] = useState('')
@@ -11,8 +11,10 @@ export default function AnalyzePage() {
   const [result, setResult] = useState<any>(null)
   const [error, setError] = useState('')
 
-  const handleAnalyze = async () => {
-    if (!anomalyId.trim()) {
+  const handleAnalyze = async (id?: string) => {
+    const targetId = id || anomalyId
+    
+    if (!targetId.trim()) {
       setError('Please enter an anomaly ID')
       return
     }
@@ -20,10 +22,11 @@ export default function AnalyzePage() {
     setLoading(true)
     setError('')
     setResult(null)
+    setAnomalyId(targetId)
 
     try {
       const response = await axios.post(`${API_URL}/api/analyze`, {
-        anomaly_id: anomalyId
+        anomaly_id: targetId
       })
       setResult(response.data)
     } catch (err: any) {
@@ -65,7 +68,7 @@ export default function AnalyzePage() {
                 onKeyPress={(e) => e.key === 'Enter' && handleAnalyze()}
               />
               <button
-                onClick={handleAnalyze}
+                onClick={() => handleAnalyze()}
                 disabled={loading}
                 className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-purple-500/50 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-300"
               >
@@ -87,7 +90,7 @@ export default function AnalyzePage() {
                 {['AI4I_anomaly_0', 'AI4I_anomaly_1', 'AI4I_anomaly_100', 'AI4I_anomaly_500'].map(id => (
                   <button
                     key={id}
-                    onClick={() => setAnomalyId(id)}
+                    onClick={() => handleAnalyze(id)}
                     className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/50 text-gray-300 rounded-lg transition-all duration-300 transform hover:scale-105"
                     disabled={loading}
                   >
