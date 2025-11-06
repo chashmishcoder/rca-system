@@ -1,0 +1,21 @@
+{
+  "workflow_id": "e1816ff6-9e24-46f5-82b0-67a914575519",
+  "anomaly_id": "api_test_anomaly_1",
+  "feedback": {
+    "feedback_type": "correct",
+    "actual_root_cause": "Test feedback",
+    "diagnostic_accuracy": "correct",
+    "reasoning_accuracy": "correct",
+    "planning_effectiveness": "effective",
+    "comments": "API test feedback - automated test run",
+    "corrective_actions": null
+  },
+  "learning_updates": [
+    {
+      "agent": "diagnostic",
+      "update_type": "pattern",
+      "confidence_adjustment": 0.05
+    }
+  ],
+  "timestamp": "2025-11-06T16:47:29.292112"
+}

@@ -1,0 +1,52 @@
+{
+  "original_dataset": {
+    "shape": [
+      10000,
+      14
+    ],
+    "missing_values": "0",
+    "data_types": {
+      "int64": 9,
+      "float64": 3,
+      "object": 2
+    },
+    "memory_usage_mb": 1.9170112609863281
+  },
+  "windowed_dataset": {
+    "shape": [
+      19990,
+      16
+    ],
+    "compression_ratio": 1.999,
+    "temporal_features_added": [
+      "time_step",
+      "window_id"
+    ]
+  },
+  "engineered_dataset": {
+    "shape": [
+      10000,
+      24
+    ],
+    "new_features_count": 10,
+    "feature_categories": {
+      "normalized": [
+        "Air temperature [K]_normalized",
+        "Process temperature [K]_normalized",
+        "Rotational speed [rpm]_normalized",
+        "Torque [Nm]_normalized",
+        "Tool wear [min]_normalized"
+      ],
+      "derived": [
+        "temp_difference",
+        "power_estimate",
+        "thermal_stress"
+      ],
+      "encoded": [
+        "Type_H",
+        "Type_L",
+        "Type_M"
+      ]
+    }
+  }
+}

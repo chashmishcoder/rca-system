@@ -1,0 +1,51 @@
+{
+  "dataset_info": {
+    "name": "MetroPT (Metro do Porto)",
+    "type": "Time Series Industrial IoT",
+    "original_shape": [
+      10773588,
+      42
+    ],
+    "processed_shape": [
+      10773588,
+      42
+    ],
+    "windowed_shape": [
+      300000,
+      44
+    ],
+    "memory_usage_gb": 2.133575439453125,
+    "temporal_range_days": 152,
+    "sampling_frequency": "1 second"
+  },
+  "data_quality": {
+    "missing_values": 63,
+    "data_completeness": 100.0,
+    "temporal_consistency": "Regular 1-second intervals",
+    "anomaly_rate": 1.1890282049025822
+  },
+  "feature_engineering": {
+    "original_features": 41,
+    "temporal_features": 3,
+    "rolling_features": 6,
+    "lag_features": 2,
+    "anomaly_indicators": 2,
+    "derived_features": 6,
+    "normalized_features": 4,
+    "total_features": 42
+  },
+  "time_series_properties": {
+    "window_size_seconds": 300,
+    "step_size_seconds": 60,
+    "overlap_percentage": 80,
+    "total_windows": 1000,
+    "suitable_for_sequence_modeling": true,
+    "memory_optimized": true
+  },
+  "system_characteristics": {
+    "operational_efficiency_mean": 0.17397838120410763,
+    "high_anomaly_periods_percent": 1.1890282049025822,
+    "system_status_variables": 7,
+    "process_parameters": 6
+  }
+}

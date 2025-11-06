@@ -1,0 +1,71 @@
+{
+  "original_features": {
+    "process_parameters": [
+      "TP2",
+      "TP3",
+      "H1",
+      "DV_pressure",
+      "Oil_temperature",
+      "Motor_current"
+    ],
+    "status_variables": [
+      "COMP",
+      "DV_eletric",
+      "Towers",
+      "MPG",
+      "LPS",
+      "Pressure_switch",
+      "Oil_level"
+    ],
+    "temporal_column": "timestamp",
+    "location_features": [
+      "gpsLong",
+      "gpsLat",
+      "gpsSpeed",
+      "gpsQuality"
+    ]
+  },
+  "engineered_features": {
+    "temporal_features": [
+      "hour",
+      "day_of_week",
+      "month"
+    ],
+    "rolling_features": [
+      "Oil_temperature_rolling_mean",
+      "Oil_temperature_diff",
+      "Motor_current_rolling_mean",
+      "Motor_current_diff",
+      "DV_pressure_rolling_mean",
+      "DV_pressure_diff"
+    ],
+    "lag_features": [
+      "Oil_temperature_lag_30",
+      "Motor_current_lag_30"
+    ],
+    "anomaly_indicators": [
+      "Oil_temperature_anomaly",
+      "Motor_current_anomaly"
+    ],
+    "derived_features": [
+      "temp_differential",
+      "motor_efficiency",
+      "operational_efficiency",
+      "composite_anomaly_score"
+    ],
+    "normalized_features": [
+      "TP2_normalized",
+      "TP3_normalized",
+      "Oil_temperature_normalized",
+      "Motor_current_normalized"
+    ]
+  },
+  "time_series_config": {
+    "window_size": 300,
+    "step_size": 60,
+    "overlap_percentage": 80,
+    "sampling_frequency": "1_second",
+    "memory_optimized": true,
+    "sample_rate": 100
+  }
+}

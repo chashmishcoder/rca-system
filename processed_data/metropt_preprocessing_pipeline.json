@@ -1,0 +1,76 @@
+{
+  "pipeline_name": "MetroPT Time Series Preprocessing Pipeline (Memory-Optimized)",
+  "version": "1.1",
+  "date_created": "2025-10-08 08:06:53",
+  "dataset_source": "MetroPT - Metro do Porto Industrial IoT Data",
+  "memory_optimizations": [
+    "Reduced feature set to essential parameters",
+    "Chunked data processing",
+    "Smart sampling for windowing",
+    "Garbage collection after major operations",
+    "In-place operations where possible"
+  ],
+  "preprocessing_steps": [
+    {
+      "step": 1,
+      "name": "Temporal Preparation",
+      "actions": [
+        "Convert timestamp to datetime",
+        "Sort by timestamp",
+        "Extract essential temporal features (hour, day_of_week, month)"
+      ]
+    },
+    {
+      "step": 2,
+      "name": "System Health Analysis",
+      "actions": [
+        "Analyze system status variables",
+        "Calculate operational efficiency metrics",
+        "Identify system state patterns"
+      ]
+    },
+    {
+      "step": 3,
+      "name": "Memory-Efficient Feature Engineering",
+      "actions": [
+        "Create rolling window statistics (30s windows, critical params only)",
+        "Generate lag features (30s lag, 2 critical params)",
+        "Normalize key process parameters",
+        "Derive essential features"
+      ]
+    },
+    {
+      "step": 4,
+      "name": "Anomaly Detection",
+      "actions": [
+        "Apply IQR-based anomaly detection (critical params only)",
+        "Create composite anomaly scores",
+        "Identify high-risk periods"
+      ]
+    },
+    {
+      "step": 5,
+      "name": "Memory-Efficient Time Series Windowing",
+      "actions": [
+        "Smart sampling (1/100 rate) to manage memory",
+        "Create limited overlapping time windows",
+        "Prepare for sequence modeling",
+        "Maintain temporal relationships"
+      ]
+    }
+  ],
+  "output_datasets": [
+    "metropt_processed_complete.csv - Complete processed dataset (chunked export)",
+    "metropt_windowed_complete.csv.gz - Windowed dataset (compressed, sampled)",
+    "metropt_processed_sample.csv - Sample dataset for quick testing",
+    "metropt_feature_metadata.json - Feature engineering metadata",
+    "metropt_quality_report.json - Comprehensive quality assessment"
+  ],
+  "compatibility_notes": [
+    "Ready for Knowledge Graph construction",
+    "Memory-optimized for large-scale processing",
+    "Suitable for sequential pattern learning",
+    "Compatible with streaming applications",
+    "Harmonized with AI4I dataset structure"
+  ]
+}

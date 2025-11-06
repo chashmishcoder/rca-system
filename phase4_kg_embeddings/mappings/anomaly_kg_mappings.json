@@ -1,0 +1,3502 @@
+[
+  {
+    "anomaly_id": "AI4I_anomaly_1",
+    "timestamp": "2025-11-05T11:25:56.965742",
+    "severity": "CRITICAL",
+    "reconstruction_error": 0.43970300470345625,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9887676239013672
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9035857319831848
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.899981677532196
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8861308693885803
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8774797916412354
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 6.308640486873326,
+      "Rotational speed [rpm]_normalized": 6.308640486873324,
+      "power_estimate": 2.2019313976120944,
+      "Torque [Nm]_normalized": 1.8674746619454285,
+      "Torque [Nm]": 1.8674746619454283
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_2",
+    "timestamp": "2025-11-05T11:25:56.966522",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.2511034006997048,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9548383951187134
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9486667513847351
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9467144012451172
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.923539936542511
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.864890456199646
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 1.6882561645790382,
+      "Torque [Nm]_normalized": 1.5430145955064192,
+      "Torque [Nm]": 1.5430145955064192,
+      "Rotational speed [rpm]_normalized": 1.2165388843615301,
+      "Rotational speed [rpm]": 1.2165388843615301
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_4",
+    "timestamp": "2025-11-05T11:25:56.966754",
+    "severity": "LOW",
+    "reconstruction_error": 0.1582755000361169,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9578379392623901
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9526215195655823
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9403871893882751
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9110572338104248
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8738213777542114
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 1.4466622885070461,
+      "Torque [Nm]": 1.4466622885070461,
+      "Rotational speed [rpm]": 1.418875114739643,
+      "Rotational speed [rpm]_normalized": 1.4188751147396426,
+      "power_estimate": 1.1421003524560582
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_6",
+    "timestamp": "2025-11-05T11:25:56.966945",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.25779479038152475,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9857056736946106
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9121395349502563
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9012959599494934
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.89506995677948
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8786914944648743
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.4879177778015755,
+      "Rotational speed [rpm]_normalized": 4.487917777801574,
+      "power_estimate": 1.6570396831030645,
+      "Torque [Nm]_normalized": 1.6452942625582896,
+      "Torque [Nm]": 1.6452942625582896
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_9",
+    "timestamp": "2025-11-05T11:25:56.967127",
+    "severity": "CRITICAL",
+    "reconstruction_error": 0.40757899345933724,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9807375073432922
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9145680665969849
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9143223166465759
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9052491188049316
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8781665563583374
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 6.477143037886044,
+      "Rotational speed [rpm]_normalized": 6.477143037886042,
+      "power_estimate": 2.6575859130532344,
+      "Tool wear [min]": 2.5498160514548776,
+      "Tool wear [min]_normalized": 2.549816051454877
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_11",
+    "timestamp": "2025-11-05T11:25:56.967300",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.25810683734690865,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9566320180892944
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9520916938781738
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9458110928535461
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9140394926071167
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8706508278846741
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 1.8098886985695324,
+      "Torque [Nm]": 1.8098886985695324,
+      "Rotational speed [rpm]": 1.523892378792312,
+      "Rotational speed [rpm]_normalized": 1.5238923787923118,
+      "power_estimate": 1.5221335386962556
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_13",
+    "timestamp": "2025-11-05T11:25:56.967472",
+    "severity": "LOW",
+    "reconstruction_error": 0.24003359241834718,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9813545942306519
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9788545370101929
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.913894772529602
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8830370903015137
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.874323308467865
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]": 2.481494752164363,
+      "Tool wear [min]_normalized": 2.4814947521643624,
+      "Rotational speed [rpm]_normalized": 1.4579285274601397,
+      "Rotational speed [rpm]": 1.4579285274601397,
+      "Torque [Nm]": 1.2559009227699924
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_20",
+    "timestamp": "2025-11-05T11:25:56.967653",
+    "severity": "LOW",
+    "reconstruction_error": 0.13612515111918125,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9854140281677246
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9124836921691895
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9021713733673096
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8956341743469238
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8784027099609375
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.1381943984380865,
+      "Rotational speed [rpm]_normalized": 4.138194398438086,
+      "power_estimate": 1.5864428703054505,
+      "Torque [Nm]_normalized": 1.5306114184865511,
+      "Torque [Nm]": 1.5306114184865511
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_21",
+    "timestamp": "2025-11-05T11:25:56.967814",
+    "severity": "LOW",
+    "reconstruction_error": 0.23409446373007883,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9712480306625366
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9360442161560059
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9225018620491028
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9117725491523743
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8760247826576233
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 1.3308145166613643,
+      "Rotational speed [rpm]_normalized": 1.330814516661364,
+      "Torque [Nm]_normalized": 0.8837945424013537,
+      "Torque [Nm]": 0.8837945424013537,
+      "power_estimate": 0.8506860479721002
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_24",
+    "timestamp": "2025-11-05T11:25:56.967974",
+    "severity": "LOW",
+    "reconstruction_error": 0.1551554838679495,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9990002512931824
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9866682887077332
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8684952259063721
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8302026987075806
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8251243829727173
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]_normalized": 2.45617045553428,
+      "Tool wear [min]": 2.45617045553428,
+      "power_estimate": 0.5067693715531306,
+      "Torque [Nm]_normalized": 0.3779512202981633,
+      "Torque [Nm]": 0.37795122029816314
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_32",
+    "timestamp": "2025-11-05T11:25:56.968130",
+    "severity": "CRITICAL",
+    "reconstruction_error": 0.6388942294909977,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9679820537567139
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9455717206001282
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9322733879089355
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8904778957366943
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8884540796279907
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]_normalized": 4.033096859516222,
+      "Rotational speed [rpm]": 4.033096859516222,
+      "Tool wear [min]_normalized": 2.0059138408205333,
+      "Tool wear [min]": 2.0059138408205333,
+      "Torque [Nm]_normalized": 1.919281197684399
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_35",
+    "timestamp": "2025-11-05T11:25:56.968285",
+    "severity": "LOW",
+    "reconstruction_error": 0.1509348527766819,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9592165350914001
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9447896480560303
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9354739785194397
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9240159392356873
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8679661750793457
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 1.6271835124199665,
+      "Rotational speed [rpm]_normalized": 1.4531667964595143,
+      "Rotational speed [rpm]": 1.4531667964595143,
+      "Torque [Nm]_normalized": 1.3382147454345046,
+      "Torque [Nm]": 1.3382147454345046
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_36",
+    "timestamp": "2025-11-05T11:25:56.968442",
+    "severity": "LOW",
+    "reconstruction_error": 0.1392200165646064,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9644807577133179
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9579001069068909
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9349803924560547
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9221468567848206
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8596075773239136
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 1.6618326428875463,
+      "Torque [Nm]_normalized": 1.651815364958999,
+      "Torque [Nm]": 1.6518153649589986,
+      "Rotational speed [rpm]": 0.8781684872739703,
+      "Rotational speed [rpm]_normalized": 0.8781684872739701
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_40",
+    "timestamp": "2025-11-05T11:25:56.968597",
+    "severity": "LOW",
+    "reconstruction_error": 0.1326293903845302,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9577597975730896
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9507709741592407
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9470887780189514
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9139541983604431
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8702150583267212
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 1.5985596953532042,
+      "Torque [Nm]": 1.5985596953532037,
+      "power_estimate": 1.3325310803409554,
+      "Rotational speed [rpm]": 1.2976902431167634,
+      "Rotational speed [rpm]_normalized": 1.2976902431167632
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_45",
+    "timestamp": "2025-11-05T11:25:56.968761",
+    "severity": "LOW",
+    "reconstruction_error": 0.17425212645921306,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9709330201148987
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9628496170043945
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9388030171394348
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8862193822860718
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8836641907691956
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 2.2897080969122836,
+      "Rotational speed [rpm]_normalized": 2.289708096912283,
+      "Tool wear [min]_normalized": 2.172718515894703,
+      "Tool wear [min]": 2.172718515894703,
+      "Torque [Nm]_normalized": 1.9990409219086331
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_47",
+    "timestamp": "2025-11-05T11:25:56.968922",
+    "severity": "LOW",
+    "reconstruction_error": 0.16042504115847994,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9683784246444702
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9385806322097778
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.926092803478241
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9150103330612183
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8742181658744812
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 2.1070911703519077,
+      "Rotational speed [rpm]_normalized": 2.1070911703519073,
+      "power_estimate": 1.5614086660974937,
+      "Torque [Nm]": 1.518406491030408,
+      "Torque [Nm]_normalized": 1.5184064910304078
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_48",
+    "timestamp": "2025-11-05T11:25:56.969084",
+    "severity": "LOW",
+    "reconstruction_error": 0.24474008385071416,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9576469659805298
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.948712944984436
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9476637244224548
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9195983409881592
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8664372563362122
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 2.189496359384913,
+      "Torque [Nm]": 2.1894963593849126,
+      "power_estimate": 2.13015205623691,
+      "Rotational speed [rpm]_normalized": 1.6548822967444323,
+      "Rotational speed [rpm]": 1.6548822967444323
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_54",
+    "timestamp": "2025-11-05T11:25:56.969245",
+    "severity": "LOW",
+    "reconstruction_error": 0.19338098579494506,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9862573146820068
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9114253520965576
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8996552228927612
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8939460515975952
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8792059421539307
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.979594817620389,
+      "Rotational speed [rpm]_normalized": 4.979594817620386,
+      "Torque [Nm]_normalized": 1.7931260438336345,
+      "Torque [Nm]": 1.7931260438336345,
+      "power_estimate": 1.7097886410201135
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_55",
+    "timestamp": "2025-11-05T11:25:56.969402",
+    "severity": "LOW",
+    "reconstruction_error": 0.23904993587623227,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.960094153881073
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9507958889007568
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9459341168403625
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9170852899551392
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8669242858886719
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 2.0822252312362033,
+      "Torque [Nm]": 2.0822252312362033,
+      "power_estimate": 1.8714683864876072,
+      "Rotational speed [rpm]_normalized": 1.490746636387345,
+      "Rotational speed [rpm]": 1.490746636387345
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_58",
+    "timestamp": "2025-11-05T11:25:56.969558",
+    "severity": "LOW",
+    "reconstruction_error": 0.18731015460976114,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9626622200012207
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9472096562385559
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9345940947532654
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9118556976318359
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8747153282165527
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 2.0775948230662777,
+      "Rotational speed [rpm]_normalized": 2.0775948230662773,
+      "Torque [Nm]": 1.8335377582017358,
+      "Torque [Nm]_normalized": 1.8335377582017354,
+      "power_estimate": 1.553794840322555
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_59",
+    "timestamp": "2025-11-05T11:25:56.969716",
+    "severity": "LOW",
+    "reconstruction_error": 0.15305210684158477,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9732333421707153
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9680517315864563
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.932320773601532
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8878765106201172
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8815326690673828
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]": 0.84995842985855,
+      "Tool wear [min]_normalized": 0.8499584298585496,
+      "Rotational speed [rpm]": 0.6944040656841697,
+      "Rotational speed [rpm]_normalized": 0.6944040656841695,
+      "Torque [Nm]_normalized": 0.4153539692066775
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_61",
+    "timestamp": "2025-11-05T11:25:56.969880",
+    "severity": "LOW",
+    "reconstruction_error": 0.16912434889054742,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.956210732460022
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.948793888092041
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9474002122879028
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9207413196563721
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8663216233253479
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 0.866342338059486,
+      "Torque [Nm]_normalized": 0.8569503438613959,
+      "Torque [Nm]": 0.8569503438613959,
+      "Rotational speed [rpm]": 0.6710608804652131,
+      "Rotational speed [rpm]_normalized": 0.6710608804652128
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_62",
+    "timestamp": "2025-11-05T11:25:56.970033",
+    "severity": "LOW",
+    "reconstruction_error": 0.22679668115054982,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.984401285648346
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9104323387145996
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9100083112716675
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8955296277999878
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8747097849845886
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]_normalized": 5.3262301036630975,
+      "Rotational speed [rpm]": 5.3262301036630975,
+      "power_estimate": 2.743057054125667,
+      "Torque [Nm]_normalized": 1.8889218431744286,
+      "Torque [Nm]": 1.888921843174428
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_64",
+    "timestamp": "2025-11-05T11:25:56.970186",
+    "severity": "LOW",
+    "reconstruction_error": 0.1726469700543587,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9985365867614746
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9887150526046753
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.868520975112915
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8345544934272766
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8270401358604431
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]_normalized": 2.734974670948277,
+      "Tool wear [min]": 2.734974670948277,
+      "Torque [Nm]_normalized": 0.8376486858296659,
+      "Torque [Nm]": 0.8376486858296657,
+      "power_estimate": 0.7012167347322751
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_74",
+    "timestamp": "2025-11-05T11:25:56.970340",
+    "severity": "LOW",
+    "reconstruction_error": 0.16766560156768304,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9612001180648804
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9554444551467896
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9366545081138611
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9265806078910828
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.858208954334259
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 1.8997714325180506,
+      "Torque [Nm]_normalized": 1.680874524360679,
+      "Torque [Nm]": 1.680874524360679,
+      "Rotational speed [rpm]_normalized": 0.9463735009426237,
+      "Rotational speed [rpm]": 0.9463735009426235
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_75",
+    "timestamp": "2025-11-05T11:25:56.970494",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.3138112394001264,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.978439211845398
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9263156652450562
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9108778238296509
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9063878059387207
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8783497214317322
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 3.8258579504020367,
+      "Rotational speed [rpm]_normalized": 3.8258579504020362,
+      "Torque [Nm]_normalized": 1.974803151643033,
+      "Torque [Nm]": 1.974803151643033,
+      "power_estimate": 1.833432697264778
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_86",
+    "timestamp": "2025-11-05T11:25:56.970676",
+    "severity": "LOW",
+    "reconstruction_error": 0.17538016307639662,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9907547235488892
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.8996118307113647
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8943849802017212
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8808156251907349
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8786333203315735
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]_normalized": 3.646632481493699,
+      "Rotational speed [rpm]": 3.646632481493699,
+      "power_estimate": 0.9922719558105731,
+      "Torque [Nm]": 0.9788859016679974,
+      "Torque [Nm]_normalized": 0.9788859016679972
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_87",
+    "timestamp": "2025-11-05T11:25:56.970858",
+    "severity": "LOW",
+    "reconstruction_error": 0.13501721604057595,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9508439898490906
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.949556291103363
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9425647258758545
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9293562173843384
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8626108169555664
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 1.4832551064665023,
+      "Torque [Nm]_normalized": 1.1324216348580376,
+      "Torque [Nm]": 1.1324216348580372,
+      "Rotational speed [rpm]_normalized": 0.9813325841912685,
+      "Rotational speed [rpm]": 0.9813325841912685
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_91",
+    "timestamp": "2025-11-05T11:25:56.971022",
+    "severity": "LOW",
+    "reconstruction_error": 0.1703172070907541,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9975873231887817
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9871344566345215
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.877726674079895
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8397331237792969
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8269884586334229
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]_normalized": 2.1809032495813847,
+      "Tool wear [min]": 2.1809032495813847,
+      "power_estimate": 0.8158533080291299,
+      "Torque [Nm]_normalized": 0.7006119455191989,
+      "Torque [Nm]": 0.7006119455191987
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_92",
+    "timestamp": "2025-11-05T11:25:56.971183",
+    "severity": "LOW",
+    "reconstruction_error": 0.20649981755982721,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.986871600151062
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.91025710105896
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8984616994857788
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8924751281738281
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8794482946395874
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.125197648201082,
+      "Rotational speed [rpm]_normalized": 4.12519764820108,
+      "Torque [Nm]": 1.4439008834163751,
+      "Torque [Nm]_normalized": 1.4439008834163747,
+      "power_estimate": 1.340908691365715
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_97",
+    "timestamp": "2025-11-05T11:25:56.971342",
+    "severity": "LOW",
+    "reconstruction_error": 0.1737405985518146,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9843494892120361
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9159965515136719
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9006106853485107
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8988232612609863
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8795908093452454
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.065388203507198,
+      "Rotational speed [rpm]_normalized": 4.065388203507197,
+      "Torque [Nm]_normalized": 1.6328367430184152,
+      "Torque [Nm]": 1.6328367430184147,
+      "power_estimate": 1.465416415148783
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_100",
+    "timestamp": "2025-11-05T11:25:56.971503",
+    "severity": "LOW",
+    "reconstruction_error": 0.17115606014929155,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.995500922203064
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9881950616836548
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.884158730506897
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8493644595146179
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8291351199150085
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]_normalized": 1.6240229539878819,
+      "Tool wear [min]": 1.6240229539878819,
+      "Torque [Nm]_normalized": 1.1184535945305911,
+      "Torque [Nm]": 1.1184535945305911,
+      "power_estimate": 1.0480372620423355
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_101",
+    "timestamp": "2025-11-05T11:25:56.971675",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.24768584468169183,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9835740327835083
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9142715930938721
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9075896739959717
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8988056778907776
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.876438558101654
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.470738955793831,
+      "Rotational speed [rpm]_normalized": 4.47073895579383,
+      "power_estimate": 2.1301363959431763,
+      "Torque [Nm]_normalized": 1.7382400986276618,
+      "Torque [Nm]": 1.7382400986276618
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_105",
+    "timestamp": "2025-11-05T11:25:56.971828",
+    "severity": "LOW",
+    "reconstruction_error": 0.2250168517041958,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9673258662223816
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9598634243011475
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9336442351341248
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9176157116889954
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8610840439796448
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 2.5342493316742787,
+      "Torque [Nm]": 2.5342493316742787,
+      "power_estimate": 2.2645056198838267,
+      "Rotational speed [rpm]_normalized": 1.2923099600232706,
+      "Rotational speed [rpm]": 1.2923099600232706
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_109",
+    "timestamp": "2025-11-05T11:25:56.971987",
+    "severity": "LOW",
+    "reconstruction_error": 0.23246216976687167,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9937610626220703
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9875037670135498
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8901569843292236
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8550567626953125
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8295972347259521
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]": 0.894308036276613,
+      "Tool wear [min]_normalized": 0.8943080362766127,
+      "Torque [Nm]_normalized": 0.8500870848532414,
+      "Torque [Nm]": 0.8500870848532414,
+      "power_estimate": 0.8145859838798153
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_112",
+    "timestamp": "2025-11-05T11:25:56.972139",
+    "severity": "LOW",
+    "reconstruction_error": 0.15043790049377637,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9646484851837158
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9612454175949097
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9297171831130981
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9256893396377563
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8509750962257385
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 1.4338950145338027,
+      "Torque [Nm]_normalized": 1.1970258340584006,
+      "Torque [Nm]": 1.1970258340584006,
+      "Rotational speed [rpm]": 0.4834977151622241,
+      "Rotational speed [rpm]_normalized": 0.48349771516222406
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_114",
+    "timestamp": "2025-11-05T11:25:56.972304",
+    "severity": "LOW",
+    "reconstruction_error": 0.13778673386388318,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.963467538356781
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9436917304992676
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9322878122329712
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9173588752746582
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.872303307056427
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]_normalized": 1.4200515460591254,
+      "Rotational speed [rpm]": 1.4200515460591254,
+      "power_estimate": 1.2305459645548638,
+      "Torque [Nm]": 1.1895416614420307,
+      "Torque [Nm]_normalized": 1.1895416614420302
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_118",
+    "timestamp": "2025-11-05T11:25:56.972465",
+    "severity": "CRITICAL",
+    "reconstruction_error": 0.415786069201362,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9788153767585754
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9254899024963379
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9100697040557861
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9065814018249512
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8782069683074951
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.404491964419149,
+      "Rotational speed [rpm]_normalized": 4.404491964419148,
+      "Torque [Nm]_normalized": 2.2313451315042814,
+      "Torque [Nm]": 2.2313451315042814,
+      "power_estimate": 2.1164828954248214
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_120",
+    "timestamp": "2025-11-05T11:25:56.972632",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.31088792851040525,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9981703758239746
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9878054857254028
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8730731010437012
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8367303609848022
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8268821835517883
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]": 3.4716722821455597,
+      "Tool wear [min]_normalized": 3.4716722821455592,
+      "power_estimate": 1.0642817335873116,
+      "Torque [Nm]": 1.031168437628501,
+      "Torque [Nm]_normalized": 1.0311684376285009
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_121",
+    "timestamp": "2025-11-05T11:25:56.972791",
+    "severity": "LOW",
+    "reconstruction_error": 0.17302442581278726,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9769663214683533
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9285439252853394
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9134984016418457
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9075630903244019
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8779584169387817
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 2.7874533567850173,
+      "Rotational speed [rpm]_normalized": 2.7874533567850164,
+      "Torque [Nm]_normalized": 1.5211034901714422,
+      "Torque [Nm]": 1.5211034901714418,
+      "power_estimate": 1.4201160258156145
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_125",
+    "timestamp": "2025-11-05T11:25:56.972954",
+    "severity": "LOW",
+    "reconstruction_error": 0.16378132189825056,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9793941974639893
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9218083024024963
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9112664461135864
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9074707627296448
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8757734894752502
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]_normalized": 2.135982344689535,
+      "Rotational speed [rpm]": 2.135982344689535,
+      "power_estimate": 1.1991915719765314,
+      "Torque [Nm]": 1.0056475800849833,
+      "Torque [Nm]_normalized": 1.0056475800849831
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_126",
+    "timestamp": "2025-11-05T11:25:56.973118",
+    "severity": "HIGH",
+    "reconstruction_error": 0.3503555857405031,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9594912528991699
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9476966261863708
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9369645118713379
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.918268620967865
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8709542751312256
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]_normalized": 2.502375827412963,
+      "Rotational speed [rpm]": 2.502375827412963,
+      "power_estimate": 2.4029147854783175,
+      "Torque [Nm]_normalized": 2.3629576832437875,
+      "Torque [Nm]": 2.3629576832437875
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_127",
+    "timestamp": "2025-11-05T11:25:56.973273",
+    "severity": "LOW",
+    "reconstruction_error": 0.17091832935977677,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.968208909034729
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9614951014518738
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9306160807609558
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9189283847808838
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8589388132095337
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 2.7546183137278866,
+      "Torque [Nm]": 2.754618313727886,
+      "power_estimate": 2.545433923647159,
+      "Rotational speed [rpm]_normalized": 1.2877797193431149,
+      "Rotational speed [rpm]": 1.2877797193431149
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_130",
+    "timestamp": "2025-11-05T11:25:56.973430",
+    "severity": "LOW",
+    "reconstruction_error": 0.1912822141714777,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9635580778121948
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9451138973236084
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9329595565795898
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9142443537712097
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8738128542900085
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 1.8374074361481711,
+      "Rotational speed [rpm]_normalized": 1.8374074361481707,
+      "Torque [Nm]_normalized": 1.5604766586016527,
+      "Torque [Nm]": 1.5604766586016523,
+      "power_estimate": 1.452852195314842
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_133",
+    "timestamp": "2025-11-05T11:25:56.973590",
+    "severity": "LOW",
+    "reconstruction_error": 0.1436617527150665,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9983299374580383
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9884611368179321
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.870633602142334
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8359181880950928
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8271237015724182
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]": 2.8501829428299277,
+      "Tool wear [min]_normalized": 2.8501829428299272,
+      "Torque [Nm]_normalized": 0.9015715908440288,
+      "Torque [Nm]": 0.9015715908440288,
+      "power_estimate": 0.8109206701871619
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_145",
+    "timestamp": "2025-11-05T11:25:56.973746",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.25227493261324335,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9779040813446045
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9255159497261047
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9109953045845032
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9100722670555115
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8766435980796814
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.894694809159487,
+      "Rotational speed [rpm]_normalized": 4.894694809159486,
+      "power_estimate": 2.68841334508091,
+      "Torque [Nm]_normalized": 2.5080733448618004,
+      "Torque [Nm]": 2.5080733448618004
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_160",
+    "timestamp": "2025-11-05T11:25:56.973897",
+    "severity": "HIGH",
+    "reconstruction_error": 0.3695046984259969,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9792578220367432
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9236719608306885
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9086633920669556
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9084432125091553
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8772371411323547
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.572720709676473,
+      "Rotational speed [rpm]_normalized": 4.572720709676472,
+      "power_estimate": 2.337354092848962,
+      "Torque [Nm]": 2.2315665269561578,
+      "Torque [Nm]_normalized": 2.2315665269561573
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_162",
+    "timestamp": "2025-11-05T11:25:56.974054",
+    "severity": "LOW",
+    "reconstruction_error": 0.23916910181320608,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9955283403396606
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9882311820983887
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8839966058731079
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8492716550827026
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8291416764259338
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]_normalized": 2.182766782130675,
+      "Tool wear [min]": 2.1827667821306744,
+      "Torque [Nm]_normalized": 1.500723032483299,
+      "Torque [Nm]": 1.5007230324832985,
+      "power_estimate": 1.400964348067033
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_166",
+    "timestamp": "2025-11-05T11:25:56.974212",
+    "severity": "LOW",
+    "reconstruction_error": 0.18375266594588882,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.962522029876709
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9450423717498779
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9336317777633667
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9168872833251953
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8723385334014893
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 1.9132351398184135,
+      "Rotational speed [rpm]_normalized": 1.9132351398184126,
+      "power_estimate": 1.665910620608114,
+      "Torque [Nm]_normalized": 1.6561949695342904,
+      "Torque [Nm]": 1.65619496953429
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_174",
+    "timestamp": "2025-11-05T11:25:56.974363",
+    "severity": "LOW",
+    "reconstruction_error": 0.19788809524700923,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9592304825782776
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.949229896068573
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9481431841850281
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9153491258621216
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8685968518257141
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]": 1.5723917592844303,
+      "Torque [Nm]_normalized": 1.57239175928443,
+      "power_estimate": 1.3532738615380508,
+      "Rotational speed [rpm]": 1.1915656214692676,
+      "Rotational speed [rpm]_normalized": 1.1915656214692674
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_181",
+    "timestamp": "2025-11-05T11:25:56.974521",
+    "severity": "LOW",
+    "reconstruction_error": 0.2052074740721047,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9711442589759827
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9658634662628174
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9224708676338196
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9198721647262573
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8540936708450317
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 1.55822245036437,
+      "Torque [Nm]": 1.55822245036437,
+      "power_estimate": 1.4809505818599846,
+      "Rotational speed [rpm]": 0.5676705826568111,
+      "Rotational speed [rpm]_normalized": 0.567670582656811
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_186",
+    "timestamp": "2025-11-05T11:25:56.974680",
+    "severity": "LOW",
+    "reconstruction_error": 0.178877054246304,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9606078267097473
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.94619220495224
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9354687333106995
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9188492298126221
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8709463477134705
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 2.236487725493377,
+      "Rotational speed [rpm]_normalized": 2.236487725493376,
+      "power_estimate": 2.133640050254134,
+      "Torque [Nm]_normalized": 2.034182418179124,
+      "Torque [Nm]": 2.0341824181791237
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_198",
+    "timestamp": "2025-11-05T11:25:56.974835",
+    "severity": "LOW",
+    "reconstruction_error": 0.12965249613450586,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9831211566925049
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9817356467247009
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9079098701477051
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8816462755203247
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8717555403709412
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]_normalized": 1.6819578361030179,
+      "Tool wear [min]": 1.6819578361030179,
+      "Rotational speed [rpm]": 0.873585041157255,
+      "Rotational speed [rpm]_normalized": 0.8735850411572548,
+      "Torque [Nm]_normalized": 0.7742561235568418
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_202",
+    "timestamp": "2025-11-05T11:25:56.975002",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.28462904709728093,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9581631422042847
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.955501914024353
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9387898445129395
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9267329573631287
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8679003119468689
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]": 2.558417920241997,
+      "Tool wear [min]_normalized": 2.5584179202419963,
+      "Rotational speed [rpm]": 1.9886465342832953,
+      "Rotational speed [rpm]_normalized": 1.9886465342832949,
+      "power_estimate": 1.8498630904214153
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_203",
+    "timestamp": "2025-11-05T11:25:56.975155",
+    "severity": "LOW",
+    "reconstruction_error": 0.22063891872425692,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9684669971466064
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9605261087417603
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9333112835884094
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.915374755859375
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.861934244632721
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 2.0364517215608524,
+      "Torque [Nm]": 2.0364517215608524,
+      "power_estimate": 1.7147663731400002,
+      "Rotational speed [rpm]_normalized": 1.0287006687315319,
+      "Rotational speed [rpm]": 1.0287006687315319
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_205",
+    "timestamp": "2025-11-05T11:25:56.975310",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.24633756462822037,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9614790678024292
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9568776488304138
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9331819415092468
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9293028116226196
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.855105996131897
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 2.0276890912107985,
+      "Torque [Nm]_normalized": 1.6902294885454008,
+      "Torque [Nm]": 1.6902294885454006,
+      "Rotational speed [rpm]": 0.8639035185608452,
+      "Rotational speed [rpm]_normalized": 0.8639035185608451
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_217",
+    "timestamp": "2025-11-05T11:25:56.975464",
+    "severity": "LOW",
+    "reconstruction_error": 0.13368470542149,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9557546377182007
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9541526436805725
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9441550374031067
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9118263721466064
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8723353147506714
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 1.7234991869045768,
+      "Torque [Nm]": 1.7234991869045768,
+      "Rotational speed [rpm]_normalized": 1.527814023952524,
+      "Rotational speed [rpm]": 1.527814023952524,
+      "power_estimate": 1.364484420227394
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_223",
+    "timestamp": "2025-11-05T11:25:56.975614",
+    "severity": "LOW",
+    "reconstruction_error": 0.14842043096451105,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9826819896697998
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9181574583053589
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9045478701591492
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9020036458969116
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8783044815063477
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 3.5650368106717587,
+      "Rotational speed [rpm]_normalized": 3.565036810671758,
+      "power_estimate": 1.5272961269786987,
+      "Torque [Nm]_normalized": 1.5141637490980944,
+      "Torque [Nm]": 1.5141637490980944
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_232",
+    "timestamp": "2025-11-05T11:25:56.975771",
+    "severity": "LOW",
+    "reconstruction_error": 0.1395884261246105,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9627476334571838
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9570310711860657
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9347845911979675
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9256398677825928
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8577854037284851
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 0.8903029282961274,
+      "Torque [Nm]_normalized": 0.8101221867607447,
+      "Torque [Nm]": 0.8101221867607447,
+      "Rotational speed [rpm]": 0.43074499152781387,
+      "Rotational speed [rpm]_normalized": 0.4307449915278136
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_234",
+    "timestamp": "2025-11-05T11:25:56.975932",
+    "severity": "LOW",
+    "reconstruction_error": 0.1374312104115976,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9907773733139038
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.8989102840423584
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8955538868904114
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8803942203521729
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8780336976051331
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.46327183724417,
+      "Rotational speed [rpm]_normalized": 4.463271837244168,
+      "power_estimate": 1.2887346390896228,
+      "Torque [Nm]_normalized": 1.173411996429905,
+      "Torque [Nm]": 1.173411996429905
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_240",
+    "timestamp": "2025-11-05T11:25:56.976095",
+    "severity": "LOW",
+    "reconstruction_error": 0.18081278795367428,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9956377744674683
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9867633581161499
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8865121006965637
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.84828782081604
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.828136682510376
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]_normalized": 2.6376661845599365,
+      "Tool wear [min]": 2.6376661845599356,
+      "power_estimate": 1.6002539056886,
+      "Torque [Nm]": 1.4154706883666148,
+      "Torque [Nm]_normalized": 1.4154706883666146
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_245",
+    "timestamp": "2025-11-05T11:25:56.976253",
+    "severity": "LOW",
+    "reconstruction_error": 0.20456306262564034,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9623344540596008
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9559136033058167
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9370841979980469
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9240663647651672
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8596793413162231
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 2.6507035707441555,
+      "Torque [Nm]_normalized": 2.4984285539037137,
+      "Torque [Nm]": 2.4984285539037137,
+      "Rotational speed [rpm]_normalized": 1.4160427808858338,
+      "Rotational speed [rpm]": 1.4160427808858338
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_247",
+    "timestamp": "2025-11-05T11:25:56.976406",
+    "severity": "LOW",
+    "reconstruction_error": 0.20271424847001857,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9726466536521912
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.934160053730011
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9203515648841858
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9112061262130737
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8763543963432312
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]_normalized": 3.3127761456552953,
+      "Rotational speed [rpm]": 3.3127761456552953,
+      "Torque [Nm]": 2.0958138802665713,
+      "Torque [Nm]_normalized": 2.095813880266571,
+      "power_estimate": 2.0336316211346785
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_254",
+    "timestamp": "2025-11-05T11:25:56.976567",
+    "severity": "LOW",
+    "reconstruction_error": 0.16216750794245918,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.967242419719696
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9430400133132935
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.929139256477356
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9085184335708618
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8770654797554016
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]_normalized": 2.0735151173109063,
+      "Rotational speed [rpm]": 2.0735151173109063,
+      "Torque [Nm]_normalized": 1.6079357927401503,
+      "Torque [Nm]": 1.6079357927401503,
+      "power_estimate": 1.2743987110914918
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_263",
+    "timestamp": "2025-11-05T11:25:56.976722",
+    "severity": "LOW",
+    "reconstruction_error": 0.1308737695467371,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9670805931091309
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9651826620101929
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9306163787841797
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9172030091285706
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8456733226776123
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 1.398099776563735,
+      "Torque [Nm]_normalized": 1.1461853875639796,
+      "Torque [Nm]": 1.1461853875639796,
+      "Rotational speed [rpm]_normalized": 0.3436523590234339,
+      "Rotational speed [rpm]": 0.3436523590234339
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_266",
+    "timestamp": "2025-11-05T11:25:56.976878",
+    "severity": "LOW",
+    "reconstruction_error": 0.1628865301437373,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9963959455490112
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9879029989242554
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.881678581237793
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8457189202308655
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8283966183662415
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]_normalized": 2.6165996278603503,
+      "Tool wear [min]": 2.6165996278603503,
+      "Torque [Nm]_normalized": 1.3703975933935615,
+      "Torque [Nm]": 1.3703975933935615,
+      "power_estimate": 1.3654889326837298
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_267",
+    "timestamp": "2025-11-05T11:25:56.977031",
+    "severity": "LOW",
+    "reconstruction_error": 0.2051585731008094,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9592876434326172
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9500032067298889
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9467289447784424
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9175944924354553
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8670101165771484
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 1.6282830411105125,
+      "Torque [Nm]": 1.628283041110512,
+      "power_estimate": 1.4893951452791452,
+      "Rotational speed [rpm]_normalized": 1.1928721105225626,
+      "Rotational speed [rpm]": 1.1928721105225626
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_269",
+    "timestamp": "2025-11-05T11:25:56.977190",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.2580451370285862,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9862250685691833
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9094198346138
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9035992622375488
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8928868174552917
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8772639036178589
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]_normalized": 4.611451778348572,
+      "Rotational speed [rpm]": 4.611451778348572,
+      "power_estimate": 1.8676738199640774,
+      "Torque [Nm]": 1.5834403986760028,
+      "Torque [Nm]_normalized": 1.5834403986760026
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_270",
+    "timestamp": "2025-11-05T11:25:56.977340",
+    "severity": "LOW",
+    "reconstruction_error": 0.14979965647172422,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.96660315990448
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9638864994049072
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9295018911361694
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9207845330238342
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8483456969261169
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 1.4790920033551038,
+      "Torque [Nm]_normalized": 1.2436627859960676,
+      "Torque [Nm]": 1.2436627859960676,
+      "Rotational speed [rpm]": 0.42516557697585267,
+      "Rotational speed [rpm]_normalized": 0.4251655769758525
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_271",
+    "timestamp": "2025-11-05T11:25:56.977494",
+    "severity": "LOW",
+    "reconstruction_error": 0.13141787837535948,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9702683091163635
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9679078459739685
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9266905784606934
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9140498638153076
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8458277583122253
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 1.5797854257522774,
+      "Torque [Nm]_normalized": 1.4091619243311135,
+      "Torque [Nm]": 1.4091619243311135,
+      "Rotational speed [rpm]": 0.37594899244377544,
+      "Rotational speed [rpm]_normalized": 0.3759489924437752
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_272",
+    "timestamp": "2025-11-05T11:25:56.977648",
+    "severity": "LOW",
+    "reconstruction_error": 0.17818000833950542,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9873791337013245
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9053640961647034
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9044244885444641
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8890085816383362
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8760941028594971
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]_normalized": 4.326202186950686,
+      "Rotational speed [rpm]": 4.326202186950686,
+      "power_estimate": 1.80545292152377,
+      "Torque [Nm]_normalized": 1.339946661673952,
+      "Torque [Nm]": 1.339946661673952
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_274",
+    "timestamp": "2025-11-05T11:25:56.977803",
+    "severity": "LOW",
+    "reconstruction_error": 0.12957779656721216,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9542601108551025
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9513282179832458
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9419328570365906
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.921213686466217
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8679989576339722
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 1.3323773707576492,
+      "Torque [Nm]_normalized": 1.254064346862385,
+      "Torque [Nm]": 1.254064346862385,
+      "Rotational speed [rpm]_normalized": 1.1517377740610713,
+      "Rotational speed [rpm]": 1.1517377740610708
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_282",
+    "timestamp": "2025-11-05T11:25:56.977958",
+    "severity": "LOW",
+    "reconstruction_error": 0.15579335489688836,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9810296297073364
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9206326603889465
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9070532321929932
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9051743149757385
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8775432705879211
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 3.5405601318540527,
+      "Rotational speed [rpm]_normalized": 3.540560131854052,
+      "power_estimate": 1.6905271883769366,
+      "Torque [Nm]_normalized": 1.6023203990062054,
+      "Torque [Nm]": 1.6023203990062054
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_284",
+    "timestamp": "2025-11-05T11:25:56.978117",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.2515684526149315,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9824988842010498
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9212326407432556
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9036437273025513
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8983904123306274
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8811431527137756
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.637121067916764,
+      "Rotational speed [rpm]_normalized": 4.637121067916762,
+      "Torque [Nm]_normalized": 2.0965988277777674,
+      "Torque [Nm]": 2.0965988277777674,
+      "power_estimate": 1.5274290631065222
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_286",
+    "timestamp": "2025-11-05T11:25:56.978276",
+    "severity": "LOW",
+    "reconstruction_error": 0.16321586058376947,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9863439798355103
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9119904637336731
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.897887647151947
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8940911889076233
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8799816370010376
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.3360203012818905,
+      "Rotational speed [rpm]_normalized": 4.336020301281888,
+      "Torque [Nm]": 1.5820727785891873,
+      "Torque [Nm]_normalized": 1.582072778589187,
+      "power_estimate": 1.3723344198121086
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_291",
+    "timestamp": "2025-11-05T11:25:56.978441",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.31274102022650124,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9516814947128296
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9498754739761353
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9443106651306152
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9272996187210083
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8633866906166077
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 2.141962780592192,
+      "Torque [Nm]_normalized": 1.7466380306545024,
+      "Torque [Nm]": 1.7466380306545024,
+      "Rotational speed [rpm]_normalized": 1.4523531577659288,
+      "Rotational speed [rpm]": 1.4523531577659285
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_292",
+    "timestamp": "2025-11-05T11:25:56.978591",
+    "severity": "LOW",
+    "reconstruction_error": 0.13514831057579793,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.963228702545166
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9555637836456299
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9390642046928406
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9200137853622437
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8625689744949341
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 1.482163049215353,
+      "Torque [Nm]": 1.482163049215353,
+      "power_estimate": 1.419673220104329,
+      "Rotational speed [rpm]_normalized": 0.8821946764498779,
+      "Rotational speed [rpm]": 0.8821946764498779
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_301",
+    "timestamp": "2025-11-05T11:25:56.978743",
+    "severity": "LOW",
+    "reconstruction_error": 0.22348793662829997,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9794479012489319
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9176707863807678
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9149887561798096
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9067766666412354
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8767285943031311
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]_normalized": 5.300907116146901,
+      "Rotational speed [rpm]": 5.300907116146901,
+      "power_estimate": 2.478358900979672,
+      "Tool wear [min]_normalized": 2.1410236530265854,
+      "Tool wear [min]": 2.1410236530265854
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_302",
+    "timestamp": "2025-11-05T11:25:56.978892",
+    "severity": "LOW",
+    "reconstruction_error": 0.13682713677388533,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9682095050811768
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9597855806350708
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9347565770149231
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9141979217529297
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8631746768951416
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 1.4866946115780686,
+      "Torque [Nm]": 1.4866946115780686,
+      "power_estimate": 1.2122792785670953,
+      "Rotational speed [rpm]": 0.7819406991123533,
+      "Rotational speed [rpm]_normalized": 0.7819406991123531
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_303",
+    "timestamp": "2025-11-05T11:25:56.979041",
+    "severity": "LOW",
+    "reconstruction_error": 0.1864766068567257,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9795128107070923
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9744059443473816
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9103947281837463
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9067422151565552
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8645415902137756
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]": 3.1707722476835607,
+      "Tool wear [min]_normalized": 3.1707722476835603,
+      "Rotational speed [rpm]": 1.3831761336656268,
+      "Rotational speed [rpm]_normalized": 1.383176133665626,
+      "power_estimate": 0.9567632506202793
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_305",
+    "timestamp": "2025-11-05T11:25:56.979194",
+    "severity": "LOW",
+    "reconstruction_error": 0.24195530689496514,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.987688422203064
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9065074920654297
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9009994268417358
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8893117904663086
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.877720296382904
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.958363670432812,
+      "Rotational speed [rpm]_normalized": 4.95836367043281,
+      "power_estimate": 1.8034839041353166,
+      "Torque [Nm]_normalized": 1.5815041948150517,
+      "Torque [Nm]": 1.5815041948150514
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_314",
+    "timestamp": "2025-11-05T11:25:56.979344",
+    "severity": "LOW",
+    "reconstruction_error": 0.16190938674548416,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9565145373344421
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9507766962051392
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9403695464134216
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9181367754936218
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8701937198638916
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]": 1.105307736403976,
+      "Torque [Nm]_normalized": 1.1053077364039756,
+      "power_estimate": 1.0884415599359272,
+      "Rotational speed [rpm]_normalized": 1.0700192017921064,
+      "Rotational speed [rpm]": 1.0700192017921064
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_315",
+    "timestamp": "2025-11-05T11:25:56.979496",
+    "severity": "LOW",
+    "reconstruction_error": 0.1461348518221237,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9953898787498474
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9871490001678467
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8866004943847656
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8494129180908203
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8285360932350159
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]": 1.4464591552284751,
+      "Tool wear [min]_normalized": 1.446459155228475,
+      "power_estimate": 0.9346682657739007,
+      "Torque [Nm]_normalized": 0.8788644682252617,
+      "Torque [Nm]": 0.8788644682252617
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_318",
+    "timestamp": "2025-11-05T11:25:56.979646",
+    "severity": "LOW",
+    "reconstruction_error": 0.1724515709710006,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9606618285179138
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9522421360015869
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9435479044914246
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9194392561912537
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8648311495780945
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 1.569850743302672,
+      "Torque [Nm]": 1.569850743302672,
+      "power_estimate": 1.4969200487091767,
+      "Rotational speed [rpm]_normalized": 1.0575899762117371,
+      "Rotational speed [rpm]": 1.057589976211737
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_319",
+    "timestamp": "2025-11-05T11:25:56.979795",
+    "severity": "LOW",
+    "reconstruction_error": 0.14906118774172797,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.975757360458374
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9721601009368896
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9183286428451538
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9091989994049072
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8469325304031372
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 0.9221885391284946,
+      "Torque [Nm]": 0.9221885391284946,
+      "power_estimate": 0.867613340880607,
+      "Rotational speed [rpm]": 0.2087084370491008,
+      "Rotational speed [rpm]_normalized": 0.20870843704910075
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_322",
+    "timestamp": "2025-11-05T11:25:56.979944",
+    "severity": "LOW",
+    "reconstruction_error": 0.15839511756727942,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9933930039405823
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.990902304649353
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8762598633766174
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8619725108146667
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8563648462295532
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]": 1.2605773370106497,
+      "Tool wear [min]_normalized": 1.2605773370106494,
+      "Torque [Nm]_normalized": 0.9292611174729677,
+      "Torque [Nm]": 0.9292611174729675,
+      "Rotational speed [rpm]": 0.8625329340693557
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_323",
+    "timestamp": "2025-11-05T11:25:56.980098",
+    "severity": "LOW",
+    "reconstruction_error": 0.13288420403196546,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9564268589019775
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9516141414642334
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9408459663391113
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.916569173336029
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.87091064453125
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 1.9599143075043763,
+      "Torque [Nm]": 1.9599143075043763,
+      "Rotational speed [rpm]": 1.880438499751574,
+      "Rotational speed [rpm]_normalized": 1.8804384997515737,
+      "power_estimate": 1.83558379135568
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_324",
+    "timestamp": "2025-11-05T11:25:56.980248",
+    "severity": "LOW",
+    "reconstruction_error": 0.18647704967424417,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9551841616630554
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9541857838630676
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9438925981521606
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9131631851196289
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8717570304870605
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 1.6448283257663867,
+      "Torque [Nm]": 1.6448283257663867,
+      "Rotational speed [rpm]": 1.4643754084280536,
+      "Rotational speed [rpm]_normalized": 1.4643754084280534,
+      "power_estimate": 1.3604475108328733
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_337",
+    "timestamp": "2025-11-05T11:25:56.980403",
+    "severity": "MEDIUM",
+    "reconstruction_error": 0.2970780254973587,
+    "similar_entities": [
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9985030889511108
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.988450288772583
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8693923354148865
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8347542881965637
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8269223570823669
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]": 3.12052597999364,
+      "Tool wear [min]_normalized": 3.1205259799936393,
+      "Torque [Nm]_normalized": 0.9228175034804149,
+      "Torque [Nm]": 0.9228175034804146,
+      "power_estimate": 0.8202498549998756
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_338",
+    "timestamp": "2025-11-05T11:25:56.980552",
+    "severity": "LOW",
+    "reconstruction_error": 0.12710885384156775,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9670340418815613
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9649002552032471
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9302293658256531
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9181251525878906
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8464213013648987
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 1.5218061672052374,
+      "Torque [Nm]_normalized": 1.2586291185428817,
+      "Torque [Nm]": 1.2586291185428817,
+      "Rotational speed [rpm]_normalized": 0.39075223838057294,
+      "Rotational speed [rpm]": 0.39075223838057294
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_339",
+    "timestamp": "2025-11-05T11:25:56.980701",
+    "severity": "LOW",
+    "reconstruction_error": 0.23978527725590518,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.966142475605011
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9402310252189636
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9285917282104492
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.917586088180542
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8726528286933899
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 3.4969475421633405,
+      "Rotational speed [rpm]_normalized": 3.496947542163339,
+      "power_estimate": 2.902861605115726,
+      "Torque [Nm]_normalized": 2.6765099983060545,
+      "Torque [Nm]": 2.6765099983060545
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_340",
+    "timestamp": "2025-11-05T11:25:56.980862",
+    "severity": "LOW",
+    "reconstruction_error": 0.17522296392816142,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9629214406013489
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9571019411087036
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9348551034927368
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9252535700798035
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8580144643783569
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 2.663151246889531,
+      "Torque [Nm]_normalized": 2.446662271883267,
+      "Torque [Nm]": 2.446662271883267,
+      "Rotational speed [rpm]_normalized": 1.3025950998531628,
+      "Rotational speed [rpm]": 1.3025950998531626
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_348",
+    "timestamp": "2025-11-05T11:25:56.981025",
+    "severity": "LOW",
+    "reconstruction_error": 0.18646276536176662,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9662607908248901
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9578914046287537
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.937080442905426
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9158439040184021
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8635646104812622
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]_normalized": 2.3605595679627864,
+      "Torque [Nm]": 2.3605595679627864,
+      "power_estimate": 2.0146040904525595,
+      "Rotational speed [rpm]": 1.3240798285073827,
+      "Rotational speed [rpm]_normalized": 1.3240798285073825
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_349",
+    "timestamp": "2025-11-05T11:25:56.981182",
+    "severity": "LOW",
+    "reconstruction_error": 0.1599242324502218,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9827833771705627
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9187192916870117
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9029012322425842
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9021689295768738
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8790575265884399
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 3.8364280971318614,
+      "Rotational speed [rpm]_normalized": 3.8364280971318605,
+      "Torque [Nm]_normalized": 1.6468239038621597,
+      "Torque [Nm]": 1.6468239038621586,
+      "power_estimate": 1.5381983493609428
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_360",
+    "timestamp": "2025-11-05T11:25:56.981333",
+    "severity": "LOW",
+    "reconstruction_error": 0.1664758815300511,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9868682622909546
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9112886190414429
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8961031436920166
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.8929526805877686
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8805196285247803
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 4.658431867687729,
+      "Rotational speed [rpm]_normalized": 4.658431867687726,
+      "Torque [Nm]_normalized": 1.6716000676130034,
+      "Torque [Nm]": 1.6716000676130034,
+      "power_estimate": 1.3507836974870338
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_363",
+    "timestamp": "2025-11-05T11:25:56.981482",
+    "severity": "LOW",
+    "reconstruction_error": 0.2329642770513341,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9934725761413574
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9901202917098999
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.8782738447189331
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.8617637157440186
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8573128581047058
+      ]
+    ],
+    "top_features": {
+      "Tool wear [min]": 1.680489224358876,
+      "Tool wear [min]_normalized": 1.6804892243588754,
+      "Torque [Nm]_normalized": 1.3947319725836176,
+      "Torque [Nm]": 1.3947319725836174,
+      "Rotational speed [rpm]_normalized": 1.2559793588544252
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_368",
+    "timestamp": "2025-11-05T11:25:56.981634",
+    "severity": "LOW",
+    "reconstruction_error": 0.20799737981449612,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9644734859466553
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9592100381851196
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9314799308776855
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9255440831184387
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.856181263923645
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 2.6595381092939308,
+      "Torque [Nm]_normalized": 2.4387111561320314,
+      "Torque [Nm]": 2.4387111561320314,
+      "Rotational speed [rpm]_normalized": 1.1748444906730962,
+      "Rotational speed [rpm]": 1.1748444906730962
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_369",
+    "timestamp": "2025-11-05T11:25:56.981783",
+    "severity": "LOW",
+    "reconstruction_error": 0.1535474343219481,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9687008857727051
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9646126627922058
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9248029589653015
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9223545789718628
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8516388535499573
+      ]
+    ],
+    "top_features": {
+      "power_estimate": 2.038693049840377,
+      "Torque [Nm]_normalized": 1.9097058443907649,
+      "Torque [Nm]": 1.9097058443907646,
+      "Rotational speed [rpm]_normalized": 0.689667226115853,
+      "Rotational speed [rpm]": 0.689667226115853
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_371",
+    "timestamp": "2025-11-05T11:25:56.981964",
+    "severity": "LOW",
+    "reconstruction_error": 0.1726020208928296,
+    "similar_entities": [
+      [
+        "Sensor:Torque Sensor",
+        0.9627933502197266
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9555762410163879
+      ],
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9385114908218384
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9215733408927917
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8615680932998657
+      ]
+    ],
+    "top_features": {
+      "Torque [Nm]": 1.5189378401149107,
+      "Torque [Nm]_normalized": 1.5189378401149105,
+      "power_estimate": 1.5148077528495087,
+      "Rotational speed [rpm]": 0.8924477685606732,
+      "Rotational speed [rpm]_normalized": 0.8924477685606729
+    }
+  },
+  {
+    "anomaly_id": "AI4I_anomaly_377",
+    "timestamp": "2025-11-05T11:25:56.982288",
+    "severity": "LOW",
+    "reconstruction_error": 0.16093033356940598,
+    "similar_entities": [
+      [
+        "Sensor:Rotational Speed Sensor",
+        0.9661716818809509
+      ],
+      [
+        "Sensor:Torque Sensor",
+        0.9442170262336731
+      ],
+      [
+        "Sensor:Tool Wear Sensor",
+        0.9305380582809448
+      ],
+      [
+        "Sensor:Motor Current Sensor",
+        0.9089767336845398
+      ],
+      [
+        "Sensor:Air Temperature Sensor",
+        0.8766897320747375
+      ]
+    ],
+    "top_features": {
+      "Rotational speed [rpm]": 1.798208408548669,
+      "Rotational speed [rpm]_normalized": 1.7982084085486687,
+      "Torque [Nm]_normalized": 1.4401975413122685,
+      "Torque [Nm]": 1.4401975413122683,
+      "power_estimate": 1.1449647083893821
+    }
+  }
+]

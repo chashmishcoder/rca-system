@@ -1,0 +1,27 @@
+============================================================
+BATCH ANOMALY DETECTION REPORT
+============================================================
+Batch ID: test_set_01
+Dataset: AI4I
+Timestamp: 2025-11-05T11:26:21.594550
+
+SUMMARY
+------------------------------------------------------------
+Total Sequences: 3222
+Detected Anomalies: 982
+Anomaly Rate: 30.48%
+
+RECONSTRUCTION ERROR STATISTICS
+------------------------------------------------------------
+Mean Error: 0.114683
+Std Error: 0.088042
+Max Error: 0.894788
+Min Error: 0.008680
+Threshold: 0.126557
+
+RECOMMENDATIONS
+------------------------------------------------------------
+⚠️  HIGH anomaly rate detected (>10%)
+   → Review model threshold settings
+   → Investigate potential system-wide issues
+============================================================

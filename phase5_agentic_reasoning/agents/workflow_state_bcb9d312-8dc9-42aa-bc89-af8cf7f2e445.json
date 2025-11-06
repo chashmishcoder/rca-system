@@ -1,0 +1,62 @@
+{
+  "anomaly_id": "AI4I_anomaly_4",
+  "anomaly_data": {
+    "event_id": "AI4I_anomaly_4",
+    "dataset": "AI4I",
+    "sequence_index": 4,
+    "original_index": 4,
+    "timestamp": "2025-11-05T11:25:56.966754",
+    "reconstruction_error": 0.1582755000361169,
+    "severity": "LOW",
+    "top_contributing_features": [
+      {
+        "feature_name": "Torque [Nm]_normalized",
+        "error": 1.4466622885070461
+      },
+      {
+        "feature_name": "Torque [Nm]",
+        "error": 1.4466622885070461
+      },
+      {
+        "feature_name": "Rotational speed [rpm]",
+        "error": 1.418875114739643
+      },
+      {
+        "feature_name": "Rotational speed [rpm]_normalized",
+        "error": 1.4188751147396426
+      },
+      {
+        "feature_name": "power_estimate",
+        "error": 1.1421003524560582
+      }
+    ],
+    "sequence_statistics": {
+      "mean": 0.33179470432296526,
+      "std": 0.870954476606197,
+      "min": -2.025083121009665,
+      "max": 3.0691590933097554
+    }
+  },
+  "symptoms": [],
+  "severity": "",
+  "affected_entities": [],
+  "diagnostic_confidence": 0.0,
+  "diagnostic_reasoning": "",
+  "causal_hypotheses": [],
+  "root_cause": "",
+  "causal_chain": [],
+  "reasoning_evidence": [],
+  "reasoning_confidence": 0.0,
+  "reasoning_steps": "",
+  "remediation_plan": {},
+  "recommended_actions": [],
+  "planning_rationale": "",
+  "planning_confidence": 0.0,
+  "feedback_summary": null,
+  "learning_updates": null,
+  "messages": [],
+  "workflow_id": "bcb9d312-8dc9-42aa-bc89-af8cf7f2e445",
+  "current_agent": "start",
+  "iteration_count": 0,
+  "final_explanation": null
+}

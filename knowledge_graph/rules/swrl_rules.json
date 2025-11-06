@@ -1,0 +1,122 @@
+{
+  "manufacturing_rules": [
+    {
+      "id": "MFG_R001",
+      "name": "Tool Wear Threshold Rule",
+      "description": "If tool wear exceeds threshold, predict tool wear failure",
+      "swrl": "ManufacturingEquipment(?e) \u2227 hasToolWear(?e, ?wear) \u2227 swrlb:greaterThan(?wear, 200) \u2192 hasFailure(?e, ToolWearFailure)",
+      "cypher_equivalent": "\n                MATCH (e:ManufacturingEquipment)\n                WHERE e.tool_wear > 200\n                CREATE (e)-[:HAS_FAILURE]->(f:Failure:ToolWearFailure {\n                    id: 'TWF_' + e.id + '_' + toString(timestamp()),\n                    predicted_by: 'Tool_Wear_Threshold_Rule',\n                    confidence: 0.85\n                })\n                ",
+      "domain": "manufacturing",
+      "category": "threshold"
+    },
+    {
+      "id": "MFG_R002",
+      "name": "Heat Dissipation Failure Rule",
+      "description": "If process temperature significantly higher than air temperature, risk of heat dissipation failure",
+      "swrl": "ManufacturingEquipment(?e) \u2227 hasProcessTemperature(?e, ?pt) \u2227 hasAirTemperature(?e, ?at) \u2227 swrlb:subtract(?diff, ?pt, ?at) \u2227 swrlb:greaterThan(?diff, 10) \u2192 hasFailure(?e, HeatDissipationFailure)",
+      "cypher_equivalent": "\n                MATCH (e:ManufacturingEquipment)\n                WHERE e.process_temperature - e.air_temperature > 10\n                CREATE (e)-[:HAS_FAILURE]->(f:Failure:HeatDissipationFailure {\n                    id: 'HDF_' + e.id + '_' + toString(timestamp()),\n                    predicted_by: 'Heat_Dissipation_Rule',\n                    confidence: 0.78\n                })\n                ",
+      "domain": "manufacturing",
+      "category": "physics"
+    },
+    {
+      "id": "MFG_R003",
+      "name": "Power Failure Rule",
+      "description": "If torque is low but rotational speed is high, indicates power issues",
+      "swrl": "ManufacturingEquipment(?e) \u2227 hasTorque(?e, ?torque) \u2227 hasRotationalSpeed(?e, ?speed) \u2227 swrlb:lessThan(?torque, 30) \u2227 swrlb:greaterThan(?speed, 1600) \u2192 hasFailure(?e, PowerFailure)",
+      "cypher_equivalent": "\n                MATCH (e:ManufacturingEquipment)  \n                WHERE e.torque < 30 AND e.rotational_speed > 1600\n                CREATE (e)-[:HAS_FAILURE]->(f:Failure:PowerFailure {\n                    id: 'PWF_' + e.id + '_' + toString(timestamp()),\n                    predicted_by: 'Power_Failure_Rule',\n                    confidence: 0.72\n                })\n                ",
+      "domain": "manufacturing",
+      "category": "physics"
+    },
+    {
+      "id": "MFG_R004",
+      "name": "Quality-Based Maintenance Rule",
+      "description": "Low quality products require more frequent maintenance",
+      "swrl": "ManufacturingEquipment(?e) \u2227 hasQualityType(?e, ?qt) \u2227 swrlb:equal(?qt, 'L') \u2192 requiresMaintenance(?e, PreventiveMaintenance)",
+      "cypher_equivalent": "\n                MATCH (e:ManufacturingEquipment)\n                WHERE e.product_type = 'L'\n                CREATE (e)-[:REQUIRES_MAINTENANCE]->(m:MaintenanceAction:PreventiveMaintenance {\n                    id: 'PREV_MAINT_' + e.id + '_' + toString(timestamp()),\n                    reason: 'Low_Quality_Production',\n                    priority: 'high'\n                })\n                ",
+      "domain": "manufacturing",
+      "category": "expert"
+    }
+  ],
+  "transportation_rules": [
+    {
+      "id": "TRANS_R001",
+      "name": "Compressor Failure Rule",
+      "description": "If compressor status is off and pressure is low, compressor failure likely",
+      "swrl": "TransportationEquipment(?e) \u2227 hasComponent(?e, ?comp) \u2227 Compressor(?comp) \u2227 hasStatus(?comp, 0) \u2227 hasPressure(?e, ?pressure) \u2227 swrlb:lessThan(?pressure, -0.05) \u2192 hasFailure(?comp, CompressorFailure)",
+      "cypher_equivalent": "\n                MATCH (e:TransportationEquipment)-[:HAS_COMPONENT]->(c:Compressor)\n                WHERE c.status = 0 AND e.pressure < -0.05\n                CREATE (c)-[:HAS_FAILURE]->(f:Failure {\n                    id: 'COMP_FAIL_' + c.id + '_' + toString(timestamp()),\n                    failure_type: 'CompressorFailure',\n                    predicted_by: 'Compressor_Failure_Rule',\n                    confidence: 0.88\n                })\n                ",
+      "domain": "transportation",
+      "category": "expert"
+    },
+    {
+      "id": "TRANS_R002",
+      "name": "Oil Temperature Anomaly Rule",
+      "description": "If oil temperature exceeds normal operating range, create anomaly",
+      "swrl": "TransportationEquipment(?e) \u2227 hasOilTemperature(?e, ?temp) \u2227 swrlb:greaterThan(?temp, 70) \u2192 hasAnomaly(?e, TemperatureAnomaly)",
+      "cypher_equivalent": "\n                MATCH (e:TransportationEquipment)\n                WHERE e.oil_temperature > 70\n                CREATE (e)-[:HAS_ANOMALY]->(a:Anomaly:TemperatureAnomaly {\n                    id: 'TEMP_ANOM_' + e.id + '_' + toString(timestamp()),\n                    anomaly_type: 'TemperatureAnomaly',\n                    value: e.oil_temperature,\n                    threshold: 70,\n                    severity: 'high'\n                })\n                ",
+      "domain": "transportation",
+      "category": "threshold"
+    },
+    {
+      "id": "TRANS_R003",
+      "name": "Motor Current Spike Rule",
+      "description": "Sudden increase in motor current indicates potential motor issues",
+      "swrl": "TransportationEquipment(?e) \u2227 hasMotorCurrent(?e, ?current) \u2227 swrlb:greaterThan(?current, 5.0) \u2192 hasAnomaly(?e, CurrentAnomaly)",
+      "cypher_equivalent": "\n                MATCH (e:TransportationEquipment)\n                WHERE e.motor_current > 5.0\n                CREATE (e)-[:HAS_ANOMALY]->(a:Anomaly:CurrentAnomaly {\n                    id: 'CURR_ANOM_' + e.id + '_' + toString(timestamp()),\n                    anomaly_type: 'CurrentAnomaly', \n                    value: e.motor_current,\n                    threshold: 5.0,\n                    severity: 'medium'\n                })\n                ",
+      "domain": "transportation",
+      "category": "threshold"
+    }
+  ],
+  "cross_domain_rules": [
+    {
+      "id": "CROSS_R001",
+      "name": "Cascade Failure Prevention Rule",
+      "description": "If one component fails, check related components for anomalies",
+      "swrl": "Equipment(?e) \u2227 hasComponent(?e, ?c1) \u2227 hasComponent(?e, ?c2) \u2227 hasFailure(?c1, ?f) \u2227 swrlb:notEqual(?c1, ?c2) \u2192 requiresInspection(?c2)",
+      "cypher_equivalent": "\n                MATCH (e:Equipment)-[:HAS_COMPONENT]->(c1:Component)-[:HAS_FAILURE]->()\n                MATCH (e)-[:HAS_COMPONENT]->(c2:Component)\n                WHERE c1 <> c2\n                CREATE (c2)-[:REQUIRES_INSPECTION]->(i:Inspection {\n                    id: 'INSP_' + c2.id + '_' + toString(timestamp()),\n                    reason: 'Cascade_Failure_Prevention',\n                    priority: 'high'\n                })\n                ",
+      "domain": "cross",
+      "category": "expert"
+    }
+  ],
+  "physics_rules": [
+    {
+      "id": "PHYS_R001",
+      "name": "Thermal Expansion Rule",
+      "description": "High temperature differences cause thermal stress",
+      "swrl": "Equipment(?e) \u2227 hasTemperatureDifferential(?e, ?diff) \u2227 swrlb:greaterThan(?diff, 15) \u2192 hasAnomaly(?e, ThermalStressAnomaly)",
+      "cypher_equivalent": "\n                MATCH (e:Equipment)\n                WHERE e.temperature_differential > 15\n                CREATE (e)-[:HAS_ANOMALY]->(a:Anomaly {\n                    id: 'THERMAL_STRESS_' + e.id + '_' + toString(timestamp()),\n                    anomaly_type: 'ThermalStressAnomaly',\n                    cause: 'High_Temperature_Differential'\n                })\n                ",
+      "domain": "cross",
+      "category": "physics"
+    },
+    {
+      "id": "PHYS_R002",
+      "name": "Energy Conservation Rule",
+      "description": "Power consumption should correlate with work output",
+      "swrl": "Equipment(?e) \u2227 hasPowerConsumption(?e, ?power) \u2227 hasWorkOutput(?e, ?work) \u2227 hasEfficiency(?e, ?eff) \u2227 swrlb:divide(?calc_eff, ?work, ?power) \u2227 swrlb:lessThan(?calc_eff, 0.5) \u2192 hasAnomaly(?e, EfficiencyAnomaly)",
+      "cypher_equivalent": "\n                MATCH (e:Equipment)\n                WHERE e.work_output / e.power_consumption < 0.5\n                CREATE (e)-[:HAS_ANOMALY]->(a:Anomaly {\n                    id: 'EFF_ANOM_' + e.id + '_' + toString(timestamp()),\n                    anomaly_type: 'EfficiencyAnomaly',\n                    efficiency: e.work_output / e.power_consumption\n                })\n                ",
+      "domain": "cross",
+      "category": "physics"
+    }
+  ],
+  "statistical_rules": [
+    {
+      "id": "STAT_R001",
+      "name": "Moving Average Deviation Rule",
+      "description": "If current value deviates significantly from moving average, create anomaly",
+      "swrl": "Sensor(?s) \u2227 hasValue(?s, ?value) \u2227 hasMovingAverage(?s, ?avg) \u2227 hasStandardDeviation(?s, ?std) \u2227 swrlb:subtract(?diff, ?value, ?avg) \u2227 swrlb:abs(?abs_diff, ?diff) \u2227 swrlb:multiply(?threshold, ?std, 2) \u2227 swrlb:greaterThan(?abs_diff, ?threshold) \u2192 hasAnomaly(?s, StatisticalAnomaly)",
+      "cypher_equivalent": "\n                MATCH (s:Sensor)\n                WHERE abs(s.current_value - s.moving_average) > 2 * s.standard_deviation\n                CREATE (s)-[:HAS_ANOMALY]->(a:Anomaly:StatisticalAnomaly {\n                    id: 'STAT_ANOM_' + s.id + '_' + toString(timestamp()),\n                    z_score: abs(s.current_value - s.moving_average) / s.standard_deviation,\n                    threshold: 2.0\n                })\n                ",
+      "domain": "cross",
+      "category": "statistical"
+    }
+  ],
+  "expert_rules": [
+    {
+      "id": "EXP_R001",
+      "name": "Maintenance Schedule Rule",
+      "description": "Equipment with multiple anomalies requires immediate maintenance",
+      "swrl": "Equipment(?e) \u2227 hasAnomaly(?e, ?a1) \u2227 hasAnomaly(?e, ?a2) \u2227 swrlb:notEqual(?a1, ?a2) \u2192 requiresMaintenance(?e, ImmediateMaintenance)",
+      "cypher_equivalent": "\n                MATCH (e:Equipment)\n                WHERE size((e)-[:HAS_ANOMALY]->()) >= 2\n                CREATE (e)-[:REQUIRES_MAINTENANCE]->(m:MaintenanceAction {\n                    id: 'IMM_MAINT_' + e.id + '_' + toString(timestamp()),\n                    maintenance_type: 'ImmediateMaintenance',\n                    priority: 'critical',\n                    reason: 'Multiple_Anomalies'\n                })\n                ",
+      "domain": "cross",
+      "category": "expert"
+    }
+  ]
+}

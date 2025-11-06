@@ -1,0 +1,128 @@
+{
+  "total_features": 13,
+  "top_10_features": [
+    {
+      "Feature": "power_estimate",
+      "MSE": 0.2934614383457349,
+      "RMSE": 0.5417208121770244
+    },
+    {
+      "Feature": "Rotational speed [rpm]",
+      "MSE": 0.2555995916655681,
+      "RMSE": 0.5055685825539085
+    },
+    {
+      "Feature": "Rotational speed [rpm]_normalized",
+      "MSE": 0.25537335315722676,
+      "RMSE": 0.5053447864154005
+    },
+    {
+      "Feature": "Torque [Nm]_normalized",
+      "MSE": 0.2361031226928577,
+      "RMSE": 0.48590443781967835
+    },
+    {
+      "Feature": "Torque [Nm]",
+      "MSE": 0.2352881998751669,
+      "RMSE": 0.48506515013466683
+    },
+    {
+      "Feature": "Tool wear [min]_normalized",
+      "MSE": 0.06539642910907024,
+      "RMSE": 0.255727255311338
+    },
+    {
+      "Feature": "Tool wear [min]",
+      "MSE": 0.06483679253747432,
+      "RMSE": 0.25463069834070345
+    },
+    {
+      "Feature": "temp_difference",
+      "MSE": 0.017261921255976892,
+      "RMSE": 0.13138463097324926
+    },
+    {
+      "Feature": "thermal_stress",
+      "MSE": 0.015986102682961256,
+      "RMSE": 0.1264361605038735
+    },
+    {
+      "Feature": "Process temperature [K]",
+      "MSE": 0.015290826206632795,
+      "RMSE": 0.12365608034638974
+    }
+  ],
+  "error_statistics": {
+    "mean_mse": 0.1146825407359461,
+    "std_mse": 0.11779718964070868,
+    "max_mse": 0.2934614383457349,
+    "min_mse": 0.010516396359718889
+  },
+  "feature_rankings": [
+    {
+      "Feature": "power_estimate",
+      "MSE": 0.2934614383457349,
+      "RMSE": 0.5417208121770244
+    },
+    {
+      "Feature": "Rotational speed [rpm]",
+      "MSE": 0.2555995916655681,
+      "RMSE": 0.5055685825539085
+    },
+    {
+      "Feature": "Rotational speed [rpm]_normalized",
+      "MSE": 0.25537335315722676,
+      "RMSE": 0.5053447864154005
+    },
+    {
+      "Feature": "Torque [Nm]_normalized",
+      "MSE": 0.2361031226928577,
+      "RMSE": 0.48590443781967835
+    },
+    {
+      "Feature": "Torque [Nm]",
+      "MSE": 0.2352881998751669,
+      "RMSE": 0.48506515013466683
+    },
+    {
+      "Feature": "Tool wear [min]_normalized",
+      "MSE": 0.06539642910907024,
+      "RMSE": 0.255727255311338
+    },
+    {
+      "Feature": "Tool wear [min]",
+      "MSE": 0.06483679253747432,
+      "RMSE": 0.25463069834070345
+    },
+    {
+      "Feature": "temp_difference",
+      "MSE": 0.017261921255976892,
+      "RMSE": 0.13138463097324926
+    },
+    {
+      "Feature": "thermal_stress",
+      "MSE": 0.015986102682961256,
+      "RMSE": 0.1264361605038735
+    },
+    {
+      "Feature": "Process temperature [K]",
+      "MSE": 0.015290826206632795,
+      "RMSE": 0.12365608034638974
+    },
+    {
+      "Feature": "Process temperature [K]_normalized",
+      "MSE": 0.015059817220755105,
+      "RMSE": 0.12271844694566138
+    },
+    {
+      "Feature": "Air temperature [K]_normalized",
+      "MSE": 0.010699038458155502,
+      "RMSE": 0.10343615643553034
+    },
+    {
+      "Feature": "Air temperature [K]",
+      "MSE": 0.010516396359718889,
+      "RMSE": 0.10254948249366688
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+
+[94m======================================================================[0m
+[94mMulti-Agent RCA System - Comprehensive API Test Suite[0m
+[94m======================================================================[0m
+[93mℹ️  Testing API at: http://localhost:8000[0m
+[93mℹ️  Make sure the API server is running: python rca_api.py
+[0m
+
+[94m======================================================================[0m
+[94mTest 1: Root Endpoint[0m
+[94m======================================================================[0m
+[92m✅ Root endpoint responding[0m
+   Service: Multi-Agent RCA System API
+   Version: 1.0.0
+   Status: operational
+
+[94m======================================================================[0m
+[94mTest 2: Health Check Endpoint[0m
+[94m======================================================================[0m
+[92m✅ Health endpoint responding[0m
+   Overall Status: degraded
+   LLM Status: degraded
+   KG Status: unavailable
+   Agents: {'diagnostic': 'operational', 'reasoning': 'operational', 'planning': 'operational', 'learning': 'operational'}
+
+[94m======================================================================[0m
+[94mTest 3: Complete RCA Workflow[0m
+[94m======================================================================[0m
+[93mℹ️  Step 1: Submitting anomaly for analysis...[0m
+[91m❌ Failed to submit anomaly: 500[0m
+
+[94m======================================================================[0m
+[94mTest 5: Error Handling[0m
+[94m======================================================================[0m
+[93mℹ️  Test 5a: Invalid workflow ID...[0m
+[92m✅ Correctly returns 404 for invalid workflow ID[0m
+[93mℹ️  Test 5b: Missing required fields...[0m
+[92m✅ Correctly returns 422 for missing fields[0m
+[93mℹ️  Test 5c: Get result before completion...[0m
+[91m❌ Error: 'workflow_id'[0m
+[91m❌ Error handling tests: 2/3 passed[0m
+
+[94m======================================================================[0m
+[94mTest Summary[0m
+[94m======================================================================[0m
+
+   Total Tests: 4
+   [92mPassed: 2[0m
+   [91mFailed: 2[0m
+   Success Rate: 50.0%
+
+   [93m⚠️  Some tests failed. Review errors above.[0m

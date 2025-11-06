@@ -1,0 +1,222 @@
+{
+  "domain_mappings": {
+    "equipment_mapping": {
+      "ManufacturingEquipment": "TransportationEquipment",
+      "description": "Both represent primary operational equipment",
+      "common_properties": [
+        "id",
+        "name",
+        "manufacturer",
+        "model"
+      ],
+      "specific_properties": {
+        "manufacturing": [
+          "tool_wear",
+          "rotational_speed",
+          "torque"
+        ],
+        "transportation": [
+          "gps_coordinates",
+          "operational_mode",
+          "route"
+        ]
+      }
+    },
+    "failure_mapping": {
+      "ToolWearFailure": "ComponentWearFailure",
+      "HeatDissipationFailure": "ThermalFailure",
+      "PowerFailure": "ElectricalFailure",
+      "OverstrainFailure": "MechanicalOverload",
+      "RandomFailure": "UnexpectedFailure",
+      "description": "Failure modes have analogous counterparts across domains"
+    },
+    "sensor_mapping": {
+      "TemperatureSensor": "TemperatureSensor",
+      "CurrentSensor": "CurrentSensor",
+      "PressureSensor": "PressureSensor",
+      "description": "Many sensor types are directly transferable",
+      "domain_specific": {
+        "manufacturing": [
+          "RotationalSpeedSensor",
+          "TorqueSensor"
+        ],
+        "transportation": [
+          "FlowSensor",
+          "PositionSensor"
+        ]
+      }
+    },
+    "maintenance_mapping": {
+      "PreventiveMaintenance": "ScheduledMaintenance",
+      "CorrectiveMaintenance": "RepairMaintenance",
+      "PredictiveMaintenance": "ConditionBasedMaintenance",
+      "description": "Maintenance strategies are universally applicable"
+    }
+  },
+  "concept_mappings": {
+    "abstract_concepts": {
+      "health_status": {
+        "manufacturing_indicators": [
+          "tool_wear",
+          "machine_failure",
+          "quality_type"
+        ],
+        "transportation_indicators": [
+          "operational_efficiency",
+          "component_status",
+          "anomaly_score"
+        ],
+        "unified_concept": "EquipmentHealth",
+        "mapping_function": "normalize_health_indicators"
+      },
+      "operational_state": {
+        "manufacturing_indicators": [
+          "rotational_speed",
+          "torque",
+          "process_temperature"
+        ],
+        "transportation_indicators": [
+          "compressor_status",
+          "motor_current",
+          "oil_temperature"
+        ],
+        "unified_concept": "OperationalState",
+        "mapping_function": "aggregate_operational_metrics"
+      },
+      "degradation_pattern": {
+        "manufacturing_indicators": [
+          "increasing_tool_wear",
+          "temperature_drift",
+          "efficiency_decline"
+        ],
+        "transportation_indicators": [
+          "pressure_drop",
+          "current_spike",
+          "flow_reduction"
+        ],
+        "unified_concept": "DegradationPattern",
+        "mapping_function": "pattern_similarity_matching"
+      }
+    },
+    "temporal_concepts": {
+      "failure_sequence": {
+        "description": "Temporal patterns leading to failure",
+        "manufacturing_sequence": [
+          "anomaly_detection",
+          "threshold_breach",
+          "failure_occurrence"
+        ],
+        "transportation_sequence": [
+          "performance_degradation",
+          "alarm_trigger",
+          "system_shutdown"
+        ],
+        "unified_sequence": "GenericFailureSequence"
+      }
+    }
+  },
+  "rule_mappings": {
+    "threshold_rules": {
+      "transfer_strategy": "parameter_substitution",
+      "description": "Replace domain-specific parameters while maintaining rule structure",
+      "examples": {
+        "temperature_threshold": {
+          "manufacturing": "process_temperature > 320",
+          "transportation": "oil_temperature > 70",
+          "abstract_rule": "operating_temperature > normal_threshold"
+        },
+        "efficiency_threshold": {
+          "manufacturing": "tool_efficiency < 0.5",
+          "transportation": "operational_efficiency < 0.2",
+          "abstract_rule": "system_efficiency < efficiency_threshold"
+        }
+      }
+    },
+    "pattern_rules": {
+      "transfer_strategy": "pattern_abstraction",
+      "description": "Abstract patterns and apply to different domains",
+      "examples": {
+        "cascade_failure": {
+          "pattern": "component_failure \u2192 inspect_related_components",
+          "manufacturing_application": "tool_failure \u2192 inspect_spindle_motor",
+          "transportation_application": "compressor_failure \u2192 inspect_pressure_system"
+        },
+        "anomaly_clustering": {
+          "pattern": "multiple_anomalies \u2192 maintenance_required",
+          "universal_application": "Applicable across all domains"
+        }
+      }
+    },
+    "causal_rules": {
+      "transfer_strategy": "causal_relationship_mapping",
+      "description": "Map causal relationships between domains",
+      "examples": {
+        "thermal_causality": {
+          "manufacturing": "high_friction \u2192 heat_generation \u2192 thermal_failure",
+          "transportation": "motor_overload \u2192 heat_buildup \u2192 thermal_shutdown",
+          "abstract_causal_chain": "energy_excess \u2192 thermal_stress \u2192 thermal_failure"
+        }
+      }
+    }
+  },
+  "feature_mappings": {
+    "direct_mappings": {
+      "temperature_features": {
+        "ai4i_features": [
+          "Air temperature [K]",
+          "Process temperature [K]",
+          "temp_difference"
+        ],
+        "metropt_features": [
+          "TP2",
+          "TP3",
+          "Oil_temperature",
+          "temp_differential"
+        ],
+        "unified_features": [
+          "ambient_temperature",
+          "operating_temperature",
+          "temperature_differential"
+        ]
+      },
+      "current_features": {
+        "ai4i_features": [
+          "Motor_current"
+        ],
+        "metropt_features": [
+          "Motor_current"
+        ],
+        "unified_features": [
+          "electrical_current"
+        ]
+      }
+    },
+    "derived_mappings": {
+      "efficiency_features": {
+        "ai4i_derivation": "power_estimate / theoretical_power",
+        "metropt_derivation": "motor_efficiency",
+        "unified_concept": "operational_efficiency"
+      },
+      "health_indicators": {
+        "ai4i_derivation": "1 - (tool_wear / max_tool_wear)",
+        "metropt_derivation": "operational_efficiency * (1 - composite_anomaly_score)",
+        "unified_concept": "equipment_health_score"
+      }
+    },
+    "statistical_mappings": {
+      "rolling_statistics": {
+        "common_features": [
+          "rolling_mean",
+          "rolling_std",
+          "rolling_diff"
+        ],
+        "transfer_strategy": "Apply same statistical transformations to equivalent parameters"
+      },
+      "anomaly_scores": {
+        "ai4i_approach": "Statistical outlier detection on process parameters",
+        "metropt_approach": "IQR-based anomaly detection on sensor readings",
+        "unified_approach": "Multi-modal anomaly scoring across sensor types"
+      }
+    }
+  }
+}

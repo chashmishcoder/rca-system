@@ -1,0 +1,30 @@
+{
+  "transe_metrics": {
+    "MRR": 0.4072916666666666,
+    "MRR_filtered": 1.0,
+    "Hits@1": 0.1875,
+    "Hits@1_filtered": 1.0,
+    "Hits@3": 0.5625,
+    "Hits@3_filtered": 1.0,
+    "Hits@10": 1.0,
+    "Hits@10_filtered": 1.0,
+    "mean_rank": 3.5625,
+    "mean_rank_filtered": 1.0
+  },
+  "complex_metrics": {
+    "MRR": 0.26979166666666665,
+    "MRR_filtered": 1.0,
+    "Hits@1": 0.0,
+    "Hits@1_filtered": 1.0,
+    "Hits@3": 0.5,
+    "Hits@3_filtered": 1.0,
+    "Hits@10": 1.0,
+    "Hits@10_filtered": 1.0,
+    "mean_rank": 4.1875,
+    "mean_rank_filtered": 1.0
+  },
+  "semantic_mapping_coverage": 4,
+  "total_anomalies": 982,
+  "coverage_percentage": 0.40733197556008144,
+  "best_embedding_model": "TransE"
+}

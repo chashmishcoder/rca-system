@@ -1,0 +1,39 @@
+{
+  "total_anomalies_processed": 3,
+  "timestamp": "2025-11-06T14:30:12.704965",
+  "results": [
+    {
+      "anomaly_id": "AI4I_anomaly_1",
+      "root_cause": "Power System Failure",
+      "severity": "high",
+      "confidence_scores": {
+        "diagnostic": 0.9,
+        "reasoning": 0.75,
+        "planning": 0.9
+      },
+      "action_count": 6
+    },
+    {
+      "anomaly_id": "AI4I_anomaly_2",
+      "root_cause": "Mechanical System Failure (e.g., bearing failure, gearbox issue, increased friction)",
+      "severity": "high",
+      "confidence_scores": {
+        "diagnostic": 0.9,
+        "reasoning": 0.85,
+        "planning": 0.9
+      },
+      "action_count": 6
+    },
+    {
+      "anomaly_id": "AI4I_anomaly_4",
+      "root_cause": "Excessive Load Condition (External Process Demand or Internal Mechanical Resistance)",
+      "severity": "high",
+      "confidence_scores": {
+        "diagnostic": 0.9,
+        "reasoning": 0.95,
+        "planning": 0.9
+      },
+      "action_count": 6
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "summary": {
+    "total_bridges": 18,
+    "high_transferability": 15,
+    "medium_transferability": 3,
+    "avg_similarity": 0.8052489260832468
+  },
+  "bridges": [
+    {
+      "entity_1": "Sensor:Tool Wear Sensor",
+      "entity_2": "Sensor:Torque Sensor",
+      "similarity": 0.9856473803520203,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Equipment:Manufacturing Line H",
+      "entity_2": "Equipment:Manufacturing Line M",
+      "similarity": 0.9537484049797058,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Equipment:Manufacturing Line L",
+      "entity_2": "Equipment:Manufacturing Line M",
+      "similarity": 0.9308896064758301,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Air Temperature Sensor",
+      "entity_2": "Sensor:Rotational Speed Sensor",
+      "similarity": 0.8685318827629089,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Process Temperature Sensor",
+      "entity_2": "Sensor:Rotational Speed Sensor",
+      "similarity": 0.8655601143836975,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Motor Current Sensor",
+      "entity_2": "Sensor:Rotational Speed Sensor",
+      "similarity": 0.8553670644760132,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Motor Current Sensor",
+      "entity_2": "Sensor:Tool Wear Sensor",
+      "similarity": 0.8483061790466309,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Rotational Speed Sensor",
+      "entity_2": "Sensor:Torque Sensor",
+      "similarity": 0.8383162021636963,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Air Temperature Sensor",
+      "entity_2": "Sensor:Torque Sensor",
+      "similarity": 0.8327361345291138,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Equipment:Manufacturing Line H",
+      "entity_2": "Equipment:Manufacturing Line L",
+      "similarity": 0.8241651654243469,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Air Temperature Sensor",
+      "entity_2": "Sensor:Tool Wear Sensor",
+      "similarity": 0.8214057683944702,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Motor Current Sensor",
+      "entity_2": "Sensor:Torque Sensor",
+      "similarity": 0.8177435994148254,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Rotational Speed Sensor",
+      "entity_2": "Sensor:Tool Wear Sensor",
+      "similarity": 0.8125622272491455,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Motor Current Sensor",
+      "entity_2": "Sensor:Process Temperature Sensor",
+      "similarity": 0.7448921203613281,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Air Temperature Sensor",
+      "entity_2": "Sensor:Motor Current Sensor",
+      "similarity": 0.7169048190116882,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Process Temperature Sensor",
+      "entity_2": "Sensor:Torque Sensor",
+      "similarity": 0.6311648488044739,
+      "transferability": "Medium"
+    },
+    {
+      "entity_1": "Sensor:Process Temperature Sensor",
+      "entity_2": "Sensor:Tool Wear Sensor",
+      "similarity": 0.5850390195846558,
+      "transferability": "Medium"
+    },
+    {
+      "entity_1": "Sensor:Air Temperature Sensor",
+      "entity_2": "Sensor:Process Temperature Sensor",
+      "similarity": 0.5615001320838928,
+      "transferability": "Medium"
+    }
+  ],
+  "recommendations": [
+    "Use high-similarity bridges for direct knowledge transfer",
+    "Apply embedding-based analogical reasoning for failure prediction",
+    "Leverage common patterns for cross-domain root cause analysis",
+    "Enrich MetroPT predictions with AI4I failure mode knowledge"
+  ]
+}

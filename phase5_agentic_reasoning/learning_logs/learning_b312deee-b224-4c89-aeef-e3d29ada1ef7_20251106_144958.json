@@ -1,0 +1,57 @@
+{
+  "workflow_id": "b312deee-b224-4c89-aeef-e3d29ada1ef7",
+  "anomaly_id": "AI4I_anomaly_1",
+  "timestamp": "2025-11-06T14:49:58.397607",
+  "feedback": {
+    "feedback_type": "correct",
+    "actual_root_cause": "Power System Failure",
+    "diagnostic_accuracy": "correct",
+    "reasoning_accuracy": "correct",
+    "planning_effectiveness": "effective",
+    "comments": "The diagnosis was accurate. Remediation plan was followed and resolved the issue within 2 hours.",
+    "corrective_actions": [
+      "Inspected power supply connections",
+      "Replaced faulty voltage regulator",
+      "Tested system under load",
+      "Confirmed stable operation"
+    ],
+    "original_diagnosis": {
+      "symptoms": [
+        "Significant deviation in rotational speed",
+        "Significant deviation in torque",
+        "Significant deviation in power estimate",
+        "Operational instability in the drive system"
+      ],
+      "root_cause": "Power System Failure",
+      "confidence_scores": {
+        "diagnostic": 0.9,
+        "reasoning": 0.75,
+        "planning": 0.9
+      }
+    }
+  },
+  "learning_updates": [
+    {
+      "agent": "diagnostic",
+      "update_type": "pattern",
+      "description": "Strengthen the correlation between the symptom cluster ('Significant deviation in rotational speed', 'Significant deviation in torque', 'Significant deviation in power estimate', 'Operational instability in the drive system') and the root cause 'Power System Failure'.",
+      "rationale": "The feedback explicitly confirmed the diagnostic accuracy, validating this symptom-cause pattern.",
+      "confidence_adjustment": 0.05
+    },
+    {
+      "agent": "reasoning",
+      "update_type": "strategy",
+      "description": "Validate and reinforce the specific reasoning path that leads from the observed symptoms to 'Power System Failure'. This particular inference chain has proven accurate.",
+      "rationale": "The reasoning accuracy was confirmed as 'correct', indicating the underlying logic for this case is sound.",
+      "confidence_adjustment": 0.05
+    },
+    {
+      "agent": "planning",
+      "update_type": "rule",
+      "description": "Review and potentially refine the action library for 'Power System Failure' to ensure optimal prioritization and inclusion of highly effective actions such as 'Inspected power supply connections' and 'Replaced faulty voltage regulator', which were highlighted in the corrective actions.",
+      "rationale": "The remediation plan was effective, but incorporating specific proven actions can further enhance efficiency and precision for future plans related to power system failures.",
+      "confidence_adjustment": 0.02
+    }
+  ],
+  "feedback_summary": "The diagnostic system accurately identified 'Power System Failure' as the root cause based on the provided symptoms. The reasoning was correct, and the remediation plan was effective, successfully resolving the issue within 2 hours as confirmed by the feedback. This indicates a highly successful diagnostic and remediation cycle."
+}

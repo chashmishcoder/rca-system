@@ -1,0 +1,29 @@
+============================================================
+ANOMALY DETECTION EXPORT SUMMARY - AI4I
+============================================================
+
+Export Timestamp: 2025-11-05 11:25:57
+Total Anomaly Events: 982
+
+Severity Distribution:
+  • MEDIUM: 147 (15.0%)
+  • LOW: 736 (74.9%)
+  • HIGH: 49 (5.0%)
+  • CRITICAL: 50 (5.1%)
+
+Top 10 Features Across All Anomalies:
+  1. Rotational speed [rpm]_normalized: Avg Error=2.507225, Occurrences=807
+  2. Rotational speed [rpm]: Avg Error=2.499882, Occurrences=810
+  3. Tool wear [min]: Avg Error=2.066618, Occurrences=282
+  4. Tool wear [min]_normalized: Avg Error=2.065582, Occurrences=283
+  5. power_estimate: Avg Error=1.561670, Occurrences=922
+  6. Torque [Nm]: Avg Error=1.537734, Occurrences=882
+  7. Torque [Nm]_normalized: Avg Error=1.525126, Occurrences=924
+
+Recommendations for Knowledge Graph Enrichment:
+  1. Import anomaly events using: neo4j_import_anomalies.cypher
+  2. Link anomalies to existing Equipment and Sensor nodes
+  3. Apply SWRL rules to infer root causes
+  4. Create temporal relationships between anomaly events
+  5. Enrich with failure type predictions based on patterns
+============================================================

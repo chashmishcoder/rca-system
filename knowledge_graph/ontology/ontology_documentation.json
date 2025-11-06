@@ -1,0 +1,86 @@
+{
+  "ontology_info": {
+    "name": "Predictive Maintenance Ontology",
+    "version": "1.0",
+    "date_created": "2025-11-05 09:23:12",
+    "namespace": "http://www.semanticweb.org/predictive_maintenance.owl",
+    "description": "Cross-domain ontology for predictive maintenance covering manufacturing and transportation domains"
+  },
+  "statistics": {
+    "total_classes": 35,
+    "total_object_properties": 17,
+    "total_data_properties": 25
+  },
+  "core_domains": {
+    "manufacturing": {
+      "description": "AI4I manufacturing domain",
+      "key_classes": [
+        "ManufacturingEquipment",
+        "Tool",
+        "QualityType"
+      ],
+      "key_failures": [
+        "ToolWearFailure",
+        "HeatDissipationFailure",
+        "PowerFailure",
+        "OverstrainFailure",
+        "RandomFailure"
+      ]
+    },
+    "transportation": {
+      "description": "MetroPT transportation domain",
+      "key_classes": [
+        "TransportationEquipment",
+        "Station",
+        "Route",
+        "OperationalMode"
+      ],
+      "key_components": [
+        "Compressor",
+        "ElectricValve",
+        "Tower"
+      ]
+    }
+  },
+  "key_concepts": {
+    "equipment_hierarchy": {
+      "Equipment": [
+        "ManufacturingEquipment",
+        "TransportationEquipment"
+      ]
+    },
+    "component_hierarchy": {
+      "Component": [
+        "Sensor",
+        "Tool",
+        "Compressor",
+        "ElectricValve",
+        "Tower"
+      ]
+    },
+    "sensor_types": [
+      "TemperatureSensor",
+      "PressureSensor",
+      "CurrentSensor",
+      "FlowSensor",
+      "PositionSensor"
+    ],
+    "failure_types": [
+      "ToolWearFailure",
+      "HeatDissipationFailure",
+      "PowerFailure",
+      "OverstrainFailure",
+      "RandomFailure"
+    ],
+    "maintenance_types": [
+      "PreventiveMaintenance",
+      "CorrectiveMaintenance",
+      "PredictiveMaintenance"
+    ],
+    "anomaly_types": [
+      "StatisticalAnomaly",
+      "ThresholdAnomaly",
+      "PatternAnomaly"
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "clusters": {
+    "0": [
+      "Failure:HeatDissipationFailure",
+      "Failure:OverstrainFailure",
+      "Failure:PowerFailure",
+      "Failure:RandomFailure",
+      "FailureInstance:OSF",
+      "FailureInstance:PWF"
+    ],
+    "1": [
+      "Sensor:Motor Current Sensor",
+      "Sensor:Process Temperature Sensor",
+      "Sensor:Rotational Speed Sensor"
+    ],
+    "2": [
+      "Equipment:Manufacturing Line H",
+      "Equipment:Manufacturing Line L",
+      "Equipment:Manufacturing Line M"
+    ],
+    "3": [
+      "Failure:ToolWearFailure",
+      "FailureInstance:TWF"
+    ],
+    "4": [
+      "Sensor:Air Temperature Sensor",
+      "Sensor:Tool Wear Sensor",
+      "Sensor:Torque Sensor"
+    ]
+  },
+  "num_clusters": 5,
+  "clustering_method": "KMeans"
+}

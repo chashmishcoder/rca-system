@@ -1,0 +1,61 @@
+======================================================================
+PHASE 4: KNOWLEDGE GRAPH EMBEDDING & SEMANTIC HARMONIZATION
+FINAL SUMMARY REPORT
+======================================================================
+
+Report Generated: 2025-11-05 15:49:46
+
+1. KNOWLEDGE GRAPH STATISTICS
+----------------------------------------------------------------------
+   • Total Entities: 17
+   • Total Relations: 2
+   • Total Triples: 36
+   • Train Triples: 28
+   • Test Triples: 8
+
+2. EMBEDDING MODELS
+----------------------------------------------------------------------
+   Best Model: TransE
+   Embedding Dimension: 100
+
+   TransE Metrics:
+      • MRR_filtered: 1.0000
+      • Hits@1_filtered: 1.0000
+      • Hits@10_filtered: 1.0000
+
+   ComplEx Metrics:
+      • MRR_filtered: 1.0000
+      • Hits@1_filtered: 1.0000
+      • Hits@10_filtered: 1.0000
+
+3. SEMANTIC MAPPING
+----------------------------------------------------------------------
+   • Anomalies Processed: 100
+   • Total Anomalies: 982
+   • Mapping Coverage: 10.2%
+
+4. CROSS-DOMAIN HARMONIZATION
+----------------------------------------------------------------------
+   • Semantic Bridges: 18
+   • High Transferability: 15
+   • Medium Transferability: 3
+   • Avg Similarity: 0.8052489260832468
+   • Num Clusters: 5
+
+5. KEY FINDINGS
+----------------------------------------------------------------------
+   1. TransE achieved MRR of 1.0000
+   2. Mapped 100 Phase 3 anomalies to KG entities
+   3. Identified 18 semantic bridges between AI4I and MetroPT
+   4. Created 5 entity clusters for common pattern identification
+   5. Average cross-domain similarity: 0.805
+
+6. NEXT STEPS
+----------------------------------------------------------------------
+   1. Apply embeddings to enhance Neo4j queries for root cause analysis
+   2. Use semantic bridges for cross-domain failure prediction
+   3. Integrate with Phase 2 SWRL rules using embedding-based similarity
+   4. Develop embedding-based recommendation system for maintenance actions
+   5. Expand to additional domains using transfer learning
+
+======================================================================

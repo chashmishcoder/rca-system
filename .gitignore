@@ -1,0 +1,46 @@
+# Large datasets (too big for GitHub)
+Datasets/metropt.csv
+processed_data/metropt_processed_complete.csv
+processed_data/metropt_windowed_complete.csv.gz
+
+# Node modules (will be installed via npm)
+deployment/frontend/node_modules/
+node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Models (optional - can be downloaded/trained)
+*.keras
+*.h5
+*.pt
+
+# Logs
+*.log
+api_server.log
+
+# Environment variables
+.env
+.env.local

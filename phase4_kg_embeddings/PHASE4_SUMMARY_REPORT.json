@@ -1,0 +1,113 @@
+{
+  "phase": "Phase 4 - Knowledge Graph Embedding and Semantic Harmonization",
+  "timestamp": "2025-11-05 15:49:46",
+  "knowledge_graph": {
+    "total_entities": 17,
+    "total_relations": 2,
+    "total_triples": 36,
+    "train_triples": 28,
+    "test_triples": 8
+  },
+  "embedding_models": {
+    "transe": {
+      "embedding_dimension": 100,
+      "total_parameters": 1900,
+      "training_epochs": 100,
+      "metrics": {
+        "MRR": 0.4072916666666666,
+        "MRR_filtered": 1.0,
+        "Hits@1": 0.1875,
+        "Hits@1_filtered": 1.0,
+        "Hits@3": 0.5625,
+        "Hits@3_filtered": 1.0,
+        "Hits@10": 1.0,
+        "Hits@10_filtered": 1.0,
+        "mean_rank": 3.5625,
+        "mean_rank_filtered": 1.0
+      }
+    },
+    "complex": {
+      "embedding_dimension": 100,
+      "total_parameters": 3800,
+      "training_epochs": 100,
+      "metrics": {
+        "MRR": 0.26979166666666665,
+        "MRR_filtered": 1.0,
+        "Hits@1": 0.0,
+        "Hits@1_filtered": 1.0,
+        "Hits@3": 0.5,
+        "Hits@3_filtered": 1.0,
+        "Hits@10": 1.0,
+        "Hits@10_filtered": 1.0,
+        "mean_rank": 4.1875,
+        "mean_rank_filtered": 1.0
+      }
+    },
+    "best_model": "TransE"
+  },
+  "semantic_mapping": {
+    "anomalies_processed": 100,
+    "total_anomalies": 982,
+    "mapping_coverage": "10.2%",
+    "top_mapped_entities": [
+      {
+        "entity": "Sensor:Rotational Speed Sensor",
+        "frequency": 46
+      },
+      {
+        "entity": "Sensor:Torque Sensor",
+        "frequency": 40
+      },
+      {
+        "entity": "Sensor:Rotational Speed Sensor",
+        "frequency": 46
+      },
+      {
+        "entity": "Sensor:Rotational Speed Sensor",
+        "frequency": 46
+      },
+      {
+        "entity": "Sensor:Rotational Speed Sensor",
+        "frequency": 46
+      }
+    ]
+  },
+  "cross_domain_harmonization": {
+    "semantic_bridges": 18,
+    "high_transferability": 15,
+    "medium_transferability": 3,
+    "avg_similarity": 0.8052489260832468,
+    "num_clusters": 5
+  },
+  "output_files": {
+    "embeddings": {
+      "transe_model": "/Users/omkarthorve/Desktop/poc_RCA/phase4_kg_embeddings/embeddings/transe_model.pt",
+      "complex_model": "/Users/omkarthorve/Desktop/poc_RCA/phase4_kg_embeddings/embeddings/complex_model.pt"
+    },
+    "evaluation": {
+      "metrics": "/Users/omkarthorve/Desktop/poc_RCA/phase4_kg_embeddings/evaluation/embedding_evaluation.json"
+    },
+    "mappings": {
+      "anomaly_kg_mappings": "/Users/omkarthorve/Desktop/poc_RCA/phase4_kg_embeddings/mappings/anomaly_kg_mappings.json",
+      "cross_domain_transfer": "/Users/omkarthorve/Desktop/poc_RCA/phase4_kg_embeddings/PHASE4_SUMMARY_REPORT.json",
+      "entity_clusters": "/Users/omkarthorve/Desktop/poc_RCA/phase4_kg_embeddings/mappings/entity_clusters.json"
+    },
+    "visualizations": {
+      "tsne_plot": "/Users/omkarthorve/Desktop/poc_RCA/phase4_kg_embeddings/visualizations/embedding_tsne.png"
+    }
+  },
+  "key_findings": [
+    "TransE achieved MRR of 1.0000",
+    "Mapped 100 Phase 3 anomalies to KG entities",
+    "Identified 18 semantic bridges between AI4I and MetroPT",
+    "Created 5 entity clusters for common pattern identification",
+    "Average cross-domain similarity: 0.805"
+  ],
+  "next_steps": [
+    "Apply embeddings to enhance Neo4j queries for root cause analysis",
+    "Use semantic bridges for cross-domain failure prediction",
+    "Integrate with Phase 2 SWRL rules using embedding-based similarity",
+    "Develop embedding-based recommendation system for maintenance actions",
+    "Expand to additional domains using transfer learning"
+  ]
+}

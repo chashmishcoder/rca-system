@@ -1,0 +1,23 @@
+{
+  "total_bridges": 18,
+  "ai4i_to_metropt_bridges": 0,
+  "metropt_to_ai4i_bridges": 0,
+  "similarity_statistics": {
+    "mean": 0,
+    "median": 0,
+    "std": 0,
+    "min": 0,
+    "max": 0
+  },
+  "quality_distribution": {
+    "high_quality": 0,
+    "medium_quality": 0,
+    "low_quality": 0
+  },
+  "transferability_level": "Unknown",
+  "estimated_transfer_success": "N/A",
+  "sample_bridges": {
+    "ai4i_to_metropt": [],
+    "metropt_to_ai4i": []
+  }
+}

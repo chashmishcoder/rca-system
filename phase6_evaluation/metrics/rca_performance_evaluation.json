@@ -1,0 +1,59 @@
+{
+  "total_cases": 13,
+  "success_rate": 100.0,
+  "identification_rate": 84.61538461538461,
+  "unknown_cases": 2,
+  "identified_cases": 11,
+  "processing_time": {
+    "average": 77.07506594657897,
+    "min": 65.31341695785522,
+    "max": 89.99715614318848,
+    "std": 7.211108484896329,
+    "all_times": [
+      89.99715614318848,
+      75.78526425361633,
+      80.36988711357117,
+      77.51159381866455,
+      83.71801972389221,
+      82.88497424125671,
+      65.31341695785522,
+      66.68938612937927,
+      73.9593231678009,
+      74.52163791656494
+    ]
+  },
+  "confidence_scores": {
+    "diagnostic": {
+      "average": 0.9076923076923078,
+      "min": 0.88,
+      "max": 0.95
+    },
+    "reasoning": {
+      "average": 0.7961538461538461,
+      "min": 0.5,
+      "max": 0.95
+    },
+    "planning": {
+      "average": 0.9038461538461539,
+      "min": 0.85,
+      "max": 0.95
+    },
+    "overall": 0.8619230769230768
+  },
+  "root_cause_distribution": {
+    "Power System Failure": 1,
+    "Mechanical System Failure (e.g., bearing failure, gearbox issue, increased friction)": 1,
+    "Excessive Load Condition (External Process Demand or Internal Mechanical Resistance)": 1,
+    "Power Failure": 1,
+    "Mechanical Failure (e.g., bearing failure, misalignment, excessive friction)": 1,
+    "Unknown": 2,
+    "PowerFailure": 1,
+    "Control System Malfunction/Setpoint Error": 1,
+    "Process Overload / Improper Cutting Parameters": 1,
+    "Cutting Tool Failure/Wear (e.g., chipped, dull, incorrect tool, end-of-life)": 1,
+    "Mechanical Failure in Power Transmission System": 1,
+    "Excessive Mechanical Load or Resistance": 1
+  },
+  "unique_root_causes": 11,
+  "explanation_count": 13
+}

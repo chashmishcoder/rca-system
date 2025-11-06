@@ -1,0 +1,152 @@
+{
+  "summary": {
+    "total_bridges": 28,
+    "cross_domain_bridges": 3,
+    "intra_domain_bridges": 25,
+    "ai4i_entities": 19,
+    "metropt_entities": 12,
+    "threshold": 0.6
+  },
+  "cross_domain_bridges": [
+    {
+      "entity_1": "Failure:ElectricFailure",
+      "entity_2": "Sensor:Temperature Sensor Metro",
+      "similarity": 0.6312428712844849,
+      "transferability": "Medium"
+    },
+    {
+      "entity_1": "Equipment:Pneumatic System",
+      "entity_2": "Failure:ElectricFailure",
+      "similarity": 0.6302734613418579,
+      "transferability": "Medium"
+    },
+    {
+      "entity_1": "FailureInstance:TWF",
+      "entity_2": "Sensor:Temperature Sensor Metro",
+      "similarity": 0.6058449745178223,
+      "transferability": "Medium"
+    }
+  ],
+  "intra_domain_bridges": [
+    {
+      "entity_1": "Equipment:Manufacturing Line L",
+      "entity_2": "Equipment:Manufacturing Line M",
+      "similarity": 0.9722663760185242,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Equipment:Manufacturing Line H",
+      "entity_2": "Equipment:Manufacturing Line L",
+      "similarity": 0.9672212600708008,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Rotational Speed Sensor",
+      "entity_2": "Sensor:Tool Wear Sensor",
+      "similarity": 0.9665305614471436,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Motor Current Sensor",
+      "entity_2": "Sensor:Torque Sensor",
+      "similarity": 0.956793487071991,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Equipment:Manufacturing Line H",
+      "entity_2": "Equipment:Manufacturing Line M",
+      "similarity": 0.9554667472839355,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Door Sensor",
+      "entity_2": "Sensor:Pneumatic Sensor",
+      "similarity": 0.9539164900779724,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Motor Current Sensor",
+      "entity_2": "Sensor:Process Temperature Sensor",
+      "similarity": 0.9463858008384705,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Process Temperature Sensor",
+      "entity_2": "Sensor:Rotational Speed Sensor",
+      "similarity": 0.9194303154945374,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Process Temperature Sensor",
+      "entity_2": "Sensor:Torque Sensor",
+      "similarity": 0.911435067653656,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Process Temperature Sensor",
+      "entity_2": "Sensor:Tool Wear Sensor",
+      "similarity": 0.9091508984565735,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Motor Current Sensor",
+      "entity_2": "Sensor:Rotational Speed Sensor",
+      "similarity": 0.907703161239624,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Compressor Sensor",
+      "entity_2": "Sensor:Door Sensor",
+      "similarity": 0.8966385126113892,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Air Temperature Sensor",
+      "entity_2": "Sensor:Motor Current Sensor",
+      "similarity": 0.8903674483299255,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Rotational Speed Sensor",
+      "entity_2": "Sensor:Torque Sensor",
+      "similarity": 0.8863819241523743,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Motor Current Sensor",
+      "entity_2": "Sensor:Tool Wear Sensor",
+      "similarity": 0.8722556233406067,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Air Temperature Sensor",
+      "entity_2": "Sensor:Torque Sensor",
+      "similarity": 0.8641339540481567,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Equipment:Compressor System",
+      "entity_2": "Equipment:Metro Train",
+      "similarity": 0.8149986267089844,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Tool Wear Sensor",
+      "entity_2": "Sensor:Torque Sensor",
+      "similarity": 0.8005886077880859,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Compressor Sensor",
+      "entity_2": "Sensor:Pneumatic Sensor",
+      "similarity": 0.7854102849960327,
+      "transferability": "High"
+    },
+    {
+      "entity_1": "Sensor:Air Temperature Sensor",
+      "entity_2": "Sensor:Process Temperature Sensor",
+      "similarity": 0.775749683380127,
+      "transferability": "High"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "dataset": "AI4I 2020",
+  "total_anomalies": 982,
+  "reconstruction_error_stats": {
+    "mean": 0.21619991823112492,
+    "median": 0.18776862659371923,
+    "std": 0.09507683421270545,
+    "min": 0.1267740193357043,
+    "max": 0.8947876655447126,
+    "threshold_95": 0.39196655437001904,
+    "threshold_99": 0.5926671819743045
+  },
+  "severity_distribution": {
+    "CRITICAL": 50,
+    "MEDIUM": 147,
+    "LOW": 736,
+    "HIGH": 49
+  },
+  "top_contributing_features": {
+    "unknown": 4910
+  },
+  "phase3_metrics": {
+    "model_name": "AI4I_LSTM_AE",
+    "precision": 0.9531568228105907,
+    "recall": 0.37894736842105264,
+    "f1_score": 0.5422943221320974,
+    "auc_roc": 0.7693179860453097,
+    "threshold": 0.12655733742689568,
+    "confusion_matrix": [
+      [
+        706,
+        46
+      ],
+      [
+        1534,
+        936
+      ]
+    ],
+    "evaluation_date": "2025-11-05 11:12:16"
+  }
+}
