@@ -32,11 +32,6 @@ Thumbs.db
 # Jupyter
 .ipynb_checkpoints/
 
-# Models (optional - can be downloaded/trained)
-*.keras
-*.h5
-*.pt
-
 # Logs
 *.log
 api_server.log
