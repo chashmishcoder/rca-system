@@ -1,149 +1,260 @@
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
-        <div className="text-center">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <div className="text-center mb-12">
           <div className="inline-block mb-4">
-            <span className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm font-semibold animate-pulse">
-              ✨ AI-Powered Intelligence
+            <span 
+              className="px-4 py-2 rounded-full text-white text-sm font-semibold animate-pulse" 
+              style={{ background: 'linear-gradient(90deg, #1976D2, #00BCD4)' }}
+            >
+              AI-Powered Intelligence
             </span>
           </div>
           
-          <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-gradient">
+          <h1 
+            className="text-5xl md:text-6xl font-bold mb-4" 
+            style={{ 
+              background: 'linear-gradient(90deg, #1976D2, #00BCD4, #4CAF50)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
             Root Cause Analysis System
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
             Next-Generation Predictive Maintenance powered by Multi-Agent AI and Deep Learning
           </p>
 
-          <div className="flex justify-center gap-4 mb-16">
+          <div className="flex justify-center gap-4 flex-wrap">
             <a
               href="/analyze"
-              className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold text-lg shadow-2xl hover:shadow-purple-500/50 transform hover:scale-105 transition-all duration-300"
+              className="px-8 py-4 rounded-xl font-bold text-lg text-white transition-all duration-300 transform hover:scale-105"
+              style={{ 
+                background: 'linear-gradient(90deg, #1976D2, #00BCD4)',
+                boxShadow: '0 10px 25px -5px rgba(25, 118, 210, 0.4)'
+              }}
             >
-              <span className="relative z-10">Start Analysis →</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              Start Analysis
             </a>
             
             <a
               href="#features"
-              className="px-8 py-4 bg-white/10 backdrop-blur-lg text-white rounded-xl font-bold text-lg border border-white/20 hover:bg-white/20 transform hover:scale-105 transition-all duration-300"
+              className="px-8 py-4 rounded-xl font-bold text-lg text-white transition-all duration-300 transform hover:scale-105"
+              style={{ 
+                background: 'rgba(255, 255, 255, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                backdropFilter: 'blur(16px)'
+              }}
             >
               Learn More
             </a>
           </div>
         </div>
 
-        {/* Feature Cards */}
-        <div id="features" className="grid md:grid-cols-3 gap-8 mt-20">
-          <div className="group relative p-8 bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-lg rounded-2xl border border-white/10 hover:border-blue-500/50 transform hover:scale-105 hover:-translate-y-2 transition-all duration-300 shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="relative z-10">
-              <div className="text-6xl mb-6 transform group-hover:scale-110 transition-transform duration-300">🔍</div>
-              <h3 className="text-2xl font-bold mb-3 text-white">Anomaly Detection</h3>
-              <p className="text-gray-300 mb-4">
-                Advanced LSTM autoencoder architecture with 87.3% accuracy
-              </p>
-              <div className="flex items-center gap-2">
-                <div className="h-2 flex-1 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full w-[87%] bg-gradient-to-r from-blue-500 to-purple-500 rounded-full animate-pulse"></div>
-                </div>
-                <span className="text-sm font-bold text-blue-400">87.3%</span>
-              </div>
+        <div 
+          className="mb-12 p-6 rounded-2xl" 
+          style={{ 
+            background: 'rgba(30, 30, 30, 0.7)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)'
+          }}
+        >
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <span className="text-3xl">⚡</span>
+            <span style={{ color: '#1976D2' }}>System Health Overview</span>
+          </h2>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div 
+              className="p-4 rounded-xl text-center transition-transform hover:scale-105"
+              style={{ background: 'rgba(76, 175, 80, 0.1)', border: '1px solid rgba(76, 175, 80, 0.3)' }}
+            >
+              <div className="text-4xl font-bold mb-2" style={{ color: '#4CAF50' }}>100%</div>
+              <div className="text-sm text-gray-400">Workflow Success</div>
+              <div className="text-xs mt-1" style={{ color: '#4CAF50' }}>Perfect reliability</div>
             </div>
-          </div>
-
-          <div className="group relative p-8 bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-lg rounded-2xl border border-white/10 hover:border-purple-500/50 transform hover:scale-105 hover:-translate-y-2 transition-all duration-300 shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="relative z-10">
-              <div className="text-6xl mb-6 transform group-hover:scale-110 transition-transform duration-300">🤖</div>
-              <h3 className="text-2xl font-bold mb-3 text-white">Multi-Agent RCA</h3>
-              <p className="text-gray-300 mb-4">
-                4 specialized AI agents working in harmony at 84.6% success rate
-              </p>
-              <div className="flex items-center gap-2">
-                <div className="h-2 flex-1 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full w-[85%] bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse"></div>
-                </div>
-                <span className="text-sm font-bold text-purple-400">84.6%</span>
-              </div>
+            
+            <div 
+              className="p-4 rounded-xl text-center transition-transform hover:scale-105"
+              style={{ background: 'rgba(25, 118, 210, 0.1)', border: '1px solid rgba(25, 118, 210, 0.3)' }}
+            >
+              <div className="text-4xl font-bold mb-2" style={{ color: '#1976D2' }}>84.6%</div>
+              <div className="text-sm text-gray-400">RCA Accuracy</div>
+              <div className="text-xs mt-1" style={{ color: '#1976D2' }}>Industry leading</div>
             </div>
-          </div>
-
-          <div className="group relative p-8 bg-gradient-to-br from-pink-500/10 to-orange-500/10 backdrop-blur-lg rounded-2xl border border-white/10 hover:border-pink-500/50 transform hover:scale-105 hover:-translate-y-2 transition-all duration-300 shadow-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-orange-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div className="relative z-10">
-              <div className="text-6xl mb-6 transform group-hover:scale-110 transition-transform duration-300">🕸️</div>
-              <h3 className="text-2xl font-bold mb-3 text-white">Knowledge Graph</h3>
-              <p className="text-gray-300 mb-4">
-                Semantic reasoning with 50+ entities and intelligent SWRL rules
-              </p>
-              <div className="flex gap-2 flex-wrap">
-                <span className="px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-sm">50+ Entities</span>
-                <span className="px-3 py-1 bg-orange-500/20 text-orange-300 rounded-full text-sm">SWRL Rules</span>
-              </div>
+            
+            <div 
+              className="p-4 rounded-xl text-center transition-transform hover:scale-105"
+              style={{ background: 'rgba(0, 188, 212, 0.1)', border: '1px solid rgba(0, 188, 212, 0.3)' }}
+            >
+              <div className="text-4xl font-bold mb-2" style={{ color: '#00BCD4' }}>0.862</div>
+              <div className="text-sm text-gray-400">Confidence Score</div>
+              <div className="text-xs mt-1" style={{ color: '#00BCD4' }}>High precision</div>
+            </div>
+            
+            <div 
+              className="p-4 rounded-xl text-center transition-transform hover:scale-105"
+              style={{ background: 'rgba(255, 152, 0, 0.1)', border: '1px solid rgba(255, 152, 0, 0.3)' }}
+            >
+              <div className="text-4xl font-bold mb-2" style={{ color: '#FF9800' }}>77s</div>
+              <div className="text-sm text-gray-400">Avg Processing</div>
+              <div className="text-xs mt-1" style={{ color: '#FF9800' }}>Lightning fast</div>
             </div>
           </div>
         </div>
 
-        {/* System Status Dashboard */}
-        <div className="mt-20 p-8 bg-gradient-to-br from-slate-800/50 to-purple-900/50 backdrop-blur-lg rounded-3xl border border-white/10 shadow-2xl">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-white flex items-center gap-3">
-              <span className="animate-pulse">⚡</span>
-              System Status
+        <div id="features" className="grid md:grid-cols-3 gap-6 mb-12">
+          <div 
+            className="p-6 rounded-2xl transition-all duration-300 transform hover:scale-105"
+            style={{ 
+              background: 'rgba(25, 118, 210, 0.1)',
+              backdropFilter: 'blur(16px)',
+              border: '1px solid rgba(25, 118, 210, 0.3)',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
+            }}
+          >
+            <div className="text-5xl mb-4">🔍</div>
+            <h3 className="text-2xl font-bold mb-3">Anomaly Detection</h3>
+            <p className="text-gray-300 mb-4">
+              Advanced LSTM autoencoder with 87.3% accuracy
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="h-2 flex-1 rounded-full overflow-hidden" style={{ background: 'rgba(255, 255, 255, 0.1)' }}>
+                <div 
+                  className="h-full rounded-full" 
+                  style={{ width: '87%', background: 'linear-gradient(90deg, #1976D2, #00BCD4)' }}
+                ></div>
+              </div>
+              <span className="text-sm font-bold" style={{ color: '#1976D2' }}>87.3%</span>
+            </div>
+          </div>
+
+          <div 
+            className="p-6 rounded-2xl transition-all duration-300 transform hover:scale-105"
+            style={{ 
+              background: 'rgba(0, 188, 212, 0.1)',
+              backdropFilter: 'blur(16px)',
+              border: '1px solid rgba(0, 188, 212, 0.3)',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
+            }}
+          >
+            <div className="text-5xl mb-4">🤖</div>
+            <h3 className="text-2xl font-bold mb-3">Multi-Agent RCA</h3>
+            <p className="text-gray-300 mb-4">
+              4 specialized AI agents at 84.6% success
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="h-2 flex-1 rounded-full overflow-hidden" style={{ background: 'rgba(255, 255, 255, 0.1)' }}>
+                <div 
+                  className="h-full rounded-full" 
+                  style={{ width: '85%', background: 'linear-gradient(90deg, #00BCD4, #4CAF50)' }}
+                ></div>
+              </div>
+              <span className="text-sm font-bold" style={{ color: '#00BCD4' }}>84.6%</span>
+            </div>
+          </div>
+
+          <div 
+            className="p-6 rounded-2xl transition-all duration-300 transform hover:scale-105"
+            style={{ 
+              background: 'rgba(76, 175, 80, 0.1)',
+              backdropFilter: 'blur(16px)',
+              border: '1px solid rgba(76, 175, 80, 0.3)',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
+            }}
+          >
+            <div className="text-5xl mb-4">🕸️</div>
+            <h3 className="text-2xl font-bold mb-3">Knowledge Graph</h3>
+            <p className="text-gray-300 mb-4">
+              Semantic reasoning with 50+ entities
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              <span 
+                className="px-3 py-1 rounded-full text-sm font-medium"
+                style={{ background: 'rgba(76, 175, 80, 0.2)', color: '#4CAF50' }}
+              >
+                50+ Entities
+              </span>
+              <span 
+                className="px-3 py-1 rounded-full text-sm font-medium"
+                style={{ background: 'rgba(76, 175, 80, 0.2)', color: '#4CAF50' }}
+              >
+                SWRL Rules
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div 
+          className="mb-12 p-6 rounded-2xl"
+          style={{ 
+            background: 'rgba(30, 30, 30, 0.7)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)'
+          }}
+        >
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+            <h2 className="text-2xl font-bold flex items-center gap-3">
+              <span>🤖</span>
+              <span style={{ color: '#00BCD4' }}>AI Agent Status</span>
             </h2>
-            <span className="px-4 py-2 bg-green-500/20 text-green-300 rounded-full text-sm font-semibold flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              All Systems Operational
+            <span 
+              className="px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2"
+              style={{ background: 'rgba(76, 175, 80, 0.2)', color: '#4CAF50' }}
+            >
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: '#4CAF50' }}></span>
+              All Agents Operational
             </span>
           </div>
           
-          <div className="grid md:grid-cols-4 gap-6">
-            <div className="p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-xl border border-green-500/20 hover:border-green-500/50 transition-all duration-300 transform hover:scale-105">
-              <div className="text-5xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent mb-2">
-                100%
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {['Diagnostic', 'Reasoning', 'Planning', 'Learning'].map((agent) => (
+              <div 
+                key={agent} 
+                className="p-4 rounded-xl text-center transition-transform hover:scale-105"
+                style={{ 
+                  background: 'rgba(25, 118, 210, 0.1)',
+                  border: '1px solid rgba(25, 118, 210, 0.3)'
+                }}
+              >
+                <div className="text-3xl mb-2">🤖</div>
+                <div className="text-sm font-medium text-gray-300">{agent} Agent</div>
+                <div className="text-xs mt-1 flex items-center justify-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#4CAF50' }}></span>
+                  <span style={{ color: '#4CAF50' }}>Operational</span>
+                </div>
               </div>
-              <div className="text-gray-300 font-medium">Workflow Success</div>
-              <div className="mt-3 text-xs text-green-400">↑ Perfect reliability</div>
-            </div>
-            
-            <div className="p-6 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-xl border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 transform hover:scale-105">
-              <div className="text-5xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-                84.6%
-              </div>
-              <div className="text-gray-300 font-medium">RCA Accuracy</div>
-              <div className="mt-3 text-xs text-blue-400">↑ Industry leading</div>
-            </div>
-            
-            <div className="p-6 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-xl border border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 transform hover:scale-105">
-              <div className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-                0.862
-              </div>
-              <div className="text-gray-300 font-medium">Confidence Score</div>
-              <div className="mt-3 text-xs text-purple-400">↑ High precision</div>
-            </div>
-            
-            <div className="p-6 bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-xl border border-orange-500/20 hover:border-orange-500/50 transition-all duration-300 transform hover:scale-105">
-              <div className="text-5xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent mb-2">
-                77s
-              </div>
-              <div className="text-gray-300 font-medium">Avg Processing</div>
-              <div className="mt-3 text-xs text-orange-400">↓ Lightning fast</div>
-            </div>
+            ))}
           </div>
         </div>
 
-        {/* Phase 6 Badge */}
-        <div className="mt-12 text-center">
-          <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 backdrop-blur-lg rounded-full border border-green-500/30">
+        <div className="text-center">
+          <div 
+            className="inline-flex items-center gap-3 px-6 py-3 rounded-full flex-wrap justify-center"
+            style={{ 
+              background: 'linear-gradient(90deg, rgba(76, 175, 80, 0.2), rgba(0, 188, 212, 0.2))',
+              backdropFilter: 'blur(16px)',
+              border: '1px solid rgba(76, 175, 80, 0.4)',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)'
+            }}
+          >
             <span className="text-2xl">✅</span>
-            <span className="text-white font-semibold">Multi-Agent RCA System | Phase 6 Complete</span>
-            <span className="px-3 py-1 bg-green-500/30 text-green-300 rounded-full text-sm font-bold">95% Deployment Ready</span>
+            <span className="font-semibold text-white">Multi-Agent RCA System | Phase 6 Complete</span>
+            <span 
+              className="px-3 py-1 rounded-full text-sm font-bold"
+              style={{ background: 'rgba(76, 175, 80, 0.3)', color: '#4CAF50' }}
+            >
+              95% Deployment Ready
+            </span>
           </div>
         </div>
+
       </div>
     </div>
   )

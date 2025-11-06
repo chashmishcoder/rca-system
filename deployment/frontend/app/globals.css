@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Design Spec Color Palette */
+:root {
+  --primary-blue: #1976D2;
+  --success-green: #4CAF50;
+  --warning-orange: #FF9800;
+  --critical-red: #F44336;
+  --info-cyan: #00BCD4;
+  
+  --severity-critical: #F44336;
+  --severity-high: #FF9800;
+  --severity-medium: #FFC107;
+  --severity-low: #4CAF50;
+  
+  --background-dark: #121212;
+  --surface-dark: #1E1E1E;
+  --text-primary: #FFFFFF;
+  --text-secondary: #BDBDBD;
+  --border-dark: #424242;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -15,32 +35,25 @@ body {
 }
 
 body {
-  color: white;
-  background: #0f172a;
+  color: var(--text-primary);
+  background: var(--background-dark);
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-  
+  /* Gradient Animations */
   .animate-gradient {
     background-size: 200% 200%;
     animation: gradient 8s ease infinite;
   }
   
   @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
   
+  /* Fade In Animation */
   .animate-fade-in {
     animation: fadeIn 0.5s ease-in;
   }
@@ -56,12 +69,42 @@ body {
     }
   }
   
-  .backdrop-blur-xl {
-    backdrop-filter: blur(24px);
+  /* Pulse Animation for Critical Alerts */
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   
-  .backdrop-blur-lg {
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+  
+  /* Glass Morphism Effect */
+  .glass-morphism {
+    background: rgba(30, 30, 30, 0.7);
     backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Severity Colors */
+  .bg-critical { background-color: var(--severity-critical); }
+  .bg-high { background-color: var(--severity-high); }
+  .bg-medium { background-color: var(--severity-medium); }
+  .bg-low { background-color: var(--severity-low); }
+  
+  .text-critical { color: var(--severity-critical); }
+  .text-high { color: var(--severity-high); }
+  .text-medium { color: var(--severity-medium); }
+  .text-low { color: var(--severity-low); }
+  
+  /* Card Shadows */
+  .card-shadow {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-shadow-lg {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
   }
 }
+
 
