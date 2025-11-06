@@ -105,6 +105,11 @@ try:
             seed = int(hashlib.md5(anomaly_id.encode()).hexdigest()[:8], 16)
             random.seed(seed)
             
+            # Extract numeric part from anomaly_id for more variation
+            import re
+            numeric_match = re.search(r'\d+', anomaly_id)
+            anomaly_num = int(numeric_match.group()) if numeric_match else seed
+            
             # Varied failure scenarios based on anomaly_id
             failure_scenarios = [
                 {
@@ -146,11 +151,52 @@ try:
                         {'action': 'Perform structural integrity inspection', 'priority': 'high', 'estimated_time': '60 min'},
                         {'action': 'Review and adjust operational parameters', 'priority': 'high', 'estimated_time': '30 min'}
                     ]
+                },
+                {
+                    'symptoms': ['Bearing degradation detected', 'Unusual acoustic signature', 'Increased friction coefficients'],
+                    'root_cause': 'Bearing Failure - Lubrication breakdown causing premature wear',
+                    'affected_entities': ['Bearings', 'Lubrication System', 'Rotating Assembly'],
+                    'actions': [
+                        {'action': 'Replace failed bearing assembly', 'priority': 'critical', 'estimated_time': '90 min'},
+                        {'action': 'Flush and refill lubrication system', 'priority': 'high', 'estimated_time': '35 min'},
+                        {'action': 'Schedule preventive maintenance cycle', 'priority': 'medium', 'estimated_time': '10 min'}
+                    ]
+                },
+                {
+                    'symptoms': ['Hydraulic pressure drop', 'Actuator response delay', 'Fluid contamination indicators'],
+                    'root_cause': 'Hydraulic System Degradation - Seal leakage and fluid contamination',
+                    'affected_entities': ['Hydraulic Pump', 'Seals', 'Fluid Reservoir'],
+                    'actions': [
+                        {'action': 'Replace degraded seals', 'priority': 'high', 'estimated_time': '50 min'},
+                        {'action': 'Drain and replace hydraulic fluid', 'priority': 'high', 'estimated_time': '40 min'},
+                        {'action': 'Pressure test hydraulic circuit', 'priority': 'medium', 'estimated_time': '25 min'}
+                    ]
+                },
+                {
+                    'symptoms': ['Control signal drift', 'Sensor calibration errors', 'Data transmission delays'],
+                    'root_cause': 'Sensor Network Failure - EMI interference degrading signal quality',
+                    'affected_entities': ['Sensor Network', 'Signal Processor', 'Control Unit'],
+                    'actions': [
+                        {'action': 'Install EMI shielding on sensor cables', 'priority': 'high', 'estimated_time': '60 min'},
+                        {'action': 'Recalibrate all affected sensors', 'priority': 'critical', 'estimated_time': '45 min'},
+                        {'action': 'Verify grounding connections', 'priority': 'high', 'estimated_time': '20 min'}
+                    ]
+                },
+                {
+                    'symptoms': ['Material feed inconsistency', 'Conveyor speed variations', 'Product quality deviations'],
+                    'root_cause': 'Feed Mechanism Malfunction - Drive belt slippage affecting throughput',
+                    'affected_entities': ['Feed Conveyor', 'Drive Belt', 'Tension System'],
+                    'actions': [
+                        {'action': 'Adjust belt tension to specification', 'priority': 'high', 'estimated_time': '30 min'},
+                        {'action': 'Replace worn drive belt', 'priority': 'high', 'estimated_time': '45 min'},
+                        {'action': 'Verify feed rate calibration', 'priority': 'medium', 'estimated_time': '20 min'}
+                    ]
                 }
             ]
             
-            # Select scenario based on hash
-            scenario = failure_scenarios[seed % len(failure_scenarios)]
+            # Use multiple factors for better distribution
+            scenario_index = (anomaly_num * 7 + seed // 1000) % len(failure_scenarios)
+            scenario = failure_scenarios[scenario_index]
             
             # Vary confidence based on anomaly characteristics
             base_confidence = 0.75 + (random.random() * 0.20)  # 0.75-0.95
