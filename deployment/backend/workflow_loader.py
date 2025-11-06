@@ -89,50 +89,100 @@ try:
     # In production, this would load the actual compiled workflow
     class MockWorkflowApp:
         def invoke(self, state: Dict[str, Any], config: Dict = None) -> Dict[str, Any]:
-            """Mock workflow execution - returns a simple result"""
+            """Mock workflow execution - returns varied results based on anomaly_id"""
             import time
             import random
+            import hashlib
             
             # Simulate processing time
             time.sleep(2)
             
-            # Generate mock results
+            # Extract anomaly ID to generate varied results
+            anomaly_id = state.get('anomaly_id', '')
+            anomaly_data = state.get('anomaly_data', {})
+            
+            # Use hash of anomaly_id to generate consistent but varied results
+            seed = int(hashlib.md5(anomaly_id.encode()).hexdigest()[:8], 16)
+            random.seed(seed)
+            
+            # Varied failure scenarios based on anomaly_id
+            failure_scenarios = [
+                {
+                    'symptoms': ['High rotational speed variance', 'Tool wear exceeding threshold', 'Temperature fluctuation'],
+                    'root_cause': 'Tool Wear Failure - Excessive friction causing mechanical stress',
+                    'affected_entities': ['Tool', 'Spindle Motor', 'Cooling System'],
+                    'actions': [
+                        {'action': 'Replace worn tool immediately', 'priority': 'critical', 'estimated_time': '20 min'},
+                        {'action': 'Inspect spindle bearings', 'priority': 'high', 'estimated_time': '30 min'},
+                        {'action': 'Verify cooling system flow rate', 'priority': 'medium', 'estimated_time': '15 min'}
+                    ]
+                },
+                {
+                    'symptoms': ['Power fluctuations detected', 'Torque irregularities', 'Motor current spikes'],
+                    'root_cause': 'Power System Instability - Electrical supply variation affecting motor control',
+                    'affected_entities': ['Power Supply', 'Motor Controller', 'Drive System'],
+                    'actions': [
+                        {'action': 'Check power supply voltage stability', 'priority': 'critical', 'estimated_time': '25 min'},
+                        {'action': 'Calibrate motor controller parameters', 'priority': 'high', 'estimated_time': '40 min'},
+                        {'action': 'Inspect electrical connections', 'priority': 'high', 'estimated_time': '20 min'}
+                    ]
+                },
+                {
+                    'symptoms': ['Heat dissipation failure', 'Process temperature above normal', 'Thermal sensor alerts'],
+                    'root_cause': 'Heat Dissipation Failure - Cooling system malfunction causing overheating',
+                    'affected_entities': ['Cooling System', 'Heat Exchanger', 'Temperature Sensors'],
+                    'actions': [
+                        {'action': 'Clean or replace heat exchanger', 'priority': 'high', 'estimated_time': '45 min'},
+                        {'action': 'Verify coolant flow and level', 'priority': 'critical', 'estimated_time': '15 min'},
+                        {'action': 'Recalibrate temperature sensors', 'priority': 'medium', 'estimated_time': '20 min'}
+                    ]
+                },
+                {
+                    'symptoms': ['Overstrain condition detected', 'Abnormal vibration patterns', 'Structural stress indicators'],
+                    'root_cause': 'Overstrain Condition - Workload exceeding equipment design capacity',
+                    'affected_entities': ['Structural Frame', 'Drive Mechanism', 'Load Sensors'],
+                    'actions': [
+                        {'action': 'Reduce operational load to safe limits', 'priority': 'critical', 'estimated_time': '10 min'},
+                        {'action': 'Perform structural integrity inspection', 'priority': 'high', 'estimated_time': '60 min'},
+                        {'action': 'Review and adjust operational parameters', 'priority': 'high', 'estimated_time': '30 min'}
+                    ]
+                }
+            ]
+            
+            # Select scenario based on hash
+            scenario = failure_scenarios[seed % len(failure_scenarios)]
+            
+            # Vary confidence based on anomaly characteristics
+            base_confidence = 0.75 + (random.random() * 0.20)  # 0.75-0.95
+            diagnostic_conf = min(0.95, base_confidence + random.uniform(-0.05, 0.10))
+            reasoning_conf = min(0.95, base_confidence + random.uniform(-0.08, 0.08))
+            planning_conf = min(0.95, base_confidence + random.uniform(-0.03, 0.12))
+            
+            # Extract severity from input or assign based on pattern
+            severity = anomaly_data.get('severity', ['low', 'medium', 'high', 'critical'][seed % 4])
+            
+            # Build causal chain
+            causal_chain = [
+                f"Initial condition: {scenario['symptoms'][0]}",
+                f"Cascade effect: {scenario['symptoms'][1] if len(scenario['symptoms']) > 1 else 'System degradation'}",
+                f"Final impact: {scenario['root_cause']}"
+            ]
+            
             result = {
                 **state,
-                'symptoms': [
-                    'High reconstruction error detected',
-                    'Abnormal sensor readings',
-                    'System performance degradation'
-                ],
-                'severity': 'high',
-                'affected_entities': ['Sensor', 'Processing Unit', 'Control System'],
-                'diagnostic_confidence': 0.88,
-                'diagnostic_reasoning': 'Multiple anomalies detected in system parameters',
-                'root_cause': 'Sensor calibration drift leading to control system instability',
-                'reasoning_confidence': 0.85,
-                'reasoning_steps': 'Analyzed sensor data patterns and correlated with system behavior',
-                'recommended_actions': [
-                    {
-                        'action': 'Recalibrate sensors',
-                        'priority': 'high',
-                        'estimated_time': '30 minutes',
-                        'description': 'Perform full sensor recalibration procedure'
-                    },
-                    {
-                        'action': 'Verify control system parameters',
-                        'priority': 'high',
-                        'estimated_time': '15 minutes',
-                        'description': 'Check and adjust control system settings'
-                    },
-                    {
-                        'action': 'Monitor system for 24 hours',
-                        'priority': 'medium',
-                        'estimated_time': '24 hours',
-                        'description': 'Continuous monitoring to ensure stability'
-                    }
-                ],
-                'planning_confidence': 0.90,
-                'planning_rationale': 'Actions prioritized based on impact and urgency',
+                'symptoms': scenario['symptoms'],
+                'severity': severity,
+                'affected_entities': scenario['affected_entities'],
+                'diagnostic_confidence': round(diagnostic_conf, 3),
+                'diagnostic_reasoning': f"Analysis of {anomaly_id} reveals distinctive pattern consistent with {scenario['root_cause'].split('-')[0]}",
+                'root_cause': scenario['root_cause'],
+                'causal_chain': causal_chain,
+                'reasoning_confidence': round(reasoning_conf, 3),
+                'reasoning_steps': f'Analyzed feature contributions and temporal patterns for {anomaly_id}. Correlation analysis identified primary failure mode.',
+                'recommended_actions': scenario['actions'],
+                'planning_confidence': round(planning_conf, 3),
+                'planning_rationale': f'Actions prioritized based on severity ({severity}) and criticality assessment for {anomaly_id}',
+                'final_explanation': f"Comprehensive RCA for {anomaly_id}: The system detected {len(scenario['symptoms'])} critical symptoms. Root cause analysis indicates {scenario['root_cause']}. Recommended {len(scenario['actions'])} corrective actions with confidence score of {round(planning_conf*100, 1)}%.",
                 'current_agent': 'completed'
             }
             
