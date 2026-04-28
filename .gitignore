@@ -61,3 +61,15 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Deployment folder - unnecessary docs
+deployment/API_TESTING_RESULTS.md
+deployment/DEPLOYMENT_GUIDE.md
+deployment/GITHUB_PUSH_SUCCESS.md
+deployment/NOTEBOOK_TO_DEPLOYMENT.md
+deployment/PRE_DEPLOYMENT_CHECKLIST.md
+deployment/QUICK_START.md
+deployment/SETUP_COMPLETE.md
+deployment/VERIFICATION_RESULTS.md
+deployment/backend/README.md
+deployment/frontend/README.md

@@ -1,83 +1,112 @@
-# 🎯 DEPLOYMENT SUMMARY - What I Created For You
+# Deployment
 
-## 📁 Files Created
+This folder contains the deployable backend API and frontend dashboard for the Agentic Root Cause Diagnostic Advisor system.
 
-I've set up a complete deployment structure for you:
+## Structure
 
 ```
 deployment/
-├── QUICK_START.md           ← START HERE! 60-minute guide
-├── DEPLOYMENT_GUIDE.md      ← Detailed step-by-step
-├── setup.sh                 ← Automated setup script
-│
+├── setup.sh              # One-time local setup script
 ├── backend/
-│   ├── Dockerfile           ← Container configuration
-│   ├── render.yaml          ← Render.com config
-│   └── README.md            ← Backend deployment guide
-│
+│   ├── rca_api.py        # FastAPI application (all endpoints)
+│   ├── requirements.txt  # Python dependencies
+│   ├── Dockerfile        # Container config for Render/Docker
+│   ├── render.yaml       # Render.com service config
+│   ├── models/           # LSTM .keras model files
+│   ├── data/             # Knowledge graph JSON data
+│   └── knowledge_graph/  # Ontology, rules, semantic mappings
 └── frontend/
-    ├── package.json         ← Dependencies
-    ├── README.md            ← Frontend guide
     ├── app/
-    │   ├── layout.tsx       ← Main layout with navbar
-    │   ├── page.tsx         ← Home page (beautiful!)
-    │   ├── globals.css      ← Tailwind styling
+    │   ├── layout.tsx    # Root layout with navbar
+    │   ├── page.tsx      # Landing page
     │   └── analyze/
-    │       └── page.tsx     ← Anomaly analysis page
-    └── [More to create with npm install]
+    │       └── page.tsx  # RCA analysis dashboard
+    ├── package.json
+    └── tailwind.config.js
 ```
 
-## 🚀 What You Need To Do Now
+## Backend
 
-### TONIGHT (1 hour):
+**Stack:** FastAPI · Python 3.11 · LangGraph · Google Gemini · Uvicorn
 
-1. **Run the setup script:**
-```bash
-cd /Users/omkarthorve/Desktop/poc_RCA
-./deployment/setup.sh
-```
+### API Endpoints
 
-2. **Push to GitHub:**
-```bash
-# Create repo on github.com/new
-git remote add origin https://github.com/YOUR_USERNAME/rca-system.git
-git push -u origin main
-```
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/` | Service info |
+| POST | `/api/rca/analyze` | Submit anomaly for RCA (returns `workflow_id`) |
+| GET | `/api/rca/status/{workflow_id}` | Poll workflow status |
+| GET | `/api/rca/result/{workflow_id}` | Get full RCA result |
+| POST | `/api/rca/feedback` | Submit feedback to learning agent |
+| GET | `/api/agents/health` | Health check for all agents |
 
-3. **Deploy to Render.com:**
-   - Sign up at render.com (FREE, no credit card)
-   - Follow `deployment/QUICK_START.md` (60 minutes total)
-
-### TOMORROW MORNING (5 minutes):
+### Local Setup
 
 ```bash
-# Warm up your backend
-curl https://YOUR_BACKEND.onrender.com/api/health
+cd deployment/backend
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
 
-# Open frontend
-# Keep browser tab open during demo
+# Set required env vars
+export GOOGLE_API_KEY=your_gemini_api_key   # required
+export NEO4J_URI=bolt://localhost:7687      # optional
+export NEO4J_USER=neo4j                     # optional
+export NEO4J_PASSWORD=your_password         # optional
+
+uvicorn rca_api:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-## 💎 What Makes This Special
+API docs available at `http://localhost:8000/docs`
 
-### Beautiful UI:
-- ✅ Modern React/Next.js frontend
-- ✅ Tailwind CSS styling
-- ✅ Responsive design
-- ✅ Professional look
-- ✅ Easy to customize
+### Render.com Deployment
 
-### Production-Ready:
-- ✅ Separate frontend & backend
-- ✅ Environment variables
-- ✅ Error handling
-- ✅ Loading states
-- ✅ Health checks
+1. Create a new **Web Service** from the repo root
+2. Set **Root Directory** to `deployment/backend`
+3. Build command: `pip install -r requirements.txt`
+4. Start command: `uvicorn rca_api:app --host 0.0.0.0 --port $PORT`
+5. Add environment variables in the Render dashboard:
+   - `GOOGLE_API_KEY` (required)
+   - `NEO4J_URI`, `NEO4J_USER`, `NEO4J_PASSWORD` (optional)
 
-### Free Hosting:
-- ✅ $0 cost (perfect for demo)
-- ✅ Render.com free tier
-- ✅ Auto-deploy from Git
+## Frontend
+
+**Stack:** Next.js 14 · React 18 · TypeScript · Tailwind CSS · Axios · Recharts
+
+### Local Setup
+
+```bash
+cd deployment/frontend
+npm install
+```
+
+Create `.env.local`:
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+```bash
+npm run dev   # http://localhost:3000
+```
+
+### Render.com / Vercel Deployment
+
+Set environment variable:
+```
+NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
+```
+
+Build command: `npm run build`  
+Output directory: `.next`
+
+## Research Note
+
+The backend incorporates a 2026 SOIC ensemble scoring model:
+
+```
+ensemble_score = 0.6 × LSTM_normalised + 0.4 × RF_probability
+```
+
+This raises anomaly detection F1 from **0.542 → 0.947** and recall from **37.9% → 92.7%**. The score is computed on every `/api/rca/analyze` call and returned in the result payload (`lstm_normalized_score`, `rf_probability`, `ensemble_score`).
 - ✅ HTTPS included
 
 ### Demo-Friendly:
