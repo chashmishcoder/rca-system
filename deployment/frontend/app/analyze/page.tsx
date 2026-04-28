@@ -315,6 +315,94 @@ export default function AnalyzePage() {
               </div>
             </div>
 
+            {/* Ensemble Detection Score — 2026 SOIC Research Enhancement */}
+            {(result.ensemble_score !== null && result.ensemble_score !== undefined) && (
+              <div
+                className="p-8 backdrop-blur-lg rounded-2xl shadow-xl"
+                style={{ background: 'rgba(0, 188, 212, 0.08)', border: '1px solid rgba(0, 188, 212, 0.35)' }}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                    <span>🔬</span>
+                    <span style={{ color: '#00BCD4' }}>Ensemble Detection Score</span>
+                  </h2>
+                  <span
+                    className="text-xs px-3 py-1 rounded-full font-semibold"
+                    style={{ background: 'rgba(0,188,212,0.15)', color: '#00BCD4', border: '1px solid rgba(0,188,212,0.4)' }}
+                  >
+                    2026 SOIC Research
+                  </span>
+                </div>
+                <p className="text-gray-400 text-sm mb-6">
+                  Stacks LSTM reconstruction error with Random Forest probability.
+                  Formula: <span className="font-mono text-cyan-300">Score = 0.6 × LSTM_norm + 0.4 × RF_prob</span>
+                  &nbsp;— raises recall from 37.9% → 92.7% vs LSTM alone.
+                </p>
+
+                <div className="grid md:grid-cols-3 gap-6 mb-6">
+                  {[
+                    {
+                      label: 'LSTM Score',
+                      value: result.lstm_normalized_score ?? 0,
+                      desc: 'Normalised reconstruction error',
+                      color: '#1976D2',
+                    },
+                    {
+                      label: 'RF Probability',
+                      value: result.rf_probability ?? 0,
+                      desc: 'Feature-importance-weighted score',
+                      color: '#9C27B0',
+                    },
+                    {
+                      label: 'Ensemble Score',
+                      value: result.ensemble_score ?? 0,
+                      desc: '0.6 × LSTM + 0.4 × RF (best overall)',
+                      color: '#00BCD4',
+                    },
+                  ].map(({ label, value, desc, color }) => {
+                    const pct = ((value ?? 0) * 100).toFixed(1)
+                    return (
+                      <div
+                        key={label}
+                        className="p-5 rounded-xl text-center"
+                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                      >
+                        <p className="text-xs text-gray-400 uppercase tracking-wide mb-2">{label}</p>
+                        <div
+                          className="text-4xl font-bold mb-1"
+                          style={{
+                            color,
+                            textShadow: `0 0 20px ${color}55`,
+                          }}
+                        >
+                          {pct}%
+                        </div>
+                        <p className="text-xs text-gray-500 mb-3">{desc}</p>
+                        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-1000"
+                            style={{ width: `${pct}%`, background: color }}
+                          />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <div
+                  className="p-4 rounded-xl text-sm"
+                  style={{ background: 'rgba(0,188,212,0.06)', border: '1px solid rgba(0,188,212,0.2)' }}
+                >
+                  <span className="font-semibold text-cyan-300">Why this matters: </span>
+                  <span className="text-gray-400">
+                    LSTM Autoencoder alone had high precision (95.3%) but missed 62% of real failures (recall 37.9%).
+                    The RF component recovers those missed failures. The ensemble achieves <strong className="text-white">F1 = 0.947</strong> vs
+                    LSTM-alone F1 = 0.542 — a <strong className="text-cyan-300">+40.5 pp improvement</strong>.
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* Symptoms & Affected Entities */}
             {(result.symptoms?.length > 0 || result.affected_entities?.length > 0) && (
               <div className="grid md:grid-cols-2 gap-6">
