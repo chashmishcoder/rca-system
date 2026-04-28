@@ -211,7 +211,7 @@ curl -X POST http://localhost:8000/api/rca/analyze \
 
 | Service | URL |
 |---|---|
-| Frontend | https://rca-frontend-drl9.onrender.com |
+| Frontend | https://rca-frontend-dri9.onrender.com |
 | Backend API | https://rca-backend-5jlv.onrender.com |
 | API Docs | https://rca-backend-5jlv.onrender.com/docs |
 
