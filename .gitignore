@@ -18,6 +18,7 @@ Datasets/
 
 # All markdown docs (local reference only)
 *.md
+!README.md
 !deployment/README.md
 !deployment/frontend/README.md
 !deployment/backend/README.md
