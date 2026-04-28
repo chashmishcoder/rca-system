@@ -1,41 +1,62 @@
-# Large datasets (too big for GitHub)
-Datasets/metropt.csv
-processed_data/metropt_processed_complete.csv
-processed_data/metropt_windowed_complete.csv.gz
+# ============================================================
+# Only deployment/ belongs in this repo.
+# All research notebooks, phase outputs, and docs are local only.
+# ============================================================
 
-# Node modules (will be installed via npm)
-deployment/frontend/node_modules/
-node_modules/
+# Research notebooks
+*.ipynb
+.ipynb_checkpoints/
 
-# Python cache
+# Research phase output folders
+phase3_anomaly_detection/
+phase4_kg_embeddings/
+phase5_agentic_reasoning/
+phase6_evaluation/
+knowledge_graph/
+processed_data/
+Datasets/
+
+# All markdown docs (local reference only)
+*.md
+!deployment/README.md
+!deployment/frontend/README.md
+!deployment/backend/README.md
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
 .Python
-
-# Virtual environment
+*.egg-info/
+dist/
+build/
 venv/
+.venv/
 env/
 ENV/
+.env
+!deployment/frontend/.env.local
+
+# Logs and test output (keep requirements.txt)
+*.log
+api_server.log
+*.txt
+!deployment/backend/requirements.txt
+
+# Node / Next.js
+node_modules/
+deployment/frontend/node_modules/
+.next/
+out/
+npm-debug.log*
+
+# macOS
+.DS_Store
+Thumbs.db
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Jupyter
-.ipynb_checkpoints/
-
-# Logs
-*.log
-api_server.log
-
-# Environment variables
-.env
-.env.local
