@@ -10,8 +10,7 @@ pydantic==2.5.0
 python-multipart==0.0.6
 
 # LangChain and LangGraph for AI agents
-# Using compatible versions based on langchain-google-genai requirements
-langchain-google-genai>=1.0.0,<2.0.0
+langchain-groq>=0.2.0
 langchain-community>=0.2.0,<0.3.0
 langchain-core>=0.2.33,<0.3.0
 langchain>=0.2.0,<0.3.0

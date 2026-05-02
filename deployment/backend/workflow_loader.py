@@ -1,5 +1,5 @@
 """
-Workflow Loader - KG-guided multi-agent RCA workflow using LangGraph + Gemini.
+Workflow Loader - KG-guided multi-agent RCA workflow using LangGraph + Groq (Llama 3.3 70B).
 
 Agents:
   1. diagnostic_agent       - Evaluates SWRL rules against sensor data, identifies symptoms
@@ -23,11 +23,11 @@ sys.path.insert(0, str(grandparent_dir))
 
 try:
     from typing import TypedDict, List, Dict, Any, Optional
-    from langchain_google_genai import ChatGoogleGenerativeAI
+    from langchain_groq import ChatGroq
     from langgraph.graph import StateGraph, END
     from langgraph.checkpoint.memory import MemorySaver
 
-    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY', '')
+    GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
 
     # ------------------------------------------------------------------
     # Agent State
@@ -59,10 +59,10 @@ try:
     # ------------------------------------------------------------------
     # LLM
     # ------------------------------------------------------------------
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash",
-        google_api_key=GOOGLE_API_KEY,
-        temperature=0.3
+    llm = ChatGroq(
+        model="llama-3.3-70b-versatile",
+        groq_api_key=GROQ_API_KEY,
+        temperature=0.3,
     )
 
     # ------------------------------------------------------------------
