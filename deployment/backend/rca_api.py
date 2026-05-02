@@ -175,7 +175,12 @@ _MODELS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models')
 
 
 def _load_lstm_model():
-    """Lazy-load the LSTM Autoencoder model once and cache it globally."""
+    """Lazy-load the LSTM Autoencoder model once and cache it globally.
+
+    Uses standalone `keras` (>=3.0) directly rather than `tf.keras` to ensure
+    compatibility with models saved under Keras 3's serialization format
+    (`keras.src.models.functional`). TF 2.15's bundled Keras 2 cannot load them.
+    """
     global _lstm_model
     if _lstm_model is not None:
         return _lstm_model
@@ -183,9 +188,9 @@ def _load_lstm_model():
         if _lstm_model is not None:  # double-checked locking
             return _lstm_model
         try:
-            import tensorflow as tf
+            import keras  # standalone Keras 3 — required for .keras format
             model_path = os.path.join(_MODELS_DIR, 'ai4i_lstm_ae_best.keras')
-            _lstm_model = tf.keras.models.load_model(model_path, compile=False)
+            _lstm_model = keras.models.load_model(model_path, compile=False)
         except Exception as e:
             raise RuntimeError(f"Failed to load LSTM model: {e}")
     return _lstm_model
