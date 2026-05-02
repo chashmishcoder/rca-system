@@ -25,6 +25,8 @@ import json
 import sys
 from datetime import datetime
 import uuid
+import threading
+import numpy as np
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -134,6 +136,107 @@ class EnsembleScorer:
 ensemble_scorer = EnsembleScorer()
 
 # =================================================================
+# LSTM MODEL LAZY LOADER  (for /api/sensor/ingest)
+# =================================================================
+
+_lstm_model = None
+_lstm_model_lock = threading.Lock()
+
+# Dataset statistics computed from ai4i_engineered.csv (used for z-score normalization)
+_FEATURE_STATS = {
+    'air_temp':     {'mean': 300.0049, 'std': 2.0003},
+    'proc_temp':    {'mean': 310.0056, 'std': 1.4837},
+    'rpm':          {'mean': 1538.7761, 'std': 179.2841},
+    'torque':       {'mean': 39.9869,  'std': 9.9689},
+    'tool_wear':    {'mean': 107.9510, 'std': 63.6541},
+    # engineered features (min/max for clipping only — fed raw to model)
+    'temp_diff':    {'mean': 10.0006,  'std': 1.0011},
+    'power':        {'mean': 6.2799,   'std': 1.0675},
+    'thermal':      {'mean': 1.0334,   'std': 0.0035},
+}
+
+_FEATURE_NAMES = [
+    'Air temperature [K]',
+    'Process temperature [K]',
+    'Rotational speed [rpm]',
+    'Torque [Nm]',
+    'Tool wear [min]',
+    'Air temperature [K]_normalized',
+    'Process temperature [K]_normalized',
+    'Rotational speed [rpm]_normalized',
+    'Torque [Nm]_normalized',
+    'Tool wear [min]_normalized',
+    'temp_difference',
+    'power_estimate',
+    'thermal_stress',
+]
+
+_MODELS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models')
+
+
+def _load_lstm_model():
+    """Lazy-load the LSTM Autoencoder model once and cache it globally."""
+    global _lstm_model
+    if _lstm_model is not None:
+        return _lstm_model
+    with _lstm_model_lock:
+        if _lstm_model is not None:  # double-checked locking
+            return _lstm_model
+        try:
+            import tensorflow as tf
+            model_path = os.path.join(_MODELS_DIR, 'ai4i_lstm_ae_best.keras')
+            _lstm_model = tf.keras.models.load_model(model_path, compile=False)
+        except Exception as e:
+            raise RuntimeError(f"Failed to load LSTM model: {e}")
+    return _lstm_model
+
+
+def _build_feature_vector(air_temp: float, proc_temp: float, rpm: float,
+                          torque: float, tool_wear: float) -> np.ndarray:
+    """Convert 5 raw sensor readings into the 13-feature vector the LSTM expects."""
+    s = _FEATURE_STATS
+    air_norm    = (air_temp  - s['air_temp']['mean'])  / s['air_temp']['std']
+    proc_norm   = (proc_temp - s['proc_temp']['mean']) / s['proc_temp']['std']
+    rpm_norm    = (rpm       - s['rpm']['mean'])       / s['rpm']['std']
+    torque_norm = (torque    - s['torque']['mean'])    / s['torque']['std']
+    wear_norm   = (tool_wear - s['tool_wear']['mean']) / s['tool_wear']['std']
+    temp_diff   = proc_temp - air_temp
+    power_est   = (torque * rpm) / 9549.3   # mechanical power estimate (kW)
+    thermal     = proc_temp / air_temp      # thermal stress ratio
+    return np.array([
+        air_temp, proc_temp, rpm, torque, tool_wear,
+        air_norm, proc_norm, rpm_norm, torque_norm, wear_norm,
+        temp_diff, power_est, thermal,
+    ], dtype=np.float32)
+
+
+def _run_lstm_inference(feature_vec: np.ndarray):
+    """
+    Run LSTM autoencoder inference on a single feature vector.
+    Returns (reconstruction_error, top_features) where top_features is
+    a list of dicts sorted by per-feature MSE descending.
+    """
+    model = _load_lstm_model()
+    window_size = 10  # model input shape: (None, 10, 13)
+    # Repeat the single reading to create a pseudo-sequence window
+    window = np.tile(feature_vec, (window_size, 1))   # (10, 13)
+    x = window[np.newaxis, ...]                        # (1, 10, 13)
+    x_hat = model.predict(x, verbose=0)               # (1, 10, 13)
+    per_step_error = np.mean((x - x_hat) ** 2, axis=1)  # (1, 13)
+    per_feature_error = per_step_error[0]                # (13,)
+    reconstruction_error = float(np.mean(per_feature_error))
+    top_features = sorted(
+        [
+            {'feature_name': _FEATURE_NAMES[i], 'error': round(float(per_feature_error[i]), 6)}
+            for i in range(len(_FEATURE_NAMES))
+        ],
+        key=lambda x: x['error'],
+        reverse=True,
+    )[:5]  # top 5 contributing features
+    return reconstruction_error, top_features
+
+
+# =================================================================
 # REQUEST/RESPONSE MODELS
 # =================================================================
 
@@ -234,6 +337,41 @@ class FeedbackInput(BaseModel):
         }
 
 
+class SensorReading(BaseModel):
+    """Raw sensor reading from industrial equipment (AI4I dataset format)"""
+    air_temperature: float = Field(..., description="Air temperature in Kelvin (typical: 295–305 K)")
+    process_temperature: float = Field(..., description="Process temperature in Kelvin (typical: 305–314 K)")
+    rotational_speed: float = Field(..., description="Rotational speed in RPM (typical: 1168–2886 rpm)")
+    torque: float = Field(..., description="Torque in Nm (typical: 3.8–76.6 Nm)")
+    tool_wear: float = Field(..., description="Tool wear in minutes (typical: 0–253 min)")
+    machine_id: Optional[str] = Field(None, description="Optional machine identifier")
+    timestamp: Optional[str] = Field(None, description="Optional ISO timestamp")
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "air_temperature": 298.1,
+                "process_temperature": 308.6,
+                "rotational_speed": 1551.0,
+                "torque": 42.8,
+                "tool_wear": 0.0
+            }
+        }
+
+
+class SensorIngestResponse(BaseModel):
+    """Response from sensor ingestion — includes anomaly detection result"""
+    anomaly_detected: bool
+    ensemble_score: float
+    lstm_normalized_score: float
+    rf_probability: float
+    reconstruction_error: float
+    severity: str
+    workflow_id: Optional[str] = None
+    message: str
+    top_contributing_features: Optional[List[Dict[str, Any]]] = None
+
+
 class LearningUpdate(BaseModel):
     """Learning update response"""
     workflow_id: str
@@ -325,6 +463,7 @@ async def root():
         "enhancement": "Ensemble LSTM+RF detection (SOIC 2026): F1 0.542→0.947, Recall 37.9%→92.7%",
         "status": "operational",
         "endpoints": {
+            "sensor_ingest": "/api/sensor/ingest",
             "analyze": "/api/rca/analyze",
             "status": "/api/rca/status/{workflow_id}",
             "result": "/api/rca/result/{workflow_id}",
@@ -332,6 +471,103 @@ async def root():
             "health": "/api/agents/health"
         }
     }
+
+
+@app.post("/api/sensor/ingest", response_model=SensorIngestResponse, tags=["Sensor Ingestion"])
+async def ingest_sensor_reading(
+    reading: SensorReading,
+    background_tasks: BackgroundTasks
+):
+    """
+    Submit raw sensor readings directly from industrial equipment.
+
+    The endpoint:
+    1. Builds the 13-feature vector (5 raw + 5 z-scored + 3 engineered)
+    2. Runs LSTM Autoencoder inference to compute reconstruction error
+    3. Computes ensemble anomaly score (0.6×LSTM + 0.4×RF)
+    4. If anomaly detected (score > 0.5), automatically triggers RCA workflow
+       and returns a workflow_id for polling
+
+    No pre-processing of LSTM outputs required — just send raw sensor data.
+    """
+    try:
+        # Build 13-feature vector and run LSTM inference
+        feat_vec = _build_feature_vector(
+            air_temp=reading.air_temperature,
+            proc_temp=reading.process_temperature,
+            rpm=reading.rotational_speed,
+            torque=reading.torque,
+            tool_wear=reading.tool_wear,
+        )
+        reconstruction_error, top_features = _run_lstm_inference(feat_vec)
+
+        # Compute ensemble score
+        ensemble_scores = ensemble_scorer.compute(
+            reconstruction_error=reconstruction_error,
+            top_features=top_features,
+        )
+        ensemble_score = ensemble_scores['ensemble_score']
+
+        # Determine severity
+        if ensemble_score >= 0.8:
+            severity = "critical"
+        elif ensemble_score >= 0.6:
+            severity = "high"
+        elif ensemble_score >= 0.4:
+            severity = "medium"
+        else:
+            severity = "low"
+
+        anomaly_detected = ensemble_score > 0.5
+        workflow_id = None
+
+        if anomaly_detected:
+            # Build AnomalyInput-compatible payload and trigger RCA workflow
+            workflow_id = str(uuid.uuid4())
+            anomaly_data = {
+                'anomaly_id': reading.machine_id or f"sensor_{workflow_id[:8]}",
+                'timestamp': reading.timestamp or datetime.now().isoformat(),
+                'reconstruction_error': reconstruction_error,
+                'top_contributing_features': top_features,
+                'severity': severity,
+                'metadata': {
+                    'source': 'sensor_ingest',
+                    'air_temperature': reading.air_temperature,
+                    'process_temperature': reading.process_temperature,
+                    'rotational_speed': reading.rotational_speed,
+                    'torque': reading.torque,
+                    'tool_wear': reading.tool_wear,
+                },
+            }
+            workflow_ensemble_scores[workflow_id] = ensemble_scores
+            background_tasks.add_task(run_rca_workflow_background, workflow_id, anomaly_data)
+            workflow_status[workflow_id] = "queued"
+            message = (
+                f"Anomaly detected (score={ensemble_score:.3f}, severity={severity}). "
+                f"RCA workflow queued — poll /api/rca/status/{workflow_id} for progress."
+            )
+        else:
+            message = (
+                f"No anomaly detected (score={ensemble_score:.3f}). "
+                f"Equipment operating within normal parameters."
+            )
+
+        return SensorIngestResponse(
+            anomaly_detected=anomaly_detected,
+            ensemble_score=ensemble_score,
+            lstm_normalized_score=ensemble_scores['lstm_normalized_score'],
+            rf_probability=ensemble_scores['rf_probability'],
+            reconstruction_error=round(reconstruction_error, 6),
+            severity=severity,
+            workflow_id=workflow_id,
+            message=message,
+            top_contributing_features=top_features,
+        )
+
+    except RuntimeError as e:
+        raise HTTPException(status_code=503, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Sensor ingestion failed: {str(e)}")
 
 
 @app.post("/api/rca/analyze", response_model=RCAResponse, tags=["RCA Analysis"])

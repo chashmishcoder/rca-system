@@ -5,48 +5,79 @@ import axios from 'axios'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://rca-backend-5jlv.onrender.com'
 
+// Sample sensor readings for quick-start
+const SAMPLE_READINGS = [
+  {
+    label: 'Normal Operation',
+    description: 'Typical healthy machine state',
+    values: { air_temperature: '298.1', process_temperature: '308.6', rotational_speed: '1551', torque: '42.8', tool_wear: '0' }
+  },
+  {
+    label: 'High Wear Anomaly',
+    description: 'Elevated tool wear + torque → likely failure',
+    values: { air_temperature: '302.4', process_temperature: '312.4', rotational_speed: '1460', torque: '69.1', tool_wear: '198' }
+  },
+  {
+    label: 'Overstrain Risk',
+    description: 'Low RPM, extreme torque',
+    values: { air_temperature: '300.5', process_temperature: '310.8', rotational_speed: '1200', torque: '74.5', tool_wear: '150' }
+  },
+]
+
 export default function AnalyzePage() {
-  const [anomalyId, setAnomalyId] = useState('')
+  const [airTemp, setAirTemp] = useState('')
+  const [procTemp, setProcTemp] = useState('')
+  const [rpm, setRpm] = useState('')
+  const [torque, setTorque] = useState('')
+  const [toolWear, setToolWear] = useState('')
+
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<any>(null)
+  const [noAnomaly, setNoAnomaly] = useState<any>(null)
   const [error, setError] = useState('')
 
-  const handleAnalyze = async (id?: string) => {
-    const targetId = id || anomalyId
-    
-    if (!targetId.trim()) {
-      setError('Please enter an anomaly ID')
+  const applySample = (sample: typeof SAMPLE_READINGS[0]) => {
+    setAirTemp(sample.values.air_temperature)
+    setProcTemp(sample.values.process_temperature)
+    setRpm(sample.values.rotational_speed)
+    setTorque(sample.values.torque)
+    setToolWear(sample.values.tool_wear)
+    setResult(null)
+    setNoAnomaly(null)
+    setError('')
+  }
+
+  const handleAnalyze = async () => {
+    if (!airTemp || !procTemp || !rpm || !torque || !toolWear) {
+      setError('Please fill in all five sensor fields before analyzing.')
       return
     }
 
     setLoading(true)
     setError('')
     setResult(null)
-    setAnomalyId(targetId)
+    setNoAnomaly(null)
 
     try {
-      // Backend expects specific format with required fields
       const payload = {
-        anomaly_id: targetId,
-        timestamp: new Date().toISOString(),
-        reconstruction_error: 0.4397,  // Mock value for demo
-        top_contributing_features: [
-          { feature_name: "Rotational speed [rpm]", error: 0.2156 },
-          { feature_name: "Torque [Nm]", error: 0.1534 },
-          { feature_name: "Tool wear [min]", error: 0.0707 }
-        ],
-        severity: "high",
-        metadata: { source: "frontend_demo" }
+        air_temperature: parseFloat(airTemp),
+        process_temperature: parseFloat(procTemp),
+        rotational_speed: parseFloat(rpm),
+        torque: parseFloat(torque),
+        tool_wear: parseFloat(toolWear),
       }
-      
-      const response = await axios.post(`${API_URL}/api/rca/analyze`, payload)
-      
-      // Backend returns workflow_id, need to poll for results
-      const workflowId = response.data.workflow_id
-      
-      // Poll for results
-      await pollForResults(workflowId)
-      
+
+      const response = await axios.post(`${API_URL}/api/sensor/ingest`, payload)
+      const data = response.data
+
+      if (!data.anomaly_detected) {
+        setNoAnomaly(data)
+        return
+      }
+
+      // Anomaly detected — poll for RCA results
+      await pollForResults(data.workflow_id)
+
     } catch (err: any) {
       console.error('Analysis error:', err)
       setError(err.response?.data?.detail || err.message || 'Analysis failed. Please try again.')
@@ -98,49 +129,67 @@ export default function AnalyzePage() {
         {/* Input Card */}
         <div className="relative p-8 bg-gradient-to-br from-slate-800/50 to-purple-900/50 backdrop-blur-lg rounded-3xl border border-white/10 shadow-2xl mb-8">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-3xl"></div>
-          
+
           <div className="relative z-10">
-            <label className="block text-sm font-semibold mb-3 text-gray-300 uppercase tracking-wide">
-              Anomaly Identifier
-            </label>
-            <div className="flex gap-4">
-              <input
-                type="text"
-                value={anomalyId}
-                onChange={(e) => setAnomalyId(e.target.value)}
-                placeholder="e.g., AI4I_anomaly_0"
-                className="flex-1 px-6 py-4 bg-slate-900/50 border border-white/10 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-500 transition-all duration-300"
-                disabled={loading}
-                onKeyPress={(e) => e.key === 'Enter' && handleAnalyze()}
-              />
-              <button
-                onClick={() => handleAnalyze()}
-                disabled={loading}
-                className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-purple-500/50 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-300"
-              >
-                {loading ? (
-                  <span className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    Analyzing...
-                  </span>
-                ) : (
-                  'Analyze 🚀'
-                )}
-              </button>
+            <h2 className="text-lg font-semibold text-gray-200 mb-6">Enter Sensor Readings</h2>
+
+            {/* 5 sensor fields in a responsive grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              {[
+                { label: 'Air Temperature (K)',     placeholder: '295 – 305', value: airTemp,    setter: setAirTemp },
+                { label: 'Process Temperature (K)', placeholder: '305 – 314', value: procTemp,   setter: setProcTemp },
+                { label: 'Rotational Speed (rpm)',  placeholder: '1168 – 2886', value: rpm,      setter: setRpm },
+                { label: 'Torque (Nm)',             placeholder: '3.8 – 76.6', value: torque,    setter: setTorque },
+                { label: 'Tool Wear (min)',          placeholder: '0 – 253',   value: toolWear,  setter: setToolWear },
+              ].map(({ label, placeholder, value, setter }) => (
+                <div key={label}>
+                  <label className="block text-xs font-semibold mb-1.5 text-gray-400 uppercase tracking-wide">
+                    {label}
+                  </label>
+                  <input
+                    type="number"
+                    step="any"
+                    value={value}
+                    onChange={(e) => setter(e.target.value)}
+                    placeholder={placeholder}
+                    className="w-full px-4 py-3 bg-slate-900/50 border border-white/10 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-600 transition-all duration-300"
+                    disabled={loading}
+                  />
+                </div>
+              ))}
+
+              {/* Analyze button occupies the 6th cell */}
+              <div className="flex items-end">
+                <button
+                  onClick={handleAnalyze}
+                  disabled={loading}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-purple-500/50 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-300"
+                >
+                  {loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      Analyzing...
+                    </span>
+                  ) : (
+                    'Analyze 🚀'
+                  )}
+                </button>
+              </div>
             </div>
-            
-            {/* Sample IDs */}
-            <div className="mt-6">
-              <p className="text-sm font-semibold mb-3 text-gray-400">Quick Start - Try These Samples:</p>
+
+            {/* Sample Readings */}
+            <div className="mt-2">
+              <p className="text-sm font-semibold mb-3 text-gray-400">Quick Start — Load a Sample Reading:</p>
               <div className="flex flex-wrap gap-2">
-                {['AI4I_anomaly_0', 'AI4I_anomaly_1', 'AI4I_anomaly_100', 'AI4I_anomaly_500'].map(id => (
+                {SAMPLE_READINGS.map(sample => (
                   <button
-                    key={id}
-                    onClick={() => handleAnalyze(id)}
-                    className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/50 text-gray-300 rounded-lg transition-all duration-300 transform hover:scale-105"
+                    key={sample.label}
+                    onClick={() => applySample(sample)}
+                    title={sample.description}
+                    className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-purple-500/50 text-gray-300 rounded-lg transition-all duration-300 transform hover:scale-105 text-sm"
                     disabled={loading}
                   >
-                    {id}
+                    {sample.label}
                   </button>
                 ))}
               </div>
@@ -178,6 +227,32 @@ export default function AnalyzePage() {
                   <p className="text-xs text-gray-400">{agent}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* No Anomaly Detected */}
+        {noAnomaly && (
+          <div className="p-6 bg-gradient-to-r from-green-500/10 to-teal-500/10 border border-green-500/40 rounded-2xl mb-8 backdrop-blur-lg">
+            <div className="flex items-start gap-4">
+              <span className="text-4xl">✅</span>
+              <div className="flex-1">
+                <p className="text-green-300 font-bold text-xl mb-1">No Anomaly Detected</p>
+                <p className="text-gray-400 mb-4">Equipment is operating within normal parameters.</p>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {[
+                    { label: 'Ensemble Score',  value: noAnomaly.ensemble_score?.toFixed(3) },
+                    { label: 'LSTM Score',       value: noAnomaly.lstm_normalized_score?.toFixed(3) },
+                    { label: 'RF Probability',   value: noAnomaly.rf_probability?.toFixed(3) },
+                    { label: 'Recon. Error',     value: noAnomaly.reconstruction_error?.toFixed(6) },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="p-3 bg-white/5 rounded-lg border border-white/10 text-center">
+                      <p className="text-xs text-gray-500 mb-1 uppercase tracking-wide">{label}</p>
+                      <p className="text-green-300 font-mono font-bold">{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}
