@@ -458,8 +458,10 @@ export default function AnalyzePage() {
                           </p>
                           {action.priority && (
                             <span className="text-xs px-2 py-1 rounded" style={{ 
-                              background: action.priority === 'high' ? 'rgba(255, 152, 0, 0.2)' : 'rgba(76, 175, 80, 0.2)',
-                              color: action.priority === 'high' ? '#FF9800' : '#4CAF50'
+                              background: action.priority === 'critical' ? 'rgba(244, 67, 54, 0.2)' :
+                                         action.priority === 'high' ? 'rgba(255, 152, 0, 0.2)' : 'rgba(76, 175, 80, 0.2)',
+                              color: action.priority === 'critical' ? '#F44336' :
+                                     action.priority === 'high' ? '#FF9800' : '#4CAF50'
                             }}>
                               {action.priority} priority
                             </span>
