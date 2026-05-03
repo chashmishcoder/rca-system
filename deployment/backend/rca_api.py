@@ -198,7 +198,14 @@ def _load_lstm_model():
 
 def _build_feature_vector(air_temp: float, proc_temp: float, rpm: float,
                           torque: float, tool_wear: float) -> np.ndarray:
-    """Convert 5 raw sensor readings into the 13-feature vector the LSTM expects."""
+    """Convert 5 raw sensor readings into the 13-feature vector the LSTM expects.
+
+    The LSTM autoencoder was trained by passing all 13 columns through
+    sklearn StandardScaler before windowing.  That means every column —
+    including the raw sensor columns at positions 0-4 — must be z-scored
+    before inference.  Passing raw values (e.g. RPM=1551) would cause
+    MSE ≈ 1551² ≈ 2.4M, making every reading appear critical.
+    """
     s = _FEATURE_STATS
     air_norm    = (air_temp  - s['air_temp']['mean'])  / s['air_temp']['std']
     proc_norm   = (proc_temp - s['proc_temp']['mean']) / s['proc_temp']['std']
@@ -208,10 +215,15 @@ def _build_feature_vector(air_temp: float, proc_temp: float, rpm: float,
     temp_diff   = proc_temp - air_temp
     power_est   = (torque * rpm) / 9549.3   # mechanical power estimate (kW)
     thermal     = proc_temp / air_temp      # thermal stress ratio
+    # Normalize engineered features using training-set stats
+    temp_diff_norm = (temp_diff - s['temp_diff']['mean']) / s['temp_diff']['std']
+    power_norm     = (power_est - s['power']['mean'])     / s['power']['std']
+    thermal_norm   = (thermal   - s['thermal']['mean'])   / s['thermal']['std']
+    # All 13 values are now z-scored, matching the training distribution
     return np.array([
-        air_temp, proc_temp, rpm, torque, tool_wear,
         air_norm, proc_norm, rpm_norm, torque_norm, wear_norm,
-        temp_diff, power_est, thermal,
+        air_norm, proc_norm, rpm_norm, torque_norm, wear_norm,
+        temp_diff_norm, power_norm, thermal_norm,
     ], dtype=np.float32)
 
 
