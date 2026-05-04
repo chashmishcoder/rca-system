@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import {
   LayoutDashboard,
   Bell,
@@ -10,6 +11,7 @@ import {
   Wrench,
   History,
   ChevronRight,
+  LogOut,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -23,6 +25,19 @@ const NAV_ITEMS = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!localStorage.getItem('rca_authenticated')) {
+      router.replace('/login')
+    }
+  }, [router])
+
+  const handleLogout = () => {
+    localStorage.removeItem('rca_authenticated')
+    localStorage.removeItem('rca_user_email')
+    router.replace('/login')
+  }
 
   return (
     <div className="flex min-h-screen bg-slate-950 text-slate-100">
@@ -59,13 +74,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           })}
         </nav>
 
-        <div className="px-4 py-4 border-t border-slate-800">
+        <div className="px-4 py-4 border-t border-slate-800 space-y-2">
           <Link
             href="/analyze"
             className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-sm font-medium text-white transition-colors"
           >
             Run RCA Analysis
           </Link>
+          <button
+            onClick={handleLogout}
+            className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 text-sm font-medium transition-colors"
+          >
+            <LogOut size={14} />
+            Sign Out
+          </button>
         </div>
       </aside>
 
