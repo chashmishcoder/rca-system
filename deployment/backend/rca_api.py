@@ -15,7 +15,7 @@ Endpoints:
   Raises F1 from 0.542 to 0.947 and recall from 37.9% to 92.7%
 """
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Dict, List, Any, Optional
@@ -23,13 +23,20 @@ import uvicorn
 import os
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import uuid
 import threading
 import numpy as np
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# MongoDB helpers — imported lazily to survive missing MONGODB_URI in CI
+try:
+    from db import get_db, init_db, close_db, compute_health_score
+    _MONGO_AVAILABLE = True
+except ImportError:
+    _MONGO_AVAILABLE = False
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -46,6 +53,27 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ---------------------------------------------------------------------------
+# Lifecycle events
+# ---------------------------------------------------------------------------
+
+@app.on_event("startup")
+async def startup_event():
+    if _MONGO_AVAILABLE:
+        try:
+            await init_db()
+        except Exception as exc:
+            # Log but don't crash — API still works without Mongo
+            import logging
+            logging.getLogger(__name__).warning("MongoDB init failed: %s", exc)
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    if _MONGO_AVAILABLE:
+        await close_db()
+
 
 # Global storage for workflow results (in production, use Redis/database)
 workflow_results = {}
@@ -538,17 +566,79 @@ async def ingest_sensor_reading(
         anomaly_detected = ensemble_score > 0.5
         workflow_id = None
 
+        equipment_id = reading.machine_id or "eq-001"
+        ts_now = datetime.now(timezone.utc)
+
+        # ----------------------------------------------------------------
+        # Persist to MongoDB (non-blocking best-effort)
+        # ----------------------------------------------------------------
+        if _MONGO_AVAILABLE:
+            try:
+                db = get_db()
+
+                # 1. Write sensor reading
+                await db.sensor_readings.insert_one({
+                    "equipment_id": equipment_id,
+                    "timestamp": ts_now,
+                    "air_temperature": reading.air_temperature,
+                    "process_temperature": reading.process_temperature,
+                    "rotational_speed": reading.rotational_speed,
+                    "torque": reading.torque,
+                    "tool_wear": reading.tool_wear,
+                    "reconstruction_error": round(reconstruction_error, 6),
+                    "ensemble_score": ensemble_score,
+                    "severity": severity,
+                    "anomaly_detected": anomaly_detected,
+                })
+
+                # 2. Upsert equipment health score
+                eq_doc = await db.equipment.find_one({"equipment_id": equipment_id})
+                current_health = eq_doc["health_score"] if eq_doc else 100.0
+                new_health = compute_health_score(ensemble_score, current_health)
+                new_status = (
+                    "critical" if new_health < 40
+                    else "warning" if new_health < 70
+                    else "operational"
+                )
+                await db.equipment.update_one(
+                    {"equipment_id": equipment_id},
+                    {"$set": {
+                        "health_score": new_health,
+                        "status": new_status,
+                        "last_reading_at": ts_now,
+                    }},
+                    upsert=True,
+                )
+
+                # 3. Insert alert if anomaly
+                if anomaly_detected:
+                    await db.alerts.insert_one({
+                        "equipment_id": equipment_id,
+                        "timestamp": ts_now,
+                        "severity": severity,
+                        "ensemble_score": ensemble_score,
+                        "reconstruction_error": round(reconstruction_error, 6),
+                        "top_features": top_features,
+                        "acknowledged": False,
+                        "message": f"{severity.upper()} anomaly detected on {equipment_id} "
+                                   f"(score={ensemble_score:.3f})",
+                    })
+            except Exception as _db_err:
+                import logging
+                logging.getLogger(__name__).warning("MongoDB write failed: %s", _db_err)
+
         if anomaly_detected:
             # Build AnomalyInput-compatible payload and trigger RCA workflow
             workflow_id = str(uuid.uuid4())
             anomaly_data = {
-                'anomaly_id': reading.machine_id or f"sensor_{workflow_id[:8]}",
-                'timestamp': reading.timestamp or datetime.now().isoformat(),
+                'anomaly_id': equipment_id + f"_{workflow_id[:8]}",
+                'timestamp': reading.timestamp or ts_now.isoformat(),
                 'reconstruction_error': reconstruction_error,
                 'top_contributing_features': top_features,
                 'severity': severity,
                 'metadata': {
                     'source': 'sensor_ingest',
+                    'equipment_id': equipment_id,
                     'air_temperature': reading.air_temperature,
                     'process_temperature': reading.process_temperature,
                     'rotational_speed': reading.rotational_speed,
@@ -559,6 +649,22 @@ async def ingest_sensor_reading(
             workflow_ensemble_scores[workflow_id] = ensemble_scores
             background_tasks.add_task(run_rca_workflow_background, workflow_id, anomaly_data)
             workflow_status[workflow_id] = "queued"
+
+            # Persist RCA result stub so dashboard can poll it
+            if _MONGO_AVAILABLE:
+                try:
+                    db = get_db()
+                    await db.rca_results.insert_one({
+                        "workflow_id": workflow_id,
+                        "equipment_id": equipment_id,
+                        "status": "queued",
+                        "created_at": ts_now,
+                        "ensemble_score": ensemble_score,
+                        "severity": severity,
+                    })
+                except Exception:
+                    pass
+
             message = (
                 f"Anomaly detected (score={ensemble_score:.3f}, severity={severity}). "
                 f"RCA workflow queued — poll /api/rca/status/{workflow_id} for progress."
@@ -812,6 +918,339 @@ async def check_health():
         kg_status=kg_status,
         timestamp=datetime.now().isoformat()
     )
+
+
+# =================================================================
+# DASHBOARD SUPPORTING MODELS
+# =================================================================
+
+class EquipmentCreate(BaseModel):
+    equipment_id: str
+    name: str
+    type: str
+    location: str
+
+class EquipmentUpdate(BaseModel):
+    name: Optional[str] = None
+    type: Optional[str] = None
+    location: Optional[str] = None
+    status: Optional[str] = None
+    health_score: Optional[float] = None
+
+class MaintenanceTaskPatch(BaseModel):
+    status: Optional[str] = None  # "open", "in_progress", "done"
+    notes: Optional[str] = None
+
+class MaintenanceHistoryCreate(BaseModel):
+    equipment_id: str
+    task_description: str
+    technician: str
+    completed_at: Optional[str] = None
+    notes: Optional[str] = None
+
+
+def _require_db():
+    if not _MONGO_AVAILABLE:
+        raise HTTPException(status_code=503, detail="MongoDB not available")
+    return get_db()
+
+
+# =================================================================
+# EQUIPMENT ENDPOINTS
+# =================================================================
+
+@app.get("/api/equipment", tags=["Equipment"])
+async def list_equipment():
+    db = _require_db()
+    docs = await db.equipment.find({}, {"_id": 0}).to_list(length=100)
+    return docs
+
+
+@app.get("/api/equipment/{equipment_id}", tags=["Equipment"])
+async def get_equipment(equipment_id: str):
+    db = _require_db()
+    doc = await db.equipment.find_one({"equipment_id": equipment_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Equipment not found")
+    return doc
+
+
+@app.post("/api/equipment", status_code=201, tags=["Equipment"])
+async def create_equipment(payload: EquipmentCreate):
+    db = _require_db()
+    existing = await db.equipment.find_one({"equipment_id": payload.equipment_id})
+    if existing:
+        raise HTTPException(status_code=409, detail="Equipment ID already exists")
+    doc = {
+        **payload.model_dump(),
+        "status": "operational",
+        "health_score": 100.0,
+        "last_maintenance": None,
+        "created_at": datetime.now(timezone.utc),
+    }
+    await db.equipment.insert_one(doc)
+    return {"equipment_id": payload.equipment_id, "created": True}
+
+
+@app.put("/api/equipment/{equipment_id}", tags=["Equipment"])
+async def update_equipment(equipment_id: str, payload: EquipmentUpdate):
+    db = _require_db()
+    updates = {k: v for k, v in payload.model_dump().items() if v is not None}
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    result = await db.equipment.update_one(
+        {"equipment_id": equipment_id},
+        {"$set": {**updates, "updated_at": datetime.now(timezone.utc)}},
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Equipment not found")
+    return {"equipment_id": equipment_id, "updated": True}
+
+
+# =================================================================
+# ALERTS ENDPOINTS
+# =================================================================
+
+@app.get("/api/alerts", tags=["Alerts"])
+async def list_alerts(
+    equipment_id: Optional[str] = Query(None),
+    unacknowledged_only: bool = Query(False),
+    limit: int = Query(50, ge=1, le=200),
+):
+    db = _require_db()
+    query: Dict[str, Any] = {}
+    if equipment_id:
+        query["equipment_id"] = equipment_id
+    if unacknowledged_only:
+        query["acknowledged"] = False
+    docs = (
+        await db.alerts.find(query, {"_id": 0})
+        .sort("timestamp", -1)
+        .to_list(length=limit)
+    )
+    # Serialise datetime objects
+    for doc in docs:
+        if isinstance(doc.get("timestamp"), datetime):
+            doc["timestamp"] = doc["timestamp"].isoformat()
+    return docs
+
+
+@app.delete("/api/alerts/{alert_id}", tags=["Alerts"])
+async def delete_alert(alert_id: str):
+    from bson import ObjectId
+    db = _require_db()
+    try:
+        result = await db.alerts.delete_one({"_id": ObjectId(alert_id)})
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid alert ID format")
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Alert not found")
+    return {"deleted": True}
+
+
+@app.patch("/api/alerts/{alert_id}/acknowledge", tags=["Alerts"])
+async def acknowledge_alert(alert_id: str):
+    from bson import ObjectId
+    db = _require_db()
+    try:
+        result = await db.alerts.update_one(
+            {"_id": ObjectId(alert_id)},
+            {"$set": {"acknowledged": True, "acknowledged_at": datetime.now(timezone.utc)}},
+        )
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid alert ID format")
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Alert not found")
+    return {"acknowledged": True}
+
+
+# =================================================================
+# SENSOR HISTORY ENDPOINTS
+# =================================================================
+
+@app.get("/api/sensors/latest", tags=["Sensor History"])
+async def get_latest_readings(
+    equipment_id: Optional[str] = Query(None),
+    limit: int = Query(20, ge=1, le=100),
+):
+    db = _require_db()
+    query: Dict[str, Any] = {}
+    if equipment_id:
+        query["equipment_id"] = equipment_id
+    docs = (
+        await db.sensor_readings.find(query, {"_id": 0})
+        .sort("timestamp", -1)
+        .to_list(length=limit)
+    )
+    for doc in docs:
+        if isinstance(doc.get("timestamp"), datetime):
+            doc["timestamp"] = doc["timestamp"].isoformat()
+    return docs
+
+
+@app.get("/api/sensors/history", tags=["Sensor History"])
+async def get_sensor_history(
+    equipment_id: str = Query(...),
+    hours: int = Query(24, ge=1, le=168),
+):
+    db = _require_db()
+    since = datetime.now(timezone.utc) - timedelta(hours=hours)
+    docs = (
+        await db.sensor_readings.find(
+            {"equipment_id": equipment_id, "timestamp": {"$gte": since}},
+            {"_id": 0},
+        )
+        .sort("timestamp", 1)
+        .to_list(length=10_000)
+    )
+    for doc in docs:
+        if isinstance(doc.get("timestamp"), datetime):
+            doc["timestamp"] = doc["timestamp"].isoformat()
+    return docs
+
+
+# =================================================================
+# MAINTENANCE ENDPOINTS
+# =================================================================
+
+@app.get("/api/maintenance/tasks", tags=["Maintenance"])
+async def list_maintenance_tasks(
+    equipment_id: Optional[str] = Query(None),
+    status: Optional[str] = Query(None),
+):
+    db = _require_db()
+    query: Dict[str, Any] = {}
+    if equipment_id:
+        query["equipment_id"] = equipment_id
+    if status:
+        query["status"] = status
+    docs = (
+        await db.maintenance_tasks.find(query, {"_id": 0})
+        .sort("due_date", 1)
+        .to_list(length=200)
+    )
+    for doc in docs:
+        for field in ("due_date", "created_at"):
+            if isinstance(doc.get(field), datetime):
+                doc[field] = doc[field].isoformat()
+    return docs
+
+
+@app.patch("/api/maintenance/tasks/{task_id}", tags=["Maintenance"])
+async def update_maintenance_task(task_id: str, payload: MaintenanceTaskPatch):
+    from bson import ObjectId
+    db = _require_db()
+    updates = {k: v for k, v in payload.model_dump().items() if v is not None}
+    updates["updated_at"] = datetime.now(timezone.utc)
+    try:
+        result = await db.maintenance_tasks.update_one(
+            {"_id": ObjectId(task_id)},
+            {"$set": updates},
+        )
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid task ID format")
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return {"updated": True}
+
+
+@app.get("/api/maintenance/history", tags=["Maintenance"])
+async def get_maintenance_history(
+    equipment_id: Optional[str] = Query(None),
+    limit: int = Query(50, ge=1, le=200),
+):
+    db = _require_db()
+    query: Dict[str, Any] = {}
+    if equipment_id:
+        query["equipment_id"] = equipment_id
+    docs = (
+        await db.maintenance_history.find(query, {"_id": 0})
+        .sort("completed_at", -1)
+        .to_list(length=limit)
+    )
+    for doc in docs:
+        if isinstance(doc.get("completed_at"), datetime):
+            doc["completed_at"] = doc["completed_at"].isoformat()
+    return docs
+
+
+@app.post("/api/maintenance/history", status_code=201, tags=["Maintenance"])
+async def create_maintenance_history(payload: MaintenanceHistoryCreate):
+    db = _require_db()
+    completed_at = (
+        datetime.fromisoformat(payload.completed_at)
+        if payload.completed_at
+        else datetime.now(timezone.utc)
+    )
+    doc = {
+        "equipment_id": payload.equipment_id,
+        "task_description": payload.task_description,
+        "technician": payload.technician,
+        "completed_at": completed_at,
+        "notes": payload.notes,
+    }
+    result = await db.maintenance_history.insert_one(doc)
+    # Mark equipment last_maintenance
+    await db.equipment.update_one(
+        {"equipment_id": payload.equipment_id},
+        {"$set": {"last_maintenance": completed_at}},
+    )
+    return {"inserted_id": str(result.inserted_id), "created": True}
+
+
+# =================================================================
+# DASHBOARD SUMMARY ENDPOINT
+# =================================================================
+
+@app.get("/api/dashboard/summary", tags=["Dashboard"])
+async def get_dashboard_summary():
+    db = _require_db()
+
+    # Equipment stats
+    equipment_cursor = db.equipment.find({}, {"_id": 0, "status": 1, "health_score": 1})
+    equipment_docs = await equipment_cursor.to_list(length=100)
+    total_equipment = len(equipment_docs)
+    operational = sum(1 for e in equipment_docs if e.get("status") == "operational")
+    warning = sum(1 for e in equipment_docs if e.get("status") == "warning")
+    critical = sum(1 for e in equipment_docs if e.get("status") == "critical")
+    avg_health = (
+        round(sum(e.get("health_score", 100) for e in equipment_docs) / total_equipment, 1)
+        if total_equipment else 0
+    )
+
+    # Unacknowledged alerts
+    active_alerts = await db.alerts.count_documents({"acknowledged": False})
+    critical_alerts = await db.alerts.count_documents(
+        {"acknowledged": False, "severity": "critical"}
+    )
+
+    # Recent anomaly count (last 24 h)
+    since = datetime.now(timezone.utc) - timedelta(hours=24)
+    recent_anomalies = await db.sensor_readings.count_documents(
+        {"anomaly_detected": True, "timestamp": {"$gte": since}}
+    )
+
+    # Open maintenance tasks
+    open_tasks = await db.maintenance_tasks.count_documents(
+        {"status": {"$in": ["open", "in_progress"]}}
+    )
+
+    return {
+        "equipment": {
+            "total": total_equipment,
+            "operational": operational,
+            "warning": warning,
+            "critical": critical,
+            "avg_health_score": avg_health,
+        },
+        "alerts": {
+            "active": active_alerts,
+            "critical": critical_alerts,
+        },
+        "anomalies_last_24h": recent_anomalies,
+        "open_maintenance_tasks": open_tasks,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
 
 
 # =================================================================
