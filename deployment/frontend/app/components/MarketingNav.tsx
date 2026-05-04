@@ -42,6 +42,7 @@ const NAV: NavItem[] = [
     label: 'Company',
     children: [
       { label: 'About Us', href: '/company/about', desc: 'Our mission and team' },
+      { label: 'Careers', href: '/company/careers', desc: 'Open roles at DiagAI' },
       { label: 'Contact', href: '/company/contact', desc: 'Get in touch with us' },
       { label: 'Customers', href: '/customers', desc: 'See who uses DiagAI' },
     ],
