@@ -17,14 +17,6 @@ interface Task {
   notes?: string
 }
 
-interface HistoryRecord {
-  equipment_id: string
-  task_description: string
-  technician: string
-  completed_at?: string
-  notes?: string
-}
-
 const PRIORITY_BADGE: Record<string, string> = {
   critical: 'bg-red-500 text-white',
   high:     'bg-orange-500 text-white',
@@ -60,11 +52,9 @@ function fmtDueLabel(dateStr: string): { label: string; urgent: boolean } {
 
 export default function MaintenancePage() {
   const [tasks, setTasks]         = useState<Task[]>([])
-  const [history, setHistory]     = useState<HistoryRecord[]>([])
   const [costConfig, setCostConfig] = useState<Record<string, number>>({
     critical: 890, high: 650, medium: 320, low: 180,
   })
-  const [tab, setTab]             = useState<'tasks' | 'history'>('tasks')
   const [loading, setLoading]     = useState(true)
   const [showForm, setShowForm]   = useState(false)
   const [historyForm, setHistoryForm] = useState(EMPTY_HISTORY)
@@ -74,13 +64,11 @@ export default function MaintenancePage() {
   async function load() {
     setLoading(true)
     try {
-      const [tRes, hRes, cRes] = await Promise.all([
+      const [tRes, cRes] = await Promise.all([
         fetch(`${API}/api/maintenance/tasks`),
-        fetch(`${API}/api/maintenance/history?limit=50`),
         fetch(`${API}/api/maintenance/cost-config`),
       ])
       if (tRes.ok) setTasks(await tRes.json())
-      if (hRes.ok) setHistory(await hRes.json())
       if (cRes.ok) {
         const cfg = await cRes.json()
         if (cfg?.costs) setCostConfig(cfg.costs)
@@ -308,94 +296,44 @@ export default function MaintenancePage() {
         </form>
       )}
 
-      {/* Tabs */}
-      <div className="flex border-b border-slate-800">
-        {(['tasks', 'history'] as const).map((t) => (
-          <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`px-4 py-2 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${
-              tab === t
-                ? 'border-emerald-500 text-emerald-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            {t === 'tasks'
-              ? `Tasks (${openTasks.length} open)`
-              : `History (${history.length})`}
-          </button>
-        ))}
-      </div>
-
       {/* Content */}
       {loading ? (
         <div className="text-slate-400 py-20 text-center">Loading…</div>
-      ) : tab === 'tasks' ? (
-        openTasks.length === 0 && laterTasks.length === 0 ? (
-          <div className="text-center py-20">
-            <Wrench size={40} className="mx-auto text-slate-700 mb-3" />
-            <p className="text-slate-500">No maintenance tasks yet.</p>
-            <p className="text-slate-600 text-xs mt-1">Tasks are auto-created when anomalies trigger RCA workflows.</p>
-          </div>
-        ) : (
-          <div className="space-y-8">
-            <SectionGroup
-              title="Urgent — Due Soon"
-              icon={<AlertCircle size={16} className="text-red-400" />}
-              tasks={urgentTasks}
-            />
-            <SectionGroup
-              title="Upcoming — Next 2 Weeks"
-              icon={<Calendar size={16} className="text-emerald-400" />}
-              tasks={upcomingTasks}
-            />
-            <SectionGroup
-              title="Later"
-              icon={<Clock size={16} className="text-slate-400" />}
-              tasks={laterTasks}
-            />
-            {doneTasks.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Check size={16} className="text-slate-500" />
-                  <h2 className="text-sm font-semibold text-slate-500">Completed ({doneTasks.length})</h2>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {doneTasks.map((t) => <TaskCard key={t._id ?? t.created_at} task={t} />)}
-                </div>
-              </div>
-            )}
-          </div>
-        )
+      ) : openTasks.length === 0 && doneTasks.length === 0 ? (
+        <div className="text-center py-20">
+          <Wrench size={40} className="mx-auto text-slate-700 mb-3" />
+          <p className="text-slate-500">No maintenance tasks yet.</p>
+          <p className="text-slate-600 text-xs mt-1">Tasks are auto-created when anomalies trigger RCA workflows.</p>
+        </div>
       ) : (
-        history.length === 0 ? (
-          <div className="text-center py-16 text-slate-500">No maintenance history yet.</div>
-        ) : (
-          <div className="rounded-2xl border border-slate-800 overflow-hidden">
-            {/* Header */}
-            <div className="grid grid-cols-4 px-6 py-3 bg-slate-800/60 border-b border-slate-700 text-[10px] uppercase tracking-wider font-semibold text-slate-500">
-              <span>Equipment</span>
-              <span>Description</span>
-              <span>Technician</span>
-              <span>Completed</span>
-            </div>
-            {history.map((h, i) => (
-              <div
-                key={i}
-                className={`grid grid-cols-4 px-6 py-4 hover:bg-slate-800/40 transition-colors ${
-                  i < history.length - 1 ? 'border-b border-slate-800' : ''
-                }`}
-              >
-                <span className="text-xs font-mono text-slate-400">{h.equipment_id}</span>
-                <span className="text-sm text-slate-200">{h.task_description}</span>
-                <span className="text-sm text-slate-400">{h.technician}</span>
-                <span className="text-xs text-slate-500">
-                  {h.completed_at ? new Date(h.completed_at).toLocaleDateString('en-GB') : '—'}
-                </span>
+        <div className="space-y-8">
+          <SectionGroup
+            title="Urgent — Due Soon"
+            icon={<AlertCircle size={16} className="text-red-400" />}
+            tasks={urgentTasks}
+          />
+          <SectionGroup
+            title="Upcoming — Next 2 Weeks"
+            icon={<Calendar size={16} className="text-emerald-400" />}
+            tasks={upcomingTasks}
+          />
+          <SectionGroup
+            title="Later"
+            icon={<Clock size={16} className="text-slate-400" />}
+            tasks={laterTasks}
+          />
+          {doneTasks.length > 0 && (
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <Check size={16} className="text-slate-500" />
+                <h2 className="text-sm font-semibold text-slate-500">Completed ({doneTasks.length})</h2>
               </div>
-            ))}
-          </div>
-        )
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {doneTasks.map((t) => <TaskCard key={t._id ?? t.created_at} task={t} />)}
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   )
