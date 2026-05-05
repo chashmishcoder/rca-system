@@ -26,11 +26,32 @@ const TASK_TYPE: Record<string, string> = {
   low:      'Routine Inspection',
 }
 
-const SEVERITY_BADGE: Record<string, string> = {
-  critical: 'bg-red-500/15 text-red-400 border border-red-500/30',
-  high:     'bg-orange-500/15 text-orange-400 border border-orange-500/30',
-  medium:   'bg-amber-500/15 text-amber-400 border border-amber-500/30',
-  low:      'bg-slate-700/40 text-slate-300 border border-slate-600',
+// Cost in $ per severity
+const COST_MAP: Record<string, number> = {
+  critical: 890,
+  high:     650,
+  medium:   320,
+  low:      180,
+}
+
+// Duration in minutes per severity
+const DURATION_MIN: Record<string, number> = {
+  critical: 180,
+  high:     270,
+  medium:   135,
+  low:      45,
+}
+
+const TECHNICIANS = ['John Smith', 'Sarah Johnson', 'Mike Davis', 'Emma Wilson', 'Chris Lee']
+
+function getTechnician(idx: number) {
+  return TECHNICIANS[idx % TECHNICIANS.length]
+}
+
+function fmtDuration(mins: number) {
+  const h = Math.floor(mins / 60)
+  const m = mins % 60
+  return h > 0 ? (m > 0 ? `${h}h ${m}m` : `${h}h`) : `${m}m`
 }
 
 function fmtDate(ts: string) {
@@ -67,14 +88,11 @@ export default function HistoryPage() {
 
   useEffect(() => { load() }, [])
 
-  const ackedCount   = alerts.filter((a) => a.acknowledged).length
-  const criticalCount = alerts.filter((a) => a.severity === 'critical').length
-  const avgScore     = alerts.length > 0
-    ? alerts.reduce((s, a) => s + (a.ensemble_score || 0), 0) / alerts.length
-    : 0
-  const completionRate = alerts.length > 0
-    ? Math.round((ackedCount / alerts.length) * 100)
-    : 0
+  const ackedCount     = alerts.filter((a) => a.acknowledged).length
+  const totalCost      = alerts.reduce((s, a) => s + (COST_MAP[a.severity] ?? 320), 0)
+  const totalMins      = alerts.reduce((s, a) => s + (DURATION_MIN[a.severity] ?? 135), 0)
+  const avgMins        = alerts.length > 0 ? Math.round(totalMins / alerts.length) : 0
+  const completionRate = alerts.length > 0 ? Math.round((ackedCount / alerts.length) * 100) : 0
 
   return (
     <div className="p-6 min-h-screen">
@@ -120,7 +138,7 @@ export default function HistoryPage() {
                   : <AlertCircle  size={34} className="text-amber-400" />}
               </div>
 
-              {/* Equipment + message */}
+              {/* Equipment + task type */}
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Equipment</p>
                 <p className="font-bold text-slate-100">
@@ -138,21 +156,19 @@ export default function HistoryPage() {
                 <p className="text-xs text-slate-500">{fmtTime(a.timestamp)}</p>
               </div>
 
-              {/* Score */}
+              {/* Technician */}
               <div className="shrink-0 hidden lg:block">
-                <p className="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Anomaly Score</p>
-                <p className="text-sm font-semibold text-slate-200">{a.ensemble_score?.toFixed(3)}</p>
+                <p className="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Technician</p>
+                <p className="text-sm font-semibold text-slate-200">{getTechnician(i)}</p>
               </div>
 
-              {/* Severity + Status — mirrors "Completed" badge + Cost in template */}
-              <div className="shrink-0 flex flex-col items-end gap-1.5">
-                <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wide ${SEVERITY_BADGE[a.severity] || SEVERITY_BADGE.low}`}>
-                  {a.severity}
-                </span>
-                <p className="text-[10px] uppercase tracking-wider text-slate-500">Status</p>
+              {/* Status + Cost */}
+              <div className="shrink-0 flex flex-col items-end gap-1">
                 <span className={`text-xs font-semibold ${a.acknowledged ? 'text-emerald-400' : 'text-amber-400'}`}>
                   {a.acknowledged ? 'Completed' : 'Active'}
                 </span>
+                <p className="text-[10px] uppercase tracking-wider text-slate-500 mt-1">Cost</p>
+                <p className="text-sm font-bold text-slate-200">${COST_MAP[a.severity] ?? 320}</p>
               </div>
             </div>
           ))}
@@ -164,8 +180,8 @@ export default function HistoryPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { label: 'Total Tasks',      value: alerts.length },
-            { label: 'Critical Alerts',  value: criticalCount },
-            { label: 'Avg Score',        value: avgScore.toFixed(3) },
+            { label: 'Total Cost',       value: `$${totalCost.toLocaleString()}` },
+            { label: 'Avg Duration',     value: fmtDuration(avgMins) },
             { label: 'Completion Rate',  value: `${completionRate}%` },
           ].map((s) => (
             <div key={s.label} className="p-5 rounded-xl bg-slate-900 border border-slate-800">
