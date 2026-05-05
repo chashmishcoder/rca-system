@@ -31,7 +31,7 @@ const PRIORITY_LABEL: Record<string, string> = {
   low:      'Low',
 }
 
-const EMPTY_HISTORY = { equipment_id: 'eq-001', task_description: '', technician: '', notes: '' }
+const EMPTY_TASK = { equipment_id: '', description: '', priority: 'medium', due_date: '', notes: '' }
 
 function daysUntil(dateStr: string): number {
   const now = new Date()
@@ -56,9 +56,9 @@ export default function MaintenancePage() {
     critical: 890, high: 650, medium: 320, low: 180,
   })
   const [loading, setLoading]     = useState(true)
-  const [showForm, setShowForm]   = useState(false)
-  const [historyForm, setHistoryForm] = useState(EMPTY_HISTORY)
-  const [saving, setSaving]       = useState(false)
+  const [showModal, setShowModal]  = useState(false)
+  const [taskForm, setTaskForm]    = useState(EMPTY_TASK)
+  const [saving, setSaving]        = useState(false)
   const [actionId, setActionId]   = useState<string | null>(null)
 
   async function load() {
@@ -91,18 +91,18 @@ export default function MaintenancePage() {
     load()
   }
 
-  async function submitHistory(e: React.FormEvent) {
+  async function submitTask(e: React.FormEvent) {
     e.preventDefault()
     setSaving(true)
     try {
-      const res = await fetch(`${API}/api/maintenance/history`, {
+      const res = await fetch(`${API}/api/maintenance/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(historyForm),
+        body: JSON.stringify(taskForm),
       })
       if (res.ok) {
-        setShowForm(false)
-        setHistoryForm(EMPTY_HISTORY)
+        setShowModal(false)
+        setTaskForm(EMPTY_TASK)
         load()
       }
     } finally {
@@ -222,78 +222,93 @@ export default function MaintenancePage() {
             <RefreshCw size={14} />
           </button>
           <button
-            onClick={() => setShowForm(true)}
+            onClick={() => setShowModal(true)}
             className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm text-white font-medium"
           >
             <Plus size={14} />
-            Log Maintenance
+            Add Task
           </button>
         </div>
       </div>
 
-      {/* Log maintenance form */}
-      {showForm && (
-        <form
-          onSubmit={submitHistory}
-          className="bg-slate-900 border border-emerald-500/30 rounded-xl p-5 space-y-4"
-        >
-          <h2 className="font-semibold text-slate-100">Log Completed Maintenance</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs text-slate-400 mb-1">Equipment ID</label>
-              <input
-                required
-                value={historyForm.equipment_id}
-                onChange={(e) => setHistoryForm({ ...historyForm, equipment_id: e.target.value })}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 focus:outline-none focus:border-emerald-500"
-              />
+      {/* Add task modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <form
+            onSubmit={submitTask}
+            className="w-full max-w-lg bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-2xl space-y-5 mx-4"
+          >
+            <h2 className="text-lg font-semibold text-slate-100">Add Maintenance Task</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Equipment ID</label>
+                <input
+                  required
+                  placeholder="e.g. eq-001"
+                  value={taskForm.equipment_id}
+                  onChange={(e) => setTaskForm({ ...taskForm, equipment_id: e.target.value })}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Priority</label>
+                <select
+                  value={taskForm.priority}
+                  onChange={(e) => setTaskForm({ ...taskForm, priority: e.target.value })}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500"
+                >
+                  <option value="critical">Urgent (Critical)</option>
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-xs text-slate-400 mb-1">Task Description</label>
+                <input
+                  required
+                  placeholder="e.g. Oil Change, Bearing Replacement…"
+                  value={taskForm.description}
+                  onChange={(e) => setTaskForm({ ...taskForm, description: e.target.value })}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Due Date</label>
+                <input
+                  type="date"
+                  value={taskForm.due_date}
+                  onChange={(e) => setTaskForm({ ...taskForm, due_date: e.target.value })}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-slate-400 mb-1">Notes (optional)</label>
+                <input
+                  value={taskForm.notes}
+                  onChange={(e) => setTaskForm({ ...taskForm, notes: e.target.value })}
+                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
             </div>
-            <div>
-              <label className="block text-xs text-slate-400 mb-1">Technician</label>
-              <input
-                required
-                value={historyForm.technician}
-                onChange={(e) => setHistoryForm({ ...historyForm, technician: e.target.value })}
-                placeholder="Name or ID"
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 focus:outline-none focus:border-emerald-500"
-              />
+            <div className="flex gap-3 justify-end pt-1">
+              <button
+                type="button"
+                onClick={() => { setShowModal(false); setTaskForm(EMPTY_TASK) }}
+                className="px-5 py-2 rounded-lg bg-slate-800 text-slate-300 text-sm hover:bg-slate-700"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={saving}
+                className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium disabled:opacity-50"
+              >
+                {saving ? 'Adding…' : 'Add Task'}
+              </button>
             </div>
-            <div className="col-span-2">
-              <label className="block text-xs text-slate-400 mb-1">Task Description</label>
-              <textarea
-                required
-                value={historyForm.task_description}
-                onChange={(e) => setHistoryForm({ ...historyForm, task_description: e.target.value })}
-                rows={2}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 resize-none"
-              />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-xs text-slate-400 mb-1">Notes (optional)</label>
-              <input
-                value={historyForm.notes}
-                onChange={(e) => setHistoryForm({ ...historyForm, notes: e.target.value })}
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-slate-100 focus:outline-none focus:border-emerald-500"
-              />
-            </div>
-          </div>
-          <div className="flex gap-2 justify-end">
-            <button
-              type="button"
-              onClick={() => { setShowForm(false); setHistoryForm(EMPTY_HISTORY) }}
-              className="px-4 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-sm hover:bg-slate-700"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm disabled:opacity-50"
-            >
-              {saving ? 'Saving…' : 'Log Record'}
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       )}
 
       {/* Content */}

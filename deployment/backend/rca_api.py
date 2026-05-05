@@ -953,6 +953,14 @@ class EquipmentUpdate(BaseModel):
     status: Optional[str] = None
     health_score: Optional[float] = None
 
+class MaintenanceTaskCreate(BaseModel):
+    equipment_id: str
+    description: str
+    priority: str = "medium"   # critical / high / medium / low
+    due_date: Optional[str] = None
+    notes: Optional[str] = None
+
+
 class MaintenanceTaskPatch(BaseModel):
     status: Optional[str] = None  # "open", "in_progress", "done"
     notes: Optional[str] = None
@@ -1169,6 +1177,35 @@ async def update_maintenance_task(task_id: str, payload: MaintenanceTaskPatch):
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Task not found")
     return {"updated": True}
+
+
+@app.post("/api/maintenance/tasks", status_code=201, tags=["Maintenance"])
+async def create_maintenance_task(payload: MaintenanceTaskCreate):
+    db = _require_db()
+    # Fetch live cost config from DB
+    cfg = await db.settings.find_one({"config_id": "maintenance_costs"})
+    costs = cfg["costs"] if cfg else _cost_cache
+    estimated_cost = costs.get(payload.priority, 320)
+
+    due_date = None
+    if payload.due_date:
+        try:
+            due_date = datetime.fromisoformat(payload.due_date)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid due_date format (use ISO 8601)")
+
+    doc = {
+        "equipment_id": payload.equipment_id,
+        "description": payload.description,
+        "priority": payload.priority,
+        "status": "open",
+        "due_date": due_date,
+        "estimated_cost": estimated_cost,
+        "notes": payload.notes,
+        "created_at": datetime.now(timezone.utc),
+    }
+    result = await db.maintenance_tasks.insert_one(doc)
+    return {"_id": str(result.inserted_id), "created": True}
 
 
 @app.get("/api/maintenance/history", tags=["Maintenance"])
