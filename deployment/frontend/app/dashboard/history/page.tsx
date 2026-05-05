@@ -14,6 +14,11 @@ interface AlertRecord {
   acknowledged: boolean
 }
 
+interface EquipmentDoc {
+  equipment_id: string
+  name: string
+}
+
 const SEVERITY_BADGE: Record<string, string> = {
   critical: 'bg-red-500/15 text-red-400 border border-red-500/30',
   high:     'bg-orange-500/15 text-orange-400 border border-orange-500/30',
@@ -31,13 +36,23 @@ function fmtTime(ts: string) {
 
 export default function HistoryPage() {
   const [alerts, setAlerts] = useState<AlertRecord[]>([])
+  const [equipmentMap, setEquipmentMap] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
 
   async function load() {
     setLoading(true)
     try {
-      const res = await fetch(`${API}/api/alerts?limit=200`)
-      if (res.ok) setAlerts(await res.json())
+      const [alertRes, eqRes] = await Promise.all([
+        fetch(`${API}/api/alerts?limit=200`),
+        fetch(`${API}/api/equipment`),
+      ])
+      if (alertRes.ok) setAlerts(await alertRes.json())
+      if (eqRes.ok) {
+        const eqList: EquipmentDoc[] = await eqRes.json()
+        const map: Record<string, string> = {}
+        eqList.forEach((e) => { map[e.equipment_id] = e.name })
+        setEquipmentMap(map)
+      }
     } finally {
       setLoading(false)
     }
@@ -101,7 +116,11 @@ export default function HistoryPage() {
               {/* Equipment + message */}
               <div className="flex-1 min-w-0">
                 <p className="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Equipment</p>
-                <p className="font-bold text-slate-100">{a.equipment_id}</p>
+                <p className="font-bold text-slate-100">
+                  {equipmentMap[a.equipment_id]
+                    ? <>{equipmentMap[a.equipment_id]} <span className="font-normal text-slate-500 text-xs">({a.equipment_id})</span></>
+                    : a.equipment_id}
+                </p>
                 <p className="text-sm text-slate-400 truncate mt-0.5">{a.message}</p>
               </div>
 
