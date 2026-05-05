@@ -54,7 +54,8 @@ async def init_db() -> AsyncIOMotorDatabase:
 
     await _create_indexes(_db)
     await _seed_equipment(_db)
-    await seed_cost_config(_db)
+    costs = await seed_cost_config(_db)
+    await _seed_maintenance_tasks(_db, costs)
 
     return _db
 
@@ -205,6 +206,63 @@ async def seed_cost_config(db: AsyncIOMotorDatabase) -> dict:
         logger.info("Seeded maintenance cost config.")
         return _DEFAULT_COST_CONFIG["costs"]
     return existing["costs"]
+
+
+# ---------------------------------------------------------------------------
+# Maintenance task seed data
+# ---------------------------------------------------------------------------
+
+async def _seed_maintenance_tasks(db: AsyncIOMotorDatabase, cost_config: dict) -> None:
+    """Seed sample maintenance tasks if none exist."""
+    count = await db.maintenance_tasks.count_documents({})
+    if count > 0:
+        return
+
+    now = datetime.now(timezone.utc)
+    tasks = [
+        {
+            "equipment_id": "eq-001",
+            "description": "Oil Change",
+            "priority": "critical",
+            "status": "open",
+            "due_date": (now + __import__('datetime').timedelta(days=2)).isoformat(),
+            "estimated_cost": cost_config.get("critical", 890),
+            "notes": "Replace hydraulic oil and inspect seals",
+            "created_at": now,
+        },
+        {
+            "equipment_id": "eq-003",
+            "description": "Calibration",
+            "priority": "high",
+            "status": "open",
+            "due_date": (now + __import__('datetime').timedelta(days=1)).isoformat(),
+            "estimated_cost": cost_config.get("high", 650),
+            "notes": "Sensor re-calibration required after last anomaly",
+            "created_at": now,
+        },
+        {
+            "equipment_id": "eq-002",
+            "description": "Filter Replacement",
+            "priority": "low",
+            "status": "open",
+            "due_date": (now + __import__('datetime').timedelta(days=5)).isoformat(),
+            "estimated_cost": cost_config.get("low", 180),
+            "notes": "Replace air filter unit",
+            "created_at": now,
+        },
+        {
+            "equipment_id": "eq-004",
+            "description": "Inspection",
+            "priority": "low",
+            "status": "open",
+            "due_date": (now + __import__('datetime').timedelta(days=7)).isoformat(),
+            "estimated_cost": cost_config.get("low", 180),
+            "notes": "Routine quarterly inspection",
+            "created_at": now,
+        },
+    ]
+    await db.maintenance_tasks.insert_many(tasks)
+    logger.info("Seeded %d sample maintenance tasks.", len(tasks))
 
 
 # ---------------------------------------------------------------------------

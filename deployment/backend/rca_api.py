@@ -1141,11 +1141,12 @@ async def list_maintenance_tasks(
     if status:
         query["status"] = status
     docs = (
-        await db.maintenance_tasks.find(query, {"_id": 0})
+        await db.maintenance_tasks.find(query)
         .sort("due_date", 1)
         .to_list(length=200)
     )
     for doc in docs:
+        doc["_id"] = str(doc["_id"])
         for field in ("due_date", "created_at"):
             if isinstance(doc.get(field), datetime):
                 doc[field] = doc[field].isoformat()
