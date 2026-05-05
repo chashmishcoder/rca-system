@@ -19,6 +19,13 @@ interface EquipmentDoc {
   name: string
 }
 
+const TASK_TYPE: Record<string, string> = {
+  critical: 'Emergency Repair',
+  high:     'Urgent Maintenance',
+  medium:   'Preventive Maintenance',
+  low:      'Routine Inspection',
+}
+
 const SEVERITY_BADGE: Record<string, string> = {
   critical: 'bg-red-500/15 text-red-400 border border-red-500/30',
   high:     'bg-orange-500/15 text-orange-400 border border-orange-500/30',
@@ -121,7 +128,7 @@ export default function HistoryPage() {
                     ? <>{equipmentMap[a.equipment_id]} <span className="font-normal text-slate-500 text-xs">({a.equipment_id})</span></>
                     : a.equipment_id}
                 </p>
-                <p className="text-sm text-slate-400 truncate mt-0.5">{a.message}</p>
+                <p className="text-sm text-slate-400 mt-0.5">{TASK_TYPE[a.severity] ?? 'Inspection'}</p>
               </div>
 
               {/* Date */}
