@@ -54,6 +54,7 @@ async def init_db() -> AsyncIOMotorDatabase:
 
     await _create_indexes(_db)
     await _seed_equipment(_db)
+    await seed_cost_config(_db)
 
     return _db
 
@@ -110,6 +111,11 @@ async def _create_indexes(db: AsyncIOMotorDatabase) -> None:
     await db.maintenance_history.create_indexes([
         IndexModel([("equipment_id", ASCENDING)], name="idx_mh_equipment"),
         IndexModel([("completed_at", DESCENDING)], name="idx_mh_time"),
+    ])
+
+    # settings (cost config, etc.)
+    await db.settings.create_indexes([
+        IndexModel([("config_id", ASCENDING)], unique=True, name="idx_cfg_id"),
     ])
 
     logger.info("MongoDB indexes created / verified.")
@@ -172,6 +178,33 @@ async def _seed_equipment(db: AsyncIOMotorDatabase) -> None:
             logger.info("Seeded equipment: %s", eq["equipment_id"])
         else:
             logger.debug("Equipment already exists: %s", eq["equipment_id"])
+
+
+# ---------------------------------------------------------------------------
+# Maintenance cost config seed
+# ---------------------------------------------------------------------------
+
+_DEFAULT_COST_CONFIG = {
+    "config_id": "maintenance_costs",
+    "costs": {
+        "critical": 890,
+        "high": 650,
+        "medium": 320,
+        "low": 180,
+    },
+    "currency": "USD",
+}
+
+
+async def seed_cost_config(db: AsyncIOMotorDatabase) -> dict:
+    """Insert default maintenance cost config if not present; return current config."""
+    existing = await db.settings.find_one({"config_id": "maintenance_costs"})
+    if not existing:
+        doc = {**_DEFAULT_COST_CONFIG, "created_at": datetime.now(timezone.utc)}
+        await db.settings.insert_one(doc)
+        logger.info("Seeded maintenance cost config.")
+        return _DEFAULT_COST_CONFIG["costs"]
+    return existing["costs"]
 
 
 # ---------------------------------------------------------------------------

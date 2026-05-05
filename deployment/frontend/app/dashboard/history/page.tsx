@@ -10,6 +10,7 @@ interface AlertRecord {
   timestamp: string
   severity: string
   ensemble_score: number
+  cost?: number
   message: string
   acknowledged: boolean
 }
@@ -26,15 +27,6 @@ const TASK_TYPE: Record<string, string> = {
   low:      'Routine Inspection',
 }
 
-// Cost in $ per severity
-const COST_MAP: Record<string, number> = {
-  critical: 890,
-  high:     650,
-  medium:   320,
-  low:      180,
-}
-
-// Duration in minutes per severity
 const DURATION_MIN: Record<string, number> = {
   critical: 180,
   high:     270,
@@ -63,16 +55,20 @@ function fmtTime(ts: string) {
 }
 
 export default function HistoryPage() {
-  const [alerts, setAlerts] = useState<AlertRecord[]>([])
+  const [alerts, setAlerts]             = useState<AlertRecord[]>([])
   const [equipmentMap, setEquipmentMap] = useState<Record<string, string>>({})
+  const [costConfig, setCostConfig]     = useState<Record<string, number>>({
+    critical: 890, high: 650, medium: 320, low: 180,
+  })
   const [loading, setLoading] = useState(true)
 
   async function load() {
     setLoading(true)
     try {
-      const [alertRes, eqRes] = await Promise.all([
+      const [alertRes, eqRes, costRes] = await Promise.all([
         fetch(`${API}/api/alerts?limit=200`),
         fetch(`${API}/api/equipment`),
+        fetch(`${API}/api/maintenance/cost-config`),
       ])
       if (alertRes.ok) setAlerts(await alertRes.json())
       if (eqRes.ok) {
@@ -81,6 +77,10 @@ export default function HistoryPage() {
         eqList.forEach((e) => { map[e.equipment_id] = e.name })
         setEquipmentMap(map)
       }
+      if (costRes.ok) {
+        const cfg = await costRes.json()
+        if (cfg?.costs) setCostConfig(cfg.costs)
+      }
     } finally {
       setLoading(false)
     }
@@ -88,8 +88,11 @@ export default function HistoryPage() {
 
   useEffect(() => { load() }, [])
 
+  /** Cost for a single alert: use per-alert value stored in DB, fallback to live config */
+  const getCost = (a: AlertRecord) => a.cost ?? costConfig[a.severity] ?? 320
+
   const ackedCount     = alerts.filter((a) => a.acknowledged).length
-  const totalCost      = alerts.reduce((s, a) => s + (COST_MAP[a.severity] ?? 320), 0)
+  const totalCost      = alerts.reduce((s, a) => s + getCost(a), 0)
   const totalMins      = alerts.reduce((s, a) => s + (DURATION_MIN[a.severity] ?? 135), 0)
   const avgMins        = alerts.length > 0 ? Math.round(totalMins / alerts.length) : 0
   const completionRate = alerts.length > 0 ? Math.round((ackedCount / alerts.length) * 100) : 0
@@ -124,24 +127,44 @@ export default function HistoryPage() {
         <div className="text-center py-20 text-slate-500">No maintenance history yet.</div>
       ) : (
         <div className="rounded-2xl border border-slate-800 overflow-hidden mb-6">
+
+          {/* Column header row */}
+          <div className="flex items-center px-6 py-3 bg-slate-800/60 border-b border-slate-700">
+            <div className="w-[42px] shrink-0" />
+            <div className="flex-1 min-w-0 pl-4">
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500">Equipment</span>
+            </div>
+            <div className="w-[152px] shrink-0 hidden md:block">
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500">Date</span>
+            </div>
+            <div className="w-[160px] shrink-0 hidden lg:block">
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500">Technician</span>
+            </div>
+            <div className="w-[88px] shrink-0 text-right">
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500">Status</span>
+            </div>
+            <div className="w-[88px] shrink-0 text-right">
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500">Cost</span>
+            </div>
+          </div>
+
           {alerts.map((a, i) => (
             <div
               key={i}
-              className={`flex items-center gap-6 px-6 py-5 bg-slate-900/50 hover:bg-slate-800/40 transition-colors ${
+              className={`flex items-center px-6 py-5 bg-slate-900/50 hover:bg-slate-800/40 transition-colors ${
                 i < alerts.length - 1 ? 'border-b border-slate-800' : ''
               }`}
             >
-              {/* Status icon */}
-              <div className="shrink-0">
+              {/* Status icon — 42px */}
+              <div className="w-[42px] shrink-0">
                 {a.acknowledged
-                  ? <CheckCircle2 size={34} className="text-emerald-400" />
-                  : <AlertCircle  size={34} className="text-amber-400" />}
+                  ? <CheckCircle2 size={32} className="text-emerald-400" />
+                  : <AlertCircle  size={32} className="text-amber-400" />}
               </div>
 
-              {/* Equipment + task type */}
-              <div className="flex-1 min-w-0">
-                <p className="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Equipment</p>
-                <p className="font-bold text-slate-100">
+              {/* Equipment + task type — flex-1 */}
+              <div className="flex-1 min-w-0 pl-4">
+                <p className="font-bold text-slate-100 truncate">
                   {equipmentMap[a.equipment_id]
                     ? <>{equipmentMap[a.equipment_id]} <span className="font-normal text-slate-500 text-xs">({a.equipment_id})</span></>
                     : a.equipment_id}
@@ -149,26 +172,27 @@ export default function HistoryPage() {
                 <p className="text-sm text-slate-400 mt-0.5">{TASK_TYPE[a.severity] ?? 'Inspection'}</p>
               </div>
 
-              {/* Date */}
-              <div className="shrink-0 hidden md:block">
-                <p className="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Date</p>
+              {/* Date — 152px */}
+              <div className="w-[152px] shrink-0 hidden md:block">
                 <p className="text-sm font-semibold text-slate-200">{fmtDate(a.timestamp)}</p>
                 <p className="text-xs text-slate-500">{fmtTime(a.timestamp)}</p>
               </div>
 
-              {/* Technician */}
-              <div className="shrink-0 hidden lg:block">
-                <p className="text-[10px] uppercase tracking-wider text-slate-500 mb-0.5">Technician</p>
+              {/* Technician — 160px */}
+              <div className="w-[160px] shrink-0 hidden lg:block">
                 <p className="text-sm font-semibold text-slate-200">{getTechnician(i)}</p>
               </div>
 
-              {/* Status + Cost */}
-              <div className="shrink-0 flex flex-col items-end gap-1">
+              {/* Status — 88px */}
+              <div className="w-[88px] shrink-0 text-right">
                 <span className={`text-xs font-semibold ${a.acknowledged ? 'text-emerald-400' : 'text-amber-400'}`}>
                   {a.acknowledged ? 'Completed' : 'Active'}
                 </span>
-                <p className="text-[10px] uppercase tracking-wider text-slate-500 mt-1">Cost</p>
-                <p className="text-sm font-bold text-slate-200">${COST_MAP[a.severity] ?? 320}</p>
+              </div>
+
+              {/* Cost — 88px */}
+              <div className="w-[88px] shrink-0 text-right">
+                <p className="text-sm font-bold text-slate-200">${getCost(a).toLocaleString()}</p>
               </div>
             </div>
           ))}
@@ -179,10 +203,10 @@ export default function HistoryPage() {
       {!loading && alerts.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Total Tasks',      value: alerts.length },
-            { label: 'Total Cost',       value: `$${totalCost.toLocaleString()}` },
-            { label: 'Avg Duration',     value: fmtDuration(avgMins) },
-            { label: 'Completion Rate',  value: `${completionRate}%` },
+            { label: 'Total Tasks',     value: alerts.length },
+            { label: 'Total Cost',      value: `$${totalCost.toLocaleString()}` },
+            { label: 'Avg Duration',    value: fmtDuration(avgMins) },
+            { label: 'Completion Rate', value: `${completionRate}%` },
           ].map((s) => (
             <div key={s.label} className="p-5 rounded-xl bg-slate-900 border border-slate-800">
               <p className="text-sm text-slate-500 mb-2">{s.label}</p>

@@ -33,7 +33,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # MongoDB helpers — imported lazily to survive missing MONGODB_URI in CI
 try:
-    from db import get_db, init_db, close_db, compute_health_score
+    from db import get_db, init_db, close_db, compute_health_score, seed_cost_config
     _MONGO_AVAILABLE = True
 except ImportError:
     _MONGO_AVAILABLE = False
@@ -62,7 +62,14 @@ app.add_middleware(
 async def startup_event():
     if _MONGO_AVAILABLE:
         try:
-            await init_db()
+            db = await init_db()
+            # Load persisted cost config into memory cache
+            try:
+                costs = await seed_cost_config(db)
+                _cost_cache.update(costs)
+            except Exception as exc:
+                import logging
+                logging.getLogger(__name__).warning("Cost config load failed: %s", exc)
         except Exception as exc:
             # Log but don't crash — API still works without Mongo
             import logging
@@ -78,6 +85,14 @@ async def shutdown_event():
 # Global storage for workflow results (in production, use Redis/database)
 workflow_results = {}
 workflow_status = {}
+
+# In-memory cost cache — loaded from DB at startup, updated via PUT endpoint
+_cost_cache: Dict[str, int] = {
+    "critical": 890,
+    "high": 650,
+    "medium": 320,
+    "low": 180,
+}
 workflow_ensemble_scores = {}  # stores ensemble scoring results per workflow
 
 
@@ -620,6 +635,7 @@ async def ingest_sensor_reading(
                         "reconstruction_error": round(reconstruction_error, 6),
                         "top_features": top_features,
                         "acknowledged": False,
+                        "cost": _cost_cache.get(severity, 320),
                         "message": f"{severity.upper()} anomaly detected on {equipment_id} "
                                    f"(score={ensemble_score:.3f})",
                     })
@@ -1196,6 +1212,43 @@ async def create_maintenance_history(payload: MaintenanceHistoryCreate):
         {"$set": {"last_maintenance": completed_at}},
     )
     return {"inserted_id": str(result.inserted_id), "created": True}
+
+
+# =================================================================
+# MAINTENANCE COST CONFIG ENDPOINTS
+# =================================================================
+
+@app.get("/api/maintenance/cost-config", tags=["Maintenance"])
+async def get_cost_config():
+    """Return the per-severity maintenance cost configuration stored in MongoDB."""
+    db = _require_db()
+    cfg = await db.settings.find_one({"config_id": "maintenance_costs"}, {"_id": 0})
+    if not cfg:
+        return {"costs": _cost_cache, "currency": "USD"}
+    return cfg
+
+
+class CostConfigUpdate(BaseModel):
+    critical: Optional[int] = None
+    high: Optional[int] = None
+    medium: Optional[int] = None
+    low: Optional[int] = None
+
+
+@app.put("/api/maintenance/cost-config", tags=["Maintenance"])
+async def update_cost_config(payload: CostConfigUpdate):
+    """Update per-severity maintenance costs in MongoDB and refresh the in-memory cache."""
+    db = _require_db()
+    updates = {k: v for k, v in payload.model_dump().items() if v is not None}
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    _cost_cache.update(updates)
+    await db.settings.update_one(
+        {"config_id": "maintenance_costs"},
+        {"$set": {"costs": _cost_cache, "updated_at": datetime.now(timezone.utc)}},
+        upsert=True,
+    )
+    return {"updated": True, "costs": _cost_cache}
 
 
 # =================================================================
