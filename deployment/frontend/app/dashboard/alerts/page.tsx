@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { AlertTriangle, Check, Trash2, RefreshCw, Wrench, Link2 } from 'lucide-react'
+import { Check, Trash2, RefreshCw, Wrench, Link2 } from 'lucide-react'
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
@@ -24,12 +24,14 @@ type TaskForm = typeof EMPTY_TASK_FORM
 function SeverityBadge({ severity }: { severity: string }) {
   const map: Record<string, string> = {
     critical: 'bg-red-500/20 text-red-400 border-red-500/40',
-    high: 'bg-orange-500/20 text-orange-400 border-orange-500/40',
-    medium: 'bg-amber-500/20 text-amber-400 border-amber-500/40',
-    low: 'bg-slate-600/40 text-slate-300 border-slate-600',
+    high:     'bg-orange-500/20 text-orange-400 border-orange-500/40',
+    medium:   'bg-amber-500/20 text-amber-400 border-amber-500/40',
+    low:      'bg-slate-600/40 text-slate-300 border-slate-600',
+    warning:  'bg-amber-500/20 text-amber-400 border-amber-500/40',
+    info:     'bg-blue-500/20 text-blue-400 border-blue-500/40',
   }
   return (
-    <span className={`px-2 py-0.5 rounded border text-xs font-medium uppercase ${map[severity] || map.low}`}>
+    <span className={`px-2.5 py-0.5 rounded-full border text-xs font-medium lowercase ${map[severity] || map.low}`}>
       {severity}
     </span>
   )
@@ -131,7 +133,6 @@ export default function AlertsPage() {
         <div className="text-slate-400 py-12 text-center">Loading alerts…</div>
       ) : alerts.length === 0 ? (
         <div className="text-center py-16">
-          <AlertTriangle size={40} className="mx-auto text-slate-600 mb-3" />
           <p className="text-slate-400">No alerts found</p>
         </div>
       ) : (
@@ -143,51 +144,44 @@ export default function AlertsPage() {
             return (
               <div
                 key={id || alert.timestamp}
-                className={`bg-slate-900 border rounded-xl p-4 flex items-start justify-between gap-4 ${
+                className={`bg-slate-900 border rounded-xl p-5 flex items-start justify-between gap-4 ${
                   alert.acknowledged ? 'border-slate-800 opacity-60' : 'border-slate-700'
                 }`}
               >
-                <div className="flex items-start gap-3 min-w-0">
-                  <AlertTriangle
-                    size={18}
-                    className={
-                      alert.severity === 'critical'
-                        ? 'text-red-400 mt-0.5 shrink-0'
-                        : alert.severity === 'high'
-                        ? 'text-orange-400 mt-0.5 shrink-0'
-                        : 'text-amber-400 mt-0.5 shrink-0'
-                    }
-                  />
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <SeverityBadge severity={alert.severity} />
-                      <span className="text-xs text-slate-500 font-mono">{alert.equipment_id}</span>
-                      <span className="text-xs text-slate-500">
-                        {new Date(alert.timestamp).toLocaleString()}
+                <div className="min-w-0 flex-1">
+                  {/* Row 1: badge + time + cross-link tags */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <SeverityBadge severity={alert.severity} />
+                    <span className="text-xs text-slate-500">
+                      {new Date(alert.timestamp).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    </span>
+                    {isResolved && (
+                      <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-900/40 border border-emerald-700/40 text-emerald-400 text-[11px] font-medium">
+                        <Link2 size={10} />
+                        Resolved by Task #{alert.resolved_by_task_id?.slice(-6)}
                       </span>
-                      {isResolved && (
-                        <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-900/40 border border-emerald-700/40 text-emerald-400 text-[11px] font-medium">
-                          <Link2 size={10} />
-                          Resolved by Task #{alert.resolved_by_task_id?.slice(-6)}
-                        </span>
-                      )}
-                      {hasTask && !isResolved && (
-                        <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-blue-900/40 border border-blue-700/40 text-blue-400 text-[11px] font-medium">
-                          <Wrench size={10} />
-                          Task #{alert.task_id?.slice(-6)} open
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-slate-200 mt-1">{alert.message}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      Score: {alert.ensemble_score?.toFixed(3)}
-                    </p>
-                    {isResolved && alert.resolved_at && (
-                      <p className="text-xs text-emerald-600 mt-0.5">
-                        Resolved {new Date(alert.resolved_at).toLocaleDateString()}
-                      </p>
+                    )}
+                    {hasTask && !isResolved && (
+                      <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-900/40 border border-blue-700/40 text-blue-400 text-[11px] font-medium">
+                        <Wrench size={10} />
+                        Task #{alert.task_id?.slice(-6)} open
+                      </span>
                     )}
                   </div>
+
+                  {/* Row 2: human-readable message */}
+                  <p className="text-base font-semibold text-slate-100 mt-2">{alert.message}</p>
+
+                  {/* Row 3: equipment label */}
+                  <p className="text-sm text-slate-400 mt-0.5">Equipment: {alert.equipment_id}</p>
+
+                  {/* Row 4: score + resolved date */}
+                  <p className="text-xs text-slate-500 mt-1">Score: {alert.ensemble_score?.toFixed(3)}</p>
+                  {isResolved && alert.resolved_at && (
+                    <p className="text-xs text-emerald-600 mt-0.5">
+                      Resolved {new Date(alert.resolved_at).toLocaleDateString()}
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {!hasTask && !isResolved && (

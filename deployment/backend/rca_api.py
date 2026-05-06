@@ -454,6 +454,32 @@ class HealthStatus(BaseModel):
 # BACKGROUND TASK: RUN RCA WORKFLOW
 # =================================================================
 
+def _human_alert_message(severity: str, top_features: list) -> str:
+    """Generate a readable alert message from the top anomalous feature."""
+    _FEATURE_LABELS = {
+        'air_temp':    'Air temperature anomaly detected',
+        'proc_temp':   'Process temperature anomaly detected',
+        'rpm':         'Rotational speed anomaly detected',
+        'torque':      'Torque anomaly detected',
+        'tool_wear':   'Excessive tool wear detected',
+        'temp_diff':   'Temperature differential anomaly detected',
+        'power':       'Power consumption anomaly detected',
+        'thermal':     'Thermal stress anomaly detected',
+    }
+    if top_features:
+        raw_name = top_features[0].get('feature_name', '').lower()
+        for key, label in _FEATURE_LABELS.items():
+            if key in raw_name:
+                return label
+    _SEVERITY_LABELS = {
+        'critical': 'Critical system anomaly detected',
+        'high':     'High-severity anomaly detected',
+        'medium':   'Anomaly detected — inspection required',
+        'low':      'Low-level anomaly detected',
+    }
+    return _SEVERITY_LABELS.get(severity, 'Anomaly detected')
+
+
 def run_rca_workflow_background(workflow_id: str, anomaly_data: Dict[str, Any]):
     """Run RCA workflow in background"""
     try:
@@ -501,9 +527,56 @@ def run_rca_workflow_background(workflow_id: str, anomaly_data: Dict[str, Any]):
             for node_name, node_output in output.items():
                 final_state = node_output
         
-        # Store result
+        # Store result in memory
         workflow_results[workflow_id] = final_state
         workflow_status[workflow_id] = "completed"
+
+        # Persist all 4 agent outputs to MongoDB rca_results
+        if _MONGO_AVAILABLE and final_state:
+            import asyncio
+            async def _persist():
+                try:
+                    db = get_db()
+                    await db.rca_results.update_one(
+                        {"workflow_id": workflow_id},
+                        {"$set": {
+                            "status": "completed",
+                            "completed_at": datetime.now(timezone.utc).isoformat(),
+                            # Diagnostic agent outputs
+                            "symptoms":              final_state.get("symptoms", []),
+                            "affected_entities":     final_state.get("affected_entities", []),
+                            "diagnostic_confidence": final_state.get("diagnostic_confidence", 0.0),
+                            "diagnostic_reasoning":  final_state.get("diagnostic_reasoning", ""),
+                            # Reasoning agent outputs
+                            "root_cause":            final_state.get("root_cause", ""),
+                            "causal_chain":          final_state.get("causal_chain", []),
+                            "causal_hypotheses":     final_state.get("causal_hypotheses", []),
+                            "reasoning_confidence":  final_state.get("reasoning_confidence", 0.0),
+                            "reasoning_steps":       final_state.get("reasoning_steps", ""),
+                            # Planning agent outputs
+                            "recommended_actions":   final_state.get("recommended_actions", []),
+                            "remediation_plan":      final_state.get("remediation_plan", {}),
+                            "planning_confidence":   final_state.get("planning_confidence", 0.0),
+                            "planning_rationale":    final_state.get("planning_rationale", ""),
+                            # Learning agent outputs
+                            "learning_updates":      final_state.get("learning_updates") or [],
+                            # Final explanation
+                            "final_explanation":     final_state.get("final_explanation"),
+                            "anomaly_id":            final_state.get("anomaly_id", ""),
+                        }},
+                        upsert=True,
+                    )
+                except Exception as _db_err:
+                    import logging
+                    logging.getLogger(__name__).warning("rca_results persist failed: %s", _db_err)
+            try:
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    asyncio.run_coroutine_threadsafe(_persist(), loop)
+                else:
+                    asyncio.run(_persist())
+            except Exception:
+                pass
         
     except Exception as e:
         workflow_status[workflow_id] = "failed"
@@ -636,8 +709,7 @@ async def ingest_sensor_reading(
                         "top_features": top_features,
                         "acknowledged": False,
                         "cost": _cost_cache.get(severity, 320),
-                        "message": f"{severity.upper()} anomaly detected on {equipment_id} "
-                                   f"(score={ensemble_score:.3f})",
+                        "message": _human_alert_message(severity, top_features),
                     })
             except Exception as _db_err:
                 import logging
