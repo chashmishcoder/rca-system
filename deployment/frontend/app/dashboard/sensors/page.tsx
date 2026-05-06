@@ -89,9 +89,10 @@ export default function SensorsPage() {
     return () => clearInterval(t)
   }, [histEqId])
 
-  // Build tiles: one tile per (equipment × sensor type), up to 6
+  // Build tiles: one per sensor type for the selected equipment
+  const selectedReadings = latest.filter((r) => r.equipment_id === histEqId)
   const tiles: Array<{ label: string; value: string; unit: string; equipmentId: string; pct: number }> = []
-  for (const r of latest) {
+  for (const r of selectedReadings) {
     for (const def of TILE_DEFS) {
       const raw = r[def.key]
       if (raw == null || typeof raw !== 'number') continue
