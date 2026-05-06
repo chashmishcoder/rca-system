@@ -240,7 +240,7 @@ export default function EquipmentPage() {
                 ) : (
                   <div className="grid grid-cols-2 gap-2">
                     <a
-                      href={`/dashboard/alerts?equipment=${eq.equipment_id}`}
+                      href={`/dashboard/equipment/details?id=${eq.equipment_id}`}
                       className="flex items-center justify-center px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-colors"
                     >
                       View Details
