@@ -17,6 +17,13 @@ interface Alert {
   resolved_by_task_id?: string
   resolved_at?: string
   top_features?: Array<{ feature_name: string; error: number }>
+  workflow_id?: string  // links to rca_results
+}
+
+interface RcaResult {
+  workflow_id: string
+  root_cause?: string
+  causal_chain?: string[]
 }
 
 const EMPTY_TASK_FORM = { equipment_id: '', description: '', priority: 'medium', due_date: '', notes: '', alert_id: '' }
@@ -68,6 +75,7 @@ function SeverityBadge({ severity }: { severity: string }) {
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<Alert[]>([])
+  const [rcaMap, setRcaMap] = useState<Record<string, RcaResult>>({})
   const [loading, setLoading] = useState(true)
   const [unackOnly, setUnackOnly] = useState(false)
   const [actionId, setActionId] = useState<string | null>(null)
@@ -77,8 +85,17 @@ export default function AlertsPage() {
   async function load() {
     setLoading(true)
     try {
-      const res = await fetch(`${API}/api/alerts?limit=100${unackOnly ? '&unacknowledged_only=true' : ''}`)
-      if (res.ok) setAlerts(await res.json())
+      const [alertRes, rcaRes] = await Promise.all([
+        fetch(`${API}/api/alerts?limit=100${unackOnly ? '&unacknowledged_only=true' : ''}`),
+        fetch(`${API}/api/rca/results?limit=200`),
+      ])
+      if (alertRes.ok) setAlerts(await alertRes.json())
+      if (rcaRes.ok) {
+        const results: RcaResult[] = await rcaRes.json()
+        const map: Record<string, RcaResult> = {}
+        results.forEach((r) => { map[r.workflow_id] = r })
+        setRcaMap(map)
+      }
     } finally {
       setLoading(false)
     }
@@ -170,6 +187,8 @@ export default function AlertsPage() {
             const id = alert._id ?? ''
             const isResolved = !!alert.resolved_by_task_id
             const hasTask = !!alert.task_id
+            const rca = alert.workflow_id ? rcaMap[alert.workflow_id] : undefined
+            const rootCause = rca?.root_cause
             return (
               <div
                 key={id || alert.timestamp}
@@ -198,14 +217,23 @@ export default function AlertsPage() {
                     )}
                   </div>
 
-                  {/* Row 2: human-readable message */}
-                  <p className="text-base font-semibold text-slate-100 mt-2">{readableMessage(alert)}</p>
+                  {/* Row 2: root cause (if RCA complete) or readable message */}
+                  {rootCause ? (
+                    <p className="text-base font-semibold text-slate-100 mt-2">{rootCause}</p>
+                  ) : (
+                    <p className="text-base font-semibold text-slate-100 mt-2">{readableMessage(alert)}</p>
+                  )}
 
                   {/* Row 3: equipment label */}
                   <p className="text-sm text-slate-400 mt-0.5">Equipment: {alert.equipment_id}</p>
 
-                  {/* Row 4: score + resolved date */}
-                  <p className="text-xs text-slate-500 mt-1">Score: {alert.ensemble_score?.toFixed(3)}</p>
+                  {/* Row 4: score + RCA pending indicator + resolved date */}
+                  <div className="flex items-center gap-3 mt-1">
+                    <p className="text-xs text-slate-500">Score: {alert.ensemble_score?.toFixed(3)}</p>
+                    {alert.workflow_id && !rootCause && (
+                      <span className="text-xs text-amber-500">RCA pending…</span>
+                    )}
+                  </div>
                   {isResolved && alert.resolved_at && (
                     <p className="text-xs text-emerald-600 mt-0.5">
                       Resolved {new Date(alert.resolved_at).toLocaleDateString()}

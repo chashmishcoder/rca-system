@@ -652,7 +652,8 @@ async def ingest_sensor_reading(
             severity = "low"
 
         anomaly_detected = ensemble_score > 0.5
-        workflow_id = None
+        # Generate workflow_id early so it can be stored in the alert
+        workflow_id = str(uuid.uuid4()) if anomaly_detected else None
 
         equipment_id = reading.machine_id or "eq-001"
         ts_now = datetime.now(timezone.utc)
@@ -710,6 +711,7 @@ async def ingest_sensor_reading(
                         "acknowledged": False,
                         "cost": _cost_cache.get(severity, 320),
                         "message": _human_alert_message(severity, top_features),
+                        "workflow_id": workflow_id,  # links alert to RCA result
                     })
             except Exception as _db_err:
                 import logging
@@ -717,7 +719,7 @@ async def ingest_sensor_reading(
 
         if anomaly_detected:
             # Build AnomalyInput-compatible payload and trigger RCA workflow
-            workflow_id = str(uuid.uuid4())
+            # workflow_id was already generated above
             anomaly_data = {
                 'anomaly_id': equipment_id + f"_{workflow_id[:8]}",
                 'timestamp': reading.timestamp or ts_now.isoformat(),
@@ -854,6 +856,22 @@ async def get_workflow_status(workflow_id: str):
         response["error"] = workflow_results[workflow_id].get("error", "Unknown error")
     
     return response
+
+
+@app.get("/api/rca/results", tags=["RCA Analysis"])
+async def list_rca_results(
+    limit: int = Query(100, ge=1, le=500),
+    equipment_id: Optional[str] = Query(None),
+):
+    """Return all completed RCA results from MongoDB (for dashboard cross-linking)."""
+    db = _require_db()
+    query: Dict[str, Any] = {"status": "completed"}
+    if equipment_id:
+        query["equipment_id"] = equipment_id
+    docs = await db.rca_results.find(query).sort("completed_at", -1).to_list(length=limit)
+    for doc in docs:
+        doc["_id"] = str(doc["_id"])
+    return docs
 
 
 @app.get("/api/rca/result/{workflow_id}", response_model=RCAResult, tags=["RCA Analysis"])
