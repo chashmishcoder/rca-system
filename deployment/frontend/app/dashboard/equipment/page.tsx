@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Plus, RefreshCw, Edit2, Check } from 'lucide-react'
+import { Plus, RefreshCw, Zap, Check } from 'lucide-react'
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
@@ -17,29 +17,14 @@ interface Equipment {
   installed_at?: string
 }
 
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    operational: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-    warning: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    critical: 'bg-red-500/20 text-red-400 border-red-500/30',
-  }
-  return (
-    <span className={`px-2 py-0.5 rounded border text-xs font-medium ${map[status] || 'bg-slate-700 text-slate-300'}`}>
-      {status}
-    </span>
-  )
+const STATUS_PILL: Record<string, string> = {
+  operational: 'bg-emerald-500 text-white',
+  warning:     'bg-amber-500 text-black',
+  critical:    'bg-red-500 text-white',
 }
 
-function HealthBar({ value }: { value: number }) {
-  const color = value >= 70 ? 'bg-emerald-500' : value >= 40 ? 'bg-amber-500' : 'bg-red-500'
-  return (
-    <div className="flex items-center gap-2">
-      <div className="flex-1 bg-slate-700 rounded-full h-2">
-        <div className={`${color} h-2 rounded-full transition-all`} style={{ width: `${value}%` }} />
-      </div>
-      <span className="text-xs text-slate-400 w-10 text-right">{value}%</span>
-    </div>
-  )
+function healthColor(v: number) {
+  return v >= 70 ? '#22c55e' : v >= 40 ? '#f59e0b' : '#ef4444'
 }
 
 const EMPTY_FORM = { equipment_id: '', name: '', type: 'pump', location: '' }
@@ -99,10 +84,11 @@ export default function EquipmentPage() {
 
   return (
     <div className="p-6 space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-100">Equipment</h1>
-          <p className="text-slate-400 text-sm mt-1">{equipment.length} machines registered</p>
+          <h1 className="text-3xl font-bold text-slate-100">Equipment Status</h1>
+          <p className="text-slate-400 text-sm mt-1">Monitor and manage all equipment</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -182,20 +168,57 @@ export default function EquipmentPage() {
       {loading ? (
         <div className="text-slate-400 py-8 text-center">Loading…</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          {equipment.map((eq) => (
-            <div key={eq.equipment_id} className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="font-semibold text-slate-100">{eq.name}</p>
-                  <p className="text-xs text-slate-500 font-mono">{eq.equipment_id}</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          {equipment.map((eq) => {
+            const isEditing = editId === eq.equipment_id
+            const lastTime = eq.last_reading_at
+              ? new Date(eq.last_reading_at).toLocaleTimeString()
+              : '—'
+            const hc = healthColor(eq.health_score)
+
+            return (
+              <div
+                key={eq.equipment_id}
+                className="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col gap-4"
+              >
+                {/* Card header */}
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-2">
+                    <Zap size={20} className="text-slate-300 shrink-0" />
+                    <div>
+                      <p className="font-bold text-lg text-slate-100 leading-tight">{eq.name}</p>
+                      <p className="text-sm text-slate-500">ID: {eq.equipment_id}</p>
+                    </div>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold shrink-0 ${STATUS_PILL[eq.status] ?? 'bg-slate-600 text-white'}`}>
+                    {eq.status}
+                  </span>
                 </div>
-                {editId === eq.equipment_id ? (
-                  <div className="flex items-center gap-1">
+
+                {/* Health */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-semibold text-slate-300">Health Status</span>
+                    <span className="text-sm font-bold text-slate-100">{eq.health_score}%</span>
+                  </div>
+                  <div className="w-full bg-slate-700 rounded-full h-2.5">
+                    <div
+                      className="h-2.5 rounded-full transition-all"
+                      style={{ width: `${eq.health_score}%`, backgroundColor: hc }}
+                    />
+                  </div>
+                </div>
+
+                {/* Last updated */}
+                <p className="text-sm text-slate-500">Last updated: {lastTime}</p>
+
+                {/* Buttons / edit row */}
+                {isEditing ? (
+                  <div className="flex items-center gap-2">
                     <select
                       value={editStatus}
                       onChange={(e) => setEditStatus(e.target.value)}
-                      className="bg-slate-800 border border-slate-700 text-xs text-slate-200 rounded px-1.5 py-1"
+                      className="flex-1 bg-slate-800 border border-slate-700 text-sm text-slate-200 rounded-lg px-3 py-2"
                     >
                       {['operational', 'warning', 'critical'].map((s) => (
                         <option key={s} value={s}>{s}</option>
@@ -203,47 +226,36 @@ export default function EquipmentPage() {
                     </select>
                     <button
                       onClick={() => handleStatusUpdate(eq.equipment_id, editStatus)}
-                      className="text-emerald-400 hover:text-emerald-300"
+                      className="flex items-center gap-1 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium transition-colors"
                     >
-                      <Check size={14} />
+                      <Check size={14} /> Save
+                    </button>
+                    <button
+                      onClick={() => setEditId(null)}
+                      className="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm transition-colors"
+                    >
+                      Cancel
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1.5">
-                    <StatusBadge status={eq.status} />
+                  <div className="grid grid-cols-2 gap-2">
+                    <a
+                      href={`/dashboard/alerts?equipment=${eq.equipment_id}`}
+                      className="flex items-center justify-center px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-colors"
+                    >
+                      View Details
+                    </a>
                     <button
                       onClick={() => { setEditId(eq.equipment_id); setEditStatus(eq.status) }}
-                      className="text-slate-500 hover:text-slate-300"
+                      className="flex items-center justify-center px-4 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-semibold transition-colors"
                     >
-                      <Edit2 size={12} />
+                      Edit
                     </button>
                   </div>
                 )}
               </div>
-
-              <div className="text-xs text-slate-400 space-y-1">
-                <p><span className="text-slate-500">Type:</span> {eq.type}</p>
-                <p><span className="text-slate-500">Location:</span> {eq.location}</p>
-                {eq.last_maintenance && (
-                  <p>
-                    <span className="text-slate-500">Last maintenance:</span>{' '}
-                    {new Date(eq.last_maintenance).toLocaleDateString()}
-                  </p>
-                )}
-                {eq.last_reading_at && (
-                  <p>
-                    <span className="text-slate-500">Last reading:</span>{' '}
-                    {new Date(eq.last_reading_at).toLocaleString()}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <p className="text-xs text-slate-500 mb-1">Health</p>
-                <HealthBar value={eq.health_score} />
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>
