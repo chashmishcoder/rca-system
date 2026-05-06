@@ -13,13 +13,42 @@ interface Alert {
   ensemble_score: number
   message: string
   acknowledged: boolean
-  task_id?: string            // set when a maintenance task is created from this alert
-  resolved_by_task_id?: string // set when the linked task is marked done
+  task_id?: string
+  resolved_by_task_id?: string
   resolved_at?: string
+  top_features?: Array<{ feature_name: string; error: number }>
 }
 
 const EMPTY_TASK_FORM = { equipment_id: '', description: '', priority: 'medium', due_date: '', notes: '', alert_id: '' }
 type TaskForm = typeof EMPTY_TASK_FORM
+
+const OLD_MSG_PATTERN = /^(CRITICAL|HIGH|MEDIUM|LOW) anomaly detected on .+ \(score=[\d.]+\)$/i
+
+const SEVERITY_LABELS: Record<string, string> = {
+  critical: 'Critical system anomaly detected',
+  high:     'High-severity anomaly detected',
+  medium:   'Anomaly detected — inspection required',
+  low:      'Low-level anomaly detected',
+}
+
+function readableMessage(alert: Alert & { top_features?: Array<{ feature_name: string }> }): string {
+  if (!OLD_MSG_PATTERN.test(alert.message)) return alert.message
+  const FEATURE_LABELS: Record<string, string> = {
+    air_temp:   'Air temperature anomaly detected',
+    proc_temp:  'Process temperature anomaly detected',
+    rpm:        'Rotational speed anomaly detected',
+    torque:     'Torque anomaly detected',
+    tool_wear:  'Excessive tool wear detected',
+    temp_diff:  'Temperature differential anomaly detected',
+    power:      'Power consumption anomaly detected',
+    thermal:    'Thermal stress anomaly detected',
+  }
+  const topFeature = alert.top_features?.[0]?.feature_name?.toLowerCase() ?? ''
+  for (const [key, label] of Object.entries(FEATURE_LABELS)) {
+    if (topFeature.includes(key)) return label
+  }
+  return SEVERITY_LABELS[alert.severity] ?? 'Anomaly detected'
+}
 
 function SeverityBadge({ severity }: { severity: string }) {
   const map: Record<string, string> = {
@@ -170,7 +199,7 @@ export default function AlertsPage() {
                   </div>
 
                   {/* Row 2: human-readable message */}
-                  <p className="text-base font-semibold text-slate-100 mt-2">{alert.message}</p>
+                  <p className="text-base font-semibold text-slate-100 mt-2">{readableMessage(alert)}</p>
 
                   {/* Row 3: equipment label */}
                   <p className="text-sm text-slate-400 mt-0.5">Equipment: {alert.equipment_id}</p>
