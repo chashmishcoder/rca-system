@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Wrench, Plus, Check, RefreshCw, Clock, Calendar, AlertCircle } from 'lucide-react'
+import { Wrench, Plus, Check, RefreshCw, Clock, Calendar, AlertCircle, Link2 } from 'lucide-react'
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
@@ -15,6 +15,7 @@ interface Task {
   created_at?: string
   estimated_cost?: number
   notes?: string
+  alert_id?: string  // links back to originating alert
 }
 
 const PRIORITY_BADGE: Record<string, string> = {
@@ -58,7 +59,7 @@ export default function MaintenancePage() {
   const [loading, setLoading]     = useState(true)
   const [showModal, setShowModal]  = useState(false)
   const [taskForm, setTaskForm]    = useState(EMPTY_TASK)
-  const [saving, setSaving]        = useState(false)
+  const [saving, setSaving]         = useState(false)
   const [actionId, setActionId]   = useState<string | null>(null)
 
   async function load() {
@@ -144,6 +145,14 @@ export default function MaintenancePage() {
 
         {/* Equipment ID */}
         <p className="text-xs text-slate-500 font-mono mt-1.5 ml-5">{task.equipment_id}</p>
+
+        {/* Alert link badge */}
+        {task.alert_id && (
+          <div className="flex items-center gap-1 mt-2 ml-5">
+            <Link2 size={11} className="text-blue-400" />
+            <span className="text-[11px] text-blue-400">Alert #{task.alert_id.slice(-6)}</span>
+          </div>
+        )}
 
         {/* Due date */}
         <div className="flex items-center gap-1.5 mt-3 ml-5">

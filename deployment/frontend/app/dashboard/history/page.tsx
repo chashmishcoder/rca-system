@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { RefreshCw, CheckCircle2, AlertCircle, Clock } from 'lucide-react'
+import { RefreshCw, CheckCircle2, AlertCircle, Clock, Link2 } from 'lucide-react'
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
@@ -13,6 +13,9 @@ interface AlertRecord {
   cost?: number
   message: string
   acknowledged: boolean
+  task_id?: string             // maintenance task created from this alert
+  resolved_by_task_id?: string // task that marked this as resolved
+  resolved_at?: string
 }
 
 interface EquipmentDoc {
@@ -185,9 +188,16 @@ export default function HistoryPage() {
 
               {/* Status — 88px */}
               <div className="w-[88px] shrink-0 text-right">
-                <span className={`text-xs font-semibold ${a.acknowledged ? 'text-emerald-400' : 'text-amber-400'}`}>
-                  {a.acknowledged ? 'Completed' : 'Active'}
-                </span>
+                {a.resolved_by_task_id ? (
+                  <span className="flex items-center justify-end gap-1 text-xs font-semibold text-emerald-400" title={`Resolved by task #${a.resolved_by_task_id.slice(-6)}`}>
+                    <Link2 size={11} />
+                    Resolved
+                  </span>
+                ) : (
+                  <span className={`text-xs font-semibold ${a.acknowledged ? 'text-emerald-400' : 'text-amber-400'}`}>
+                    {a.acknowledged ? 'Completed' : 'Active'}
+                  </span>
+                )}
               </div>
 
               {/* Cost — 88px */}

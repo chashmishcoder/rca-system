@@ -954,6 +954,7 @@ class EquipmentUpdate(BaseModel):
     health_score: Optional[float] = None
 
 class MaintenanceTaskCreate(BaseModel):
+    alert_id: Optional[str] = None  # links task back to the originating alert
     equipment_id: str
     description: str
     priority: str = "medium"   # critical / high / medium / low
@@ -1048,12 +1049,13 @@ async def list_alerts(
     if unacknowledged_only:
         query["acknowledged"] = False
     docs = (
-        await db.alerts.find(query, {"_id": 0})
+        await db.alerts.find(query)
         .sort("timestamp", -1)
         .to_list(length=limit)
     )
-    # Serialise datetime objects
+    # Serialise
     for doc in docs:
+        doc["_id"] = str(doc["_id"])  # expose so frontend can use as alert_id
         if isinstance(doc.get("timestamp"), datetime):
             doc["timestamp"] = doc["timestamp"].isoformat()
     return docs
@@ -1168,6 +1170,8 @@ async def update_maintenance_task(task_id: str, payload: MaintenanceTaskPatch):
     updates = {k: v for k, v in payload.model_dump().items() if v is not None}
     updates["updated_at"] = datetime.now(timezone.utc)
     try:
+        # Fetch the task first so we can read alert_id for back-linking
+        task_doc = await db.maintenance_tasks.find_one({"_id": ObjectId(task_id)})
         result = await db.maintenance_tasks.update_one(
             {"_id": ObjectId(task_id)},
             {"$set": updates},
@@ -1176,6 +1180,20 @@ async def update_maintenance_task(task_id: str, payload: MaintenanceTaskPatch):
         raise HTTPException(status_code=400, detail="Invalid task ID format")
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Task not found")
+
+    # When task is marked done, write resolved_by_task_id back to the linked alert
+    if payload.status == "done" and task_doc and task_doc.get("alert_id"):
+        try:
+            await db.alerts.update_one(
+                {"_id": ObjectId(task_doc["alert_id"])},
+                {"$set": {
+                    "resolved_by_task_id": task_id,
+                    "resolved_at": datetime.now(timezone.utc).isoformat(),
+                }},
+            )
+        except Exception:
+            pass  # non-fatal
+
     return {"updated": True}
 
 
@@ -1202,10 +1220,24 @@ async def create_maintenance_task(payload: MaintenanceTaskCreate):
         "due_date": due_date,
         "estimated_cost": estimated_cost,
         "notes": payload.notes,
+        "alert_id": payload.alert_id,  # bidirectional link
         "created_at": datetime.now(timezone.utc),
     }
     result = await db.maintenance_tasks.insert_one(doc)
-    return {"_id": str(result.inserted_id), "created": True}
+    task_id_str = str(result.inserted_id)
+
+    # Write task_id back to the originating alert so History can cross-link
+    if payload.alert_id:
+        try:
+            from bson import ObjectId as _ObjId
+            await db.alerts.update_one(
+                {"_id": _ObjId(payload.alert_id)},
+                {"$set": {"task_id": task_id_str}},
+            )
+        except Exception:
+            pass  # non-fatal — link is best-effort
+
+    return {"_id": task_id_str, "created": True}
 
 
 @app.get("/api/maintenance/history", tags=["Maintenance"])
