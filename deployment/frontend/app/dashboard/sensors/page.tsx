@@ -51,16 +51,28 @@ const CHART_LINES = [
 
 // ── component ──────────────────────────────────────────────────────
 export default function SensorsPage() {
-  const [latest, setLatest]   = useState<Reading[]>([])
-  const [history, setHistory] = useState<Reading[]>([])
-  const [loading, setLoading] = useState(true)
-  // Pick first available equipment for history; once we have data we use actual IDs
-  const [histEqId, setHistEqId] = useState('eq-001')
+  const [latest,    setLatest]    = useState<Reading[]>([])
+  const [history,   setHistory]   = useState<Reading[]>([])
+  const [eqList,    setEqList]    = useState<string[]>([])
+  const [loading,   setLoading]   = useState(true)
+  const [histEqId,  setHistEqId]  = useState('')
+
+  // Fetch all registered equipment on mount so selector is always fully populated
+  useEffect(() => {
+    fetch(`${API}/api/equipment`)
+      .then((r) => r.ok ? r.json() : [])
+      .then((data: Array<{ equipment_id: string }>) => {
+        const ids = data.map((e) => e.equipment_id).sort()
+        setEqList(ids)
+        if (ids.length > 0 && histEqId === '') setHistEqId(ids[0])
+      })
+  }, [])
 
   async function load() {
+    if (!histEqId) return
     try {
-      // Fetch last 20 readings across all equipment for tiles
-      const latRes  = await fetch(`${API}/api/sensors/latest?limit=20`)
+      // Fetch last reading per equipment (limit=100 ensures all machines covered)
+      const latRes  = await fetch(`${API}/api/sensors/latest?limit=100`)
       // Fetch 24h history for the selected equipment for the trend chart
       const histRes = await fetch(`${API}/api/sensors/history?equipment_id=${histEqId}&hours=24`)
       if (latRes.ok)  setLatest(await latRes.json())
@@ -71,6 +83,7 @@ export default function SensorsPage() {
   }
 
   useEffect(() => {
+    if (!histEqId) return
     load()
     const t = setInterval(load, 30_000)
     return () => clearInterval(t)
@@ -102,8 +115,8 @@ export default function SensorsPage() {
     tool_wear:       r.tool_wear,
   }))
 
-  // Unique equipment IDs seen in latest readings (for history selector)
-  const eqIds = Array.from(new Set(latest.map((r) => r.equipment_id))).sort()
+  // Merge registered equipment + any IDs seen in sensor readings (handles edge cases)
+  const eqIds = Array.from(new Set([...eqList, ...latest.map((r) => r.equipment_id)])).sort()
 
   return (
     <div className="p-6 space-y-6">
