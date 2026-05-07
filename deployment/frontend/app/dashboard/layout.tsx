@@ -36,6 +36,7 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/dashboard/equipment':   { title: 'Equipment',        subtitle: 'Equipment status and management' },
   '/dashboard/maintenance': { title: 'Maintenance',      subtitle: 'Predictive maintenance schedule' },
   '/dashboard/history':     { title: 'History',          subtitle: 'Historical anomaly records' },
+  '/dashboard/settings':    { title: 'Settings',         subtitle: 'Profile and preferences' },
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -48,15 +49,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [notiOpen,        setNotiOpen]        = useState(false)
   const [recentAlerts,    setRecentAlerts]    = useState<any[]>([])
   const [userEmail,       setUserEmail]       = useState('')
+  const [userName,        setUserName]        = useState('')
+  const [userDesig,       setUserDesig]       = useState('')
   const profileRef  = useRef<HTMLDivElement>(null)
   const notiRef     = useRef<HTMLDivElement>(null)
+
+  function loadProfile() {
+    setUserEmail(localStorage.getItem('rca_user_email') || 'admin@rca.io')
+    setUserName(localStorage.getItem('rca_user_name') || '')
+    setUserDesig(localStorage.getItem('rca_user_designation') || '')
+  }
 
   // ── auth check + load user info ──
   useEffect(() => {
     if (!localStorage.getItem('rca_authenticated')) {
       router.replace('/login')
     }
-    setUserEmail(localStorage.getItem('rca_user_email') || 'admin@rca.io')
+    loadProfile()
+    window.addEventListener('rca_profile_updated', loadProfile)
+    return () => window.removeEventListener('rca_profile_updated', loadProfile)
   }, [router])
 
   // ── dark mode persisted ──
@@ -103,7 +114,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   const pageInfo = PAGE_TITLES[pathname] ?? { title: 'Dashboard', subtitle: '' }
-  const userName  = userEmail.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+  const displayName = userName || userEmail.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase())
+  const displayDesig = userDesig || 'Operations Manager'
 
   const SEV_DOT: Record<string, string> = {
     critical: 'bg-red-500', high: 'bg-orange-500', medium: 'bg-amber-400', low: 'bg-blue-400',
@@ -237,9 +249,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {/* Settings */}
             <Link
-              href="/dashboard/equipment"
+              href="/dashboard/settings"
               title="Settings"
-              className={`p-2 rounded-lg transition-colors ${darkMode ? 'text-slate-400 hover:bg-slate-800 hover:text-slate-100' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'}`}
+              className={`p-2 rounded-lg transition-colors ${
+                pathname === '/dashboard/settings'
+                  ? 'text-emerald-400 bg-emerald-600/10'
+                  : darkMode ? 'text-slate-400 hover:bg-slate-800 hover:text-slate-100' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'
+              }`}
             >
               <Settings size={18} />
             </Link>
@@ -256,8 +272,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <User size={14} className="text-white" />
                 </div>
                 <div className="text-left hidden sm:block">
-                  <p className={`text-sm font-semibold leading-none ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>{userName}</p>
-                  <p className="text-xs text-slate-500 mt-0.5">Operations Manager</p>
+                  <p className={`text-sm font-semibold leading-none ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>{displayName}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">{displayDesig}</p>
                 </div>
                 <ChevronDown size={14} className={`text-slate-500 transition-transform ${profileOpen ? 'rotate-180' : ''}`} />
               </button>
@@ -265,10 +281,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {profileOpen && (
                 <div className={`absolute right-0 mt-1 w-56 rounded-xl shadow-2xl border z-50 ${darkMode ? 'bg-slate-900 border-slate-700' : 'bg-white border-slate-200'}`}>
                   <div className={`px-4 py-3 border-b ${darkMode ? 'border-slate-700' : 'border-slate-200'}`}>
-                    <p className={`text-sm font-semibold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>{userName}</p>
+                    <p className={`text-sm font-semibold ${darkMode ? 'text-slate-100' : 'text-slate-800'}`}>{displayName}</p>
+                    <p className="text-xs text-slate-500">{displayDesig}</p>
                     <p className="text-xs text-slate-500 truncate">{userEmail}</p>
                   </div>
                   <div className="py-1">
+                    <Link
+                      href="/dashboard/settings"
+                      onClick={() => setProfileOpen(false)}
+                      className={`flex items-center gap-3 w-full px-4 py-2 text-sm transition-colors ${darkMode ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50'}`}
+                    >
+                      <Settings size={14} />
+                      Edit Profile
+                    </Link>
                     <button
                       onClick={() => { setDarkMode(d => !d); setProfileOpen(false) }}
                       className={`flex items-center gap-3 w-full px-4 py-2 text-sm transition-colors ${darkMode ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50'}`}
