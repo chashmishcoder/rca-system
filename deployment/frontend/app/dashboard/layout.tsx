@@ -139,7 +139,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className={`px-6 py-5 border-b ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
           <Link href="/dashboard" className="flex items-center gap-2">
             <span className="font-bold text-lg bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-              RCA System
+              DiagAI
             </span>
           </Link>
           <p className={`text-xs mt-1 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>Industrial Dashboard</p>
