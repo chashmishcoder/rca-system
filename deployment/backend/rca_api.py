@@ -1481,26 +1481,27 @@ async def get_dashboard_summary():
 # =================================================================
 # AUTHENTICATION
 # =================================================================
+# Use stdlib PBKDF2-HMAC-SHA256 — no external dependency, OWASP-recommended
+# (passlib+bcrypt 4.x have a known compatibility break on Python 3.11)
+import hashlib
+import secrets as _secrets
 
-try:
-    from passlib.context import CryptContext
-    _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-    _BCRYPT_AVAILABLE = True
-except ImportError:
-    _BCRYPT_AVAILABLE = False
-    _pwd_context = None  # type: ignore
+_PBKDF2_ITERS = 600_000  # OWASP 2023 recommendation
 
 
 def _hash_password(plain: str) -> str:
-    if not _BCRYPT_AVAILABLE:
-        raise HTTPException(status_code=500, detail="Password hashing library not available")
-    return _pwd_context.hash(plain)
+    salt = _secrets.token_hex(32)
+    h = hashlib.pbkdf2_hmac("sha256", plain.encode(), salt.encode(), _PBKDF2_ITERS)
+    return f"pbkdf2${salt}${h.hex()}"
 
 
-def _verify_password(plain: str, hashed: str) -> bool:
-    if not _BCRYPT_AVAILABLE:
+def _verify_password(plain: str, stored: str) -> bool:
+    try:
+        _, salt, expected = stored.split("$")
+        actual = hashlib.pbkdf2_hmac("sha256", plain.encode(), salt.encode(), _PBKDF2_ITERS)
+        return _secrets.compare_digest(actual.hex(), expected)
+    except Exception:
         return False
-    return _pwd_context.verify(plain, hashed)
 
 
 class RegisterRequest(BaseModel):

@@ -67,9 +67,10 @@ export default function SignupPage() {
           designation: company.trim() || null,
         }),
       });
-      const data = await res.json();
+      const ct = res.headers.get('content-type') || '';
+      const data = ct.includes('json') ? await res.json() : null;
       if (!res.ok) {
-        setError(data.detail || 'Registration failed. Please try again.');
+        setError(data?.detail || `Server error (${res.status}). Please try again.`);
         return;
       }
       // Store session

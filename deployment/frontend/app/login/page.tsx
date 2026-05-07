@@ -27,9 +27,10 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
       });
-      const data = await res.json();
+      const ct = res.headers.get('content-type') || '';
+      const data = ct.includes('json') ? await res.json() : null;
       if (!res.ok) {
-        setError(data.detail || 'Invalid email or password');
+        setError(data?.detail || 'Invalid email or password');
         return;
       }
       // Store session
