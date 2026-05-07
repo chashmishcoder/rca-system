@@ -23,7 +23,7 @@ const SAMPLE_READINGS = [
   },
   {
     label: 'High Wear Anomaly',
-    description: 'Elevated tool wear + torque \u2192 likely failure',
+    description: 'Elevated tool wear + torque → likely failure',
     values: { air_temperature: '302.4', process_temperature: '312.4', rotational_speed: '1460', torque: '69.1', tool_wear: '198' }
   },
   {
@@ -34,11 +34,11 @@ const SAMPLE_READINGS = [
 ]
 
 const SENSOR_FIELDS = [
-  { key: 'air_temperature',     label: 'Air Temperature (K)',     placeholder: '295 \u2013 305 K',    unit: 'K' },
-  { key: 'process_temperature', label: 'Process Temperature (K)', placeholder: '305 \u2013 314 K',    unit: 'K' },
-  { key: 'rotational_speed',    label: 'Rotational Speed (RPM)',  placeholder: '1168 \u2013 2886 RPM', unit: 'RPM' },
-  { key: 'torque',              label: 'Torque (Nm)',             placeholder: '3.8 \u2013 76.6 Nm',  unit: 'Nm' },
-  { key: 'tool_wear',           label: 'Tool Wear (min)',         placeholder: '0 \u2013 253 min',     unit: 'min' },
+  { key: 'air_temperature',     label: 'Air Temperature (K)',     placeholder: '295 – 305 K',    unit: 'K' },
+  { key: 'process_temperature', label: 'Process Temperature (K)', placeholder: '305 – 314 K',    unit: 'K' },
+  { key: 'rotational_speed',    label: 'Rotational Speed (RPM)',  placeholder: '1168 – 2886 RPM', unit: 'RPM' },
+  { key: 'torque',              label: 'Torque (Nm)',             placeholder: '3.8 – 76.6 Nm',  unit: 'Nm' },
+  { key: 'tool_wear',           label: 'Tool Wear (min)',         placeholder: '0 – 253 min',     unit: 'min' },
 ]
 
 export default function AnalyzePage() {
@@ -194,7 +194,7 @@ export default function AnalyzePage() {
             {/* Equipment selector */}
             <div className="mb-6">
               <label className="block text-xs font-semibold mb-1.5 text-gray-400 uppercase tracking-wide">
-                Equipment (optional \u2014 auto-fills latest readings)
+                Equipment (optional — auto-fills latest readings)
               </label>
               <select
                 value={selectedEqId}
@@ -202,16 +202,16 @@ export default function AnalyzePage() {
                 disabled={loading}
                 className="w-full px-4 py-3 bg-slate-900/50 border border-white/10 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
               >
-                <option value="">\u2014 Select equipment to auto-fill \u2014</option>
+                <option value="">— Select equipment to auto-fill —</option>
                 {equipmentList.map((eq) => (
                   <option key={eq.equipment_id} value={eq.equipment_id}>
-                    {eq.name || eq.equipment_id} ({eq.equipment_id}) \u2014 {eq.status}
+                    {eq.name || eq.equipment_id} ({eq.equipment_id}) — {eq.status}
                   </option>
                 ))}
               </select>
 
               {prefillStatus === 'loading' && (
-                <p className="text-xs text-blue-400 mt-1.5">Fetching latest readings\u2026</p>
+                <p className="text-xs text-blue-400 mt-1.5">Fetching latest readings…</p>
               )}
               {prefillStatus === 'done' && (
                 <p className="text-xs text-emerald-400 mt-1.5">
@@ -220,7 +220,7 @@ export default function AnalyzePage() {
                 </p>
               )}
               {prefillStatus === 'no-data' && (
-                <p className="text-xs text-amber-400 mt-1.5">No sensor history found \u2014 enter readings manually or use a sample below.</p>
+                <p className="text-xs text-amber-400 mt-1.5">No sensor history found — enter readings manually or use a sample below.</p>
               )}
             </div>
 
@@ -281,7 +281,7 @@ export default function AnalyzePage() {
 
             {/* Sample Readings */}
             <div className="mt-2">
-              <p className="text-sm font-semibold mb-3 text-gray-400">Quick Start \u2014 Load a Sample Reading:</p>
+              <p className="text-sm font-semibold mb-3 text-gray-400">Quick Start — Load a Sample Reading:</p>
               <div className="flex flex-wrap gap-2">
                 {SAMPLE_READINGS.map(sample => (
                   <button
@@ -319,7 +319,7 @@ export default function AnalyzePage() {
               </div>
               <div>
                 <p className="text-blue-300 font-bold text-lg">AI Agents Working...</p>
-                <p className="text-gray-400 text-sm">Processing anomaly data \u2022 Analyzing patterns \u2022 Generating insights</p>
+                <p className="text-gray-400 text-sm">Processing anomaly data • Analyzing patterns • Generating insights</p>
               </div>
             </div>
             <div className="grid grid-cols-4 gap-3 mt-6">
@@ -465,7 +465,7 @@ export default function AnalyzePage() {
                     <ul className="space-y-2">
                       {result.symptoms.map((s: string, i: number) => (
                         <li key={i} className="flex items-start gap-2 text-gray-300">
-                          <span className="text-blue-400">\u2022</span><span>{s}</span>
+                          <span className="text-blue-400">•</span><span>{s}</span>
                         </li>
                       ))}
                     </ul>
@@ -478,7 +478,7 @@ export default function AnalyzePage() {
                     <ul className="space-y-2">
                       {result.affected_entities.map((e: string, i: number) => (
                         <li key={i} className="flex items-start gap-2 text-gray-300">
-                          <span className="text-purple-400">\u2022</span><span>{e}</span>
+                          <span className="text-purple-400">•</span><span>{e}</span>
                         </li>
                       ))}
                     </ul>
