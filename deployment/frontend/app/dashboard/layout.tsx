@@ -16,12 +16,14 @@ import {
   Moon,
   User,
   ChevronDown,
+  ScanSearch,
 } from 'lucide-react'
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'https://rca-backend-5jlv.onrender.com'
 
 const NAV_ITEMS = [
   { href: '/dashboard',             label: 'Overview',        icon: LayoutDashboard },
+  { href: '/analyze',               label: 'Analyze',         icon: ScanSearch },
   { href: '/dashboard/alerts',      label: 'Alerts',          icon: Bell },
   { href: '/dashboard/sensors',     label: 'Sensor Activity', icon: Activity },
   { href: '/dashboard/equipment',   label: 'Equipment',       icon: Settings },
@@ -169,12 +171,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </nav>
 
         <div className={`px-4 py-4 border-t space-y-2 ${darkMode ? 'border-slate-800' : 'border-slate-200'}`}>
-          <Link
-            href="/analyze"
-            className="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-sm font-medium text-white transition-all"
-          >
-            Run RCA Analysis
-          </Link>
           <button
             onClick={handleLogout}
             className={`flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors ${

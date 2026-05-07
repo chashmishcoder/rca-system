@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import Link from 'next/link'
+import { ArrowLeft, LayoutDashboard } from 'lucide-react'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://rca-backend-5jlv.onrender.com'
 
@@ -180,7 +182,27 @@ export default function AnalyzePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+
+      {/* ── Top Nav Bar ── */}
+      <nav className="sticky top-0 z-50 flex items-center justify-between px-6 py-3 bg-slate-900/80 backdrop-blur border-b border-white/10">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft size={16} />
+          Back to Dashboard
+        </Link>
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 text-sm font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent"
+        >
+          <LayoutDashboard size={15} className="text-emerald-400" />
+          DiagAI
+        </Link>
+      </nav>
+
+      <div className="py-12 px-4">
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}
@@ -565,6 +587,7 @@ export default function AnalyzePage() {
             )}
           </div>
         )}
+      </div>
       </div>
     </div>
   )
