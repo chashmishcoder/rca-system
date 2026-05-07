@@ -1,9 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://rca-backend-5jlv.onrender.com'
+
+// Dataset means used as fallback for missing sensor fields
+const DATASET_MEANS: Record<string, number> = {
+  air_temperature:     300.5,
+  process_temperature: 310.8,
+  rotational_speed:    1538.0,
+  torque:              40.0,
+  tool_wear:           108.0,
+}
+
+interface Equipment { equipment_id: string; name: string; status: string }
 
 // Sample sensor readings for quick-start
 const SAMPLE_READINGS = [
@@ -24,91 +35,145 @@ const SAMPLE_READINGS = [
   },
 ]
 
-export default function AnalyzePage() {
-  const [airTemp, setAirTemp] = useState('')
-  const [procTemp, setProcTemp] = useState('')
-  const [rpm, setRpm] = useState('')
-  const [torque, setTorque] = useState('')
-  const [toolWear, setToolWear] = useState('')
+// Sensor field config — label, placeholder (normal range), and dataset mean for missing fallback
+const SENSOR_FIELDS = [
+  { key: 'air_temperature',     label: 'Air Temperature (K)',     placeholder: '295 – 305 K',    unit: 'K' },
+  { key: 'process_temperature', label: 'Process Temperature (K)', placeholder: '305 – 314 K',    unit: 'K' },
+  { key: 'rotational_speed',    label: 'Rotational Speed (RPM)',  placeholder: '1168 – 2886 RPM', unit: 'RPM' },
+  { key: 'torque',              label: 'Torque (Nm)',             placeholder: '3.8 – 76.6 Nm',  unit: 'Nm' },
+  { key: 'tool_wear',           label: 'Tool Wear (min)',         placeholder: '0 – 253 min',     unit: 'min' },
+]
 
-  const [loading, setLoading] = useState(false)
-  const [result, setResult] = useState<any>(null)
+export default function AnalyzePage() {
+  const [equipmentList, setEquipmentList] = useState<Equipment[]>([])
+  const [selectedEqId, setSelectedEqId] = useState('')
+  const [autoFilled, setAutoFilled]     = useState<Set<string>>(new Set())
+  const [prefillStatus, setPrefillStatus] = useState<'idle' | 'loading' | 'done' | 'no-data'>('idle')
+
+  const [airTemp,   setAirTemp]   = useState('')
+  const [procTemp,  setProcTemp]  = useState('')
+  const [rpm,       setRpm]       = useState('')
+  const [torque,    setTorque]    = useState('')
+  const [toolWear,  setToolWear]  = useState('')
+
+  const [loading,   setLoading]   = useState(false)
+  const [result,    setResult]    = useState<any>(null)
   const [noAnomaly, setNoAnomaly] = useState<any>(null)
-  const [error, setError] = useState('')
+  const [error,     setError]     = useState('')
+
+  const SETTERS: Record<string, (v: string) => void> = {
+    air_temperature:     setAirTemp,
+    process_temperature: setProcTemp,
+    rotational_speed:    setRpm,
+    torque:              setTorque,
+    tool_wear:           setToolWear,
+  }
+  const VALUES: Record<string, string> = {
+    air_temperature:     airTemp,
+    process_temperature: procTemp,
+    rotational_speed:    rpm,
+    torque,
+    tool_wear:           toolWear,
+  }
+
+  // Load equipment list on mount
+  useEffect(() => {
+    fetch(`${API_URL}/api/equipment`)
+      .then((r) => r.ok ? r.json() : [])
+      .then((data: Equipment[]) => setEquipmentList(data))
+      .catch(() => {})
+  }, [])
+
+  // When equipment is selected, fetch latest sensor reading and pre-fill
+  async function handleEquipmentSelect(eqId: string) {
+    setSelectedEqId(eqId)
+    setResult(null); setNoAnomaly(null); setError('')
+    if (!eqId) { setAutoFilled(new Set()); setPrefillStatus('idle'); return }
+
+    setPrefillStatus('loading')
+    try {
+      const res = await fetch(`${API_URL}/api/sensors/latest?equipment_id=${eqId}&limit=1`)
+      if (!res.ok) throw new Error()
+      const data = await res.json()
+      const reading = data[0]
+      const filled = new Set<string>()
+      for (const f of SENSOR_FIELDS) {
+        const raw = reading?.[f.key]
+        if (raw != null && typeof raw === 'number') {
+          SETTERS[f.key](raw.toFixed(1))
+          filled.add(f.key)
+        } else {
+          // Leave field empty — placeholder shows dataset mean
+          SETTERS[f.key]('')
+        }
+      }
+      setAutoFilled(filled)
+      setPrefillStatus(filled.size > 0 ? 'done' : 'no-data')
+    } catch {
+      setPrefillStatus('no-data')
+      setAutoFilled(new Set())
+    }
+  }
 
   const applySample = (sample: typeof SAMPLE_READINGS[0]) => {
+    setSelectedEqId('')
+    setAutoFilled(new Set())
+    setPrefillStatus('idle')
     setAirTemp(sample.values.air_temperature)
     setProcTemp(sample.values.process_temperature)
     setRpm(sample.values.rotational_speed)
     setTorque(sample.values.torque)
     setToolWear(sample.values.tool_wear)
-    setResult(null)
-    setNoAnomaly(null)
-    setError('')
+    setResult(null); setNoAnomaly(null); setError('')
   }
 
   const handleAnalyze = async () => {
-    if (!airTemp || !procTemp || !rpm || !torque || !toolWear) {
-      setError('Please fill in all five sensor fields before analyzing.')
+    // For any empty field, fall back to dataset mean so backend always gets all 5 values
+    const resolved = {
+      air_temperature:     parseFloat(airTemp)   || DATASET_MEANS.air_temperature,
+      process_temperature: parseFloat(procTemp)  || DATASET_MEANS.process_temperature,
+      rotational_speed:    parseFloat(rpm)       || DATASET_MEANS.rotational_speed,
+      torque:              parseFloat(torque)    || DATASET_MEANS.torque,
+      tool_wear:           parseFloat(toolWear)  || DATASET_MEANS.tool_wear,
+    }
+
+    // Warn if all fields are empty (user hasn't entered anything at all)
+    if (!airTemp && !procTemp && !rpm && !torque && !toolWear && !selectedEqId) {
+      setError('Please select an equipment or enter sensor readings before analyzing.')
       return
     }
 
-    setLoading(true)
-    setError('')
-    setResult(null)
-    setNoAnomaly(null)
+    setLoading(true); setError(''); setResult(null); setNoAnomaly(null)
 
     try {
-      const payload = {
-        air_temperature: parseFloat(airTemp),
-        process_temperature: parseFloat(procTemp),
-        rotational_speed: parseFloat(rpm),
-        torque: parseFloat(torque),
-        tool_wear: parseFloat(toolWear),
-      }
+      const payload: any = { ...resolved }
+      if (selectedEqId) payload.machine_id = selectedEqId
 
       const response = await axios.post(`${API_URL}/api/sensor/ingest`, payload)
       const data = response.data
 
-      if (!data.anomaly_detected) {
-        setNoAnomaly(data)
-        return
-      }
-
-      // Anomaly detected — poll for RCA results
+      if (!data.anomaly_detected) { setNoAnomaly(data); return }
       await pollForResults(data.workflow_id)
-
     } catch (err: any) {
-      console.error('Analysis error:', err)
       setError(err.response?.data?.detail || err.message || 'Analysis failed. Please try again.')
     } finally {
       setLoading(false)
     }
   }
-  
+
   const pollForResults = async (workflowId: string, maxAttempts = 60) => {
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds
-      
+      await new Promise(resolve => setTimeout(resolve, 2000))
       try {
-        // Check status
         const statusResponse = await axios.get(`${API_URL}/api/rca/status/${workflowId}`)
-        
         if (statusResponse.data.status === 'completed') {
-          // Get results
           const resultResponse = await axios.get(`${API_URL}/api/rca/result/${workflowId}`)
-          setResult(resultResponse.data)
-          return
+          setResult(resultResponse.data); return
         } else if (statusResponse.data.status === 'failed') {
-          setError('Analysis failed on the server')
-          return
+          setError('Analysis failed on the server'); return
         }
-        // If processing, continue polling
       } catch (err: any) {
-        console.error('Polling error:', err)
-        if (attempt === maxAttempts - 1) {
-          setError('Analysis timed out. Please try again.')
-        }
+        if (attempt === maxAttempts - 1) setError('Analysis timed out. Please try again.')
       }
     }
   }
@@ -128,37 +193,84 @@ export default function AnalyzePage() {
 
         {/* Input Card */}
         <div className="relative p-8 bg-gradient-to-br from-slate-800/50 to-purple-900/50 backdrop-blur-lg rounded-3xl border border-white/10 shadow-2xl mb-8">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-3xl"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-3xl" />
 
           <div className="relative z-10">
             <h2 className="text-lg font-semibold text-gray-200 mb-6">Enter Sensor Readings</h2>
 
-            {/* 5 sensor fields in a responsive grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              {[
-                { label: 'Air Temperature (K)',     placeholder: '295 – 305', value: airTemp,    setter: setAirTemp },
-                { label: 'Process Temperature (K)', placeholder: '305 – 314', value: procTemp,   setter: setProcTemp },
-                { label: 'Rotational Speed (rpm)',  placeholder: '1168 – 2886', value: rpm,      setter: setRpm },
-                { label: 'Torque (Nm)',             placeholder: '3.8 – 76.6', value: torque,    setter: setTorque },
-                { label: 'Tool Wear (min)',          placeholder: '0 – 253',   value: toolWear,  setter: setToolWear },
-              ].map(({ label, placeholder, value, setter }) => (
-                <div key={label}>
-                  <label className="block text-xs font-semibold mb-1.5 text-gray-400 uppercase tracking-wide">
-                    {label}
-                  </label>
-                  <input
-                    type="number"
-                    step="any"
-                    value={value}
-                    onChange={(e) => setter(e.target.value)}
-                    placeholder={placeholder}
-                    className="w-full px-4 py-3 bg-slate-900/50 border border-white/10 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-600 transition-all duration-300"
-                    disabled={loading}
-                  />
-                </div>
-              ))}
+            {/* ── Equipment selector ── */}
+            <div className="mb-6">
+              <label className="block text-xs font-semibold mb-1.5 text-gray-400 uppercase tracking-wide">
+                Equipment (optional — auto-fills latest readings)
+              </label>
+              <select
+                value={selectedEqId}
+                onChange={(e) => handleEquipmentSelect(e.target.value)}
+                disabled={loading}
+                className="w-full px-4 py-3 bg-slate-900/50 border border-white/10 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+              >
+                <option value="">— Select equipment to auto-fill —</option>
+                {equipmentList.map((eq) => (
+                  <option key={eq.equipment_id} value={eq.equipment_id}>
+                    {eq.name || eq.equipment_id} ({eq.equipment_id}) — {eq.status}
+                  </option>
+                ))}
+              </select>
 
-              {/* Analyze button occupies the 6th cell */}
+              {/* Pre-fill status feedback */}
+              {prefillStatus === 'loading' && (
+                <p className="text-xs text-blue-400 mt-1.5">Fetching latest readings…</p>
+              )}
+              {prefillStatus === 'done' && (
+                <p className="text-xs text-emerald-400 mt-1.5">
+                  Auto-filled {autoFilled.size} field{autoFilled.size !== 1 ? 's' : ''} from latest reading.
+                  {autoFilled.size < 5 && ' Empty fields will use dataset means.'}
+                </p>
+              )}
+              {prefillStatus === 'no-data' && (
+                <p className="text-xs text-amber-400 mt-1.5">No sensor history found — enter readings manually or use a sample below.</p>
+              )}
+            </div>
+
+            {/* ── 5 sensor fields ── */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              {SENSOR_FIELDS.map(({ key, label, placeholder }) => {
+                const isAutoFilled = autoFilled.has(key)
+                const meanVal = DATASET_MEANS[key]
+                return (
+                  <div key={key}>
+                    <label className="flex items-center gap-1.5 text-xs font-semibold mb-1.5 uppercase tracking-wide">
+                      <span className="text-gray-400">{label}</span>
+                      {isAutoFilled && (
+                        <span className="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] rounded font-medium normal-case tracking-normal">
+                          auto-filled
+                        </span>
+                      )}
+                      {!isAutoFilled && selectedEqId && prefillStatus === 'done' && (
+                        <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 text-[10px] rounded font-medium normal-case tracking-normal">
+                          using mean
+                        </span>
+                      )}
+                    </label>
+                    <input
+                      type="number"
+                      step="any"
+                      value={VALUES[key]}
+                      onChange={(e) => {
+                        SETTERS[key](e.target.value)
+                        setAutoFilled((prev) => { const n = new Set(prev); n.delete(key); return n })
+                      }}
+                      placeholder={isAutoFilled || selectedEqId ? String(meanVal) : placeholder}
+                      className={`w-full px-4 py-3 bg-slate-900/50 border text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-600 transition-all duration-300 ${
+                        isAutoFilled ? 'border-emerald-500/40' : 'border-white/10'
+                      }`}
+                      disabled={loading}
+                    />
+                  </div>
+                )
+              })}
+
+              {/* Analyze button in 6th cell */}
               <div className="flex items-end">
                 <button
                   onClick={handleAnalyze}
@@ -167,12 +279,120 @@ export default function AnalyzePage() {
                 >
                   {loading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
                       Analyzing...
                     </span>
-                  ) : (
-                    'Analyze 🚀'
-                  )}
+                  ) : 'Analyze' any) {
+        if (attempt === maxAttempts - 1) setError('Analysis timed out. Please try again.')
+      }
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-12 px-4">
+      <div className="max-w-5xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Analyze Anomaly
+          </h1>
+          <p className="text-gray-300 text-lg">
+            Identify root causes with AI-powered multi-agent analysis
+          </p>
+        </div>
+
+        {/* Input Card */}
+        <div className="relative p-8 bg-gradient-to-br from-slate-800/50 to-purple-900/50 backdrop-blur-lg rounded-3xl border border-white/10 shadow-2xl mb-8">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-3xl" />
+
+          <div className="relative z-10">
+            <h2 className="text-lg font-semibold text-gray-200 mb-6">Enter Sensor Readings</h2>
+
+            {/* ── Equipment selector ── */}
+            <div className="mb-6">
+              <label className="block text-xs font-semibold mb-1.5 text-gray-400 uppercase tracking-wide">
+                Equipment (optional — auto-fills latest readings)
+              </label>
+              <select
+                value={selectedEqId}
+                onChange={(e) => handleEquipmentSelect(e.target.value)}
+                disabled={loading}
+                className="w-full px-4 py-3 bg-slate-900/50 border border-white/10 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300"
+              >
+                <option value="">— Select equipment to auto-fill —</option>
+                {equipmentList.map((eq) => (
+                  <option key={eq.equipment_id} value={eq.equipment_id}>
+                    {eq.name || eq.equipment_id} ({eq.equipment_id}) — {eq.status}
+                  </option>
+                ))}
+              </select>
+
+              {/* Pre-fill status feedback */}
+              {prefillStatus === 'loading' && (
+                <p className="text-xs text-blue-400 mt-1.5">Fetching latest readings…</p>
+              )}
+              {prefillStatus === 'done' && (
+                <p className="text-xs text-emerald-400 mt-1.5">
+                  Auto-filled {autoFilled.size} field{autoFilled.size !== 1 ? 's' : ''} from latest reading.
+                  {autoFilled.size < 5 && ' Empty fields will use dataset means.'}
+                </p>
+              )}
+              {prefillStatus === 'no-data' && (
+                <p className="text-xs text-amber-400 mt-1.5">No sensor history found — enter readings manually or use a sample below.</p>
+              )}
+            </div>
+
+            {/* ── 5 sensor fields ── */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              {SENSOR_FIELDS.map(({ key, label, placeholder }) => {
+                const isAutoFilled = autoFilled.has(key)
+                const meanVal = DATASET_MEANS[key]
+                return (
+                  <div key={key}>
+                    <label className="flex items-center gap-1.5 text-xs font-semibold mb-1.5 uppercase tracking-wide">
+                      <span className="text-gray-400">{label}</span>
+                      {isAutoFilled && (
+                        <span className="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] rounded font-medium normal-case tracking-normal">
+                          auto-filled
+                        </span>
+                      )}
+                      {!isAutoFilled && selectedEqId && prefillStatus === 'done' && (
+                        <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 text-[10px] rounded font-medium normal-case tracking-normal">
+                          using mean
+                        </span>
+                      )}
+                    </label>
+                    <input
+                      type="number"
+                      step="any"
+                      value={VALUES[key]}
+                      onChange={(e) => {
+                        SETTERS[key](e.target.value)
+                        setAutoFilled((prev) => { const n = new Set(prev); n.delete(key); return n })
+                      }}
+                      placeholder={isAutoFilled || selectedEqId ? String(meanVal) : placeholder}
+                      className={`w-full px-4 py-3 bg-slate-900/50 border text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-600 transition-all duration-300 ${
+                        isAutoFilled ? 'border-emerald-500/40' : 'border-white/10'
+                      }`}
+                      disabled={loading}
+                    />
+                  </div>
+                )
+              })}
+
+              {/* Analyze button in 6th cell */}
+              <div className="flex items-end">
+                <button
+                  onClick={handleAnalyze}
+                  disabled={loading}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-purple-500/50 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transform hover:scale-105 transition-all duration-300"
+                >
+                  {loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
+                      Analyzing...
+                    </span>
+                  ) : 'Analyze'}
                 </button>
               </div>
             </div>
