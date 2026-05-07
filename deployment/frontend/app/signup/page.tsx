@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'https://rca-backend-5jlv.onrender.com';
+
 const PLANS = [
   { id: 'starter', label: 'Starter', price: '$249', desc: 'Up to 50 assets, community support' },
   { id: 'professional', label: 'Professional', price: '$749', desc: 'Unlimited assets, 24h SLA, full API access', recommended: true },
@@ -41,7 +43,7 @@ export default function SignupPage() {
     setError('');
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const { name, company, email, password } = form;
     if (!name || !company || !email || !password) {
@@ -53,12 +55,35 @@ export default function SignupPage() {
       return;
     }
     setLoading(true);
-    // Demo: accept any credentials
-    localStorage.setItem('rca_authenticated', 'true');
-    localStorage.setItem('rca_user_email', email);
-    localStorage.setItem('rca_user_name', name);
-    localStorage.setItem('rca_user_plan', selectedPlan);
-    router.replace('/dashboard');
+    setError('');
+    try {
+      const res = await fetch(`${API}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          password,
+          name: name.trim() || null,
+          designation: company.trim() || null,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.detail || 'Registration failed. Please try again.');
+        return;
+      }
+      // Store session
+      localStorage.setItem('rca_authenticated', 'true');
+      localStorage.setItem('rca_user_email', data.email);
+      if (name.trim())    localStorage.setItem('rca_user_name', name.trim());
+      if (company.trim()) localStorage.setItem('rca_user_designation', company.trim());
+      localStorage.setItem('rca_user_plan', selectedPlan);
+      router.replace('/dashboard');
+    } catch {
+      setError('Could not connect to the server. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

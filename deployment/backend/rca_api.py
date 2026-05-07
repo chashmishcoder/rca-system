@@ -1479,6 +1479,90 @@ async def get_dashboard_summary():
 
 
 # =================================================================
+# AUTHENTICATION
+# =================================================================
+
+try:
+    from passlib.context import CryptContext
+    _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    _BCRYPT_AVAILABLE = True
+except ImportError:
+    _BCRYPT_AVAILABLE = False
+    _pwd_context = None  # type: ignore
+
+
+def _hash_password(plain: str) -> str:
+    if not _BCRYPT_AVAILABLE:
+        raise HTTPException(status_code=500, detail="Password hashing library not available")
+    return _pwd_context.hash(plain)
+
+
+def _verify_password(plain: str, hashed: str) -> bool:
+    if not _BCRYPT_AVAILABLE:
+        return False
+    return _pwd_context.verify(plain, hashed)
+
+
+class RegisterRequest(BaseModel):
+    email: str
+    password: str
+    name: Optional[str] = None
+    designation: Optional[str] = None
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+@app.post("/api/auth/register", tags=["Auth"])
+async def register(req: RegisterRequest):
+    """Create a new account. Returns error if email already registered."""
+    if not req.email or not req.password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+    if len(req.password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    if not _MONGO_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Database not available")
+
+    db = get_db()
+    existing = await db.users.find_one({"email": req.email.lower().strip()})
+    if existing:
+        raise HTTPException(status_code=409, detail="An account with this email already exists")
+
+    hashed = _hash_password(req.password)
+    await db.users.insert_one({
+        "email": req.email.lower().strip(),
+        "password_hash": hashed,
+        "name": req.name,
+        "designation": req.designation,
+        "created_at": datetime.now(timezone.utc),
+    })
+    return {"ok": True, "email": req.email.lower().strip()}
+
+
+@app.post("/api/auth/login", tags=["Auth"])
+async def login(req: LoginRequest):
+    """Verify credentials. Returns user info on success."""
+    if not req.email or not req.password:
+        raise HTTPException(status_code=400, detail="Email and password are required")
+    if not _MONGO_AVAILABLE:
+        raise HTTPException(status_code=503, detail="Database not available")
+
+    db = get_db()
+    user = await db.users.find_one({"email": req.email.lower().strip()})
+    if not user or not _verify_password(req.password, user.get("password_hash", "")):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    return {
+        "ok": True,
+        "email": user["email"],
+        "name": user.get("name"),
+        "designation": user.get("designation"),
+    }
+
+
+# =================================================================
 # USER PROFILE
 # =================================================================
 

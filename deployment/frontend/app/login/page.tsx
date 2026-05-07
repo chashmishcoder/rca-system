@@ -2,6 +2,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Loader2, AlertCircle } from 'lucide-react';
+
+const API = process.env.NEXT_PUBLIC_API_URL || 'https://rca-backend-5jlv.onrender.com';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,7 +13,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setError('Please enter email and password');
@@ -18,10 +21,28 @@ export default function LoginPage() {
     }
     setLoading(true);
     setError('');
-    // Demo: accept any credentials
-    localStorage.setItem('rca_authenticated', 'true');
-    localStorage.setItem('rca_user_email', email);
-    router.replace('/dashboard');
+    try {
+      const res = await fetch(`${API}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.detail || 'Invalid email or password');
+        return;
+      }
+      // Store session
+      localStorage.setItem('rca_authenticated', 'true');
+      localStorage.setItem('rca_user_email', data.email);
+      if (data.name)        localStorage.setItem('rca_user_name', data.name);
+      if (data.designation) localStorage.setItem('rca_user_designation', data.designation);
+      router.replace('/dashboard');
+    } catch {
+      setError('Could not connect to the server. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -67,21 +88,23 @@ export default function LoginPage() {
               />
             </div>
 
-            {error && <p className="text-red-400 text-sm">{error}</p>}
+            {error && (
+              <p className="flex items-center gap-1.5 text-red-400 text-sm">
+                <AlertCircle size={14} /> {error}
+              </p>
+            )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold text-base transition-all disabled:opacity-60"
+              className="w-full py-3 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-semibold text-base transition-all disabled:opacity-60 flex items-center justify-center gap-2"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading && <Loader2 size={16} className="animate-spin" />}
+              {loading ? 'Signing in…' : 'Sign In'}
             </button>
           </form>
 
           <p className="text-center text-slate-500 text-sm mt-4">
-            Demo credentials: any email/password
-          </p>
-          <p className="text-center text-slate-500 text-sm mt-3">
             No account?{' '}
             <Link href="/signup" className="text-emerald-400 hover:underline font-medium">Start free trial</Link>
           </p>
