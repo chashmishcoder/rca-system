@@ -1479,6 +1479,45 @@ async def get_dashboard_summary():
 
 
 # =================================================================
+# USER PROFILE
+# =================================================================
+
+class UserProfile(BaseModel):
+    email: str
+    name: Optional[str] = None
+    designation: Optional[str] = None
+
+@app.get("/api/user/profile", tags=["User"])
+async def get_user_profile(email: str):
+    """Return the stored profile for a given email, or defaults if not found."""
+    if not _MONGO_AVAILABLE:
+        return {"email": email, "name": None, "designation": None}
+    db = get_db()
+    doc = await db.user_profiles.find_one({"email": email}, {"_id": 0})
+    if doc:
+        return doc
+    return {"email": email, "name": None, "designation": None}
+
+@app.put("/api/user/profile", tags=["User"])
+async def update_user_profile(profile: UserProfile):
+    """Upsert name and designation for a given email."""
+    if not _MONGO_AVAILABLE:
+        return {"ok": True, "note": "MongoDB not available — changes not persisted"}
+    db = get_db()
+    await db.user_profiles.update_one(
+        {"email": profile.email},
+        {"$set": {
+            "email": profile.email,
+            "name": profile.name,
+            "designation": profile.designation,
+            "updated_at": datetime.now(timezone.utc),
+        }},
+        upsert=True,
+    )
+    return {"ok": True}
+
+
+# =================================================================
 # MAIN ENTRY POINT
 # =================================================================
 

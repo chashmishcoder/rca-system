@@ -55,9 +55,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const notiRef     = useRef<HTMLDivElement>(null)
 
   function loadProfile() {
-    setUserEmail(localStorage.getItem('rca_user_email') || 'admin@rca.io')
+    const em = localStorage.getItem('rca_user_email') || 'admin@rca.io'
+    setUserEmail(em)
     setUserName(localStorage.getItem('rca_user_name') || '')
     setUserDesig(localStorage.getItem('rca_user_designation') || '')
+    // Sync from DB in the background
+    if (em) {
+      fetch(`${API}/api/user/profile?email=${encodeURIComponent(em)}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data?.name)        { setUserName(data.name);        localStorage.setItem('rca_user_name', data.name) }
+          if (data?.designation) { setUserDesig(data.designation); localStorage.setItem('rca_user_designation', data.designation) }
+        })
+        .catch(() => {})
+    }
   }
 
   // ── auth check + load user info ──

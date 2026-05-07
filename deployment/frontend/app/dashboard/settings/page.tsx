@@ -1,31 +1,64 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { User, Briefcase, Mail, Save, CheckCircle } from 'lucide-react'
+import { User, Briefcase, Mail, Save, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
+
+const API = process.env.NEXT_PUBLIC_API_URL || 'https://rca-backend-5jlv.onrender.com'
 
 export default function SettingsPage() {
   const [name,        setName]        = useState('')
   const [designation, setDesignation] = useState('')
   const [email,       setEmail]       = useState('')
   const [darkMode,    setDarkMode]    = useState(true)
-  const [saved,       setSaved]       = useState(false)
+  const [status,      setStatus]      = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [errorMsg,    setErrorMsg]    = useState('')
 
   useEffect(() => {
-    setEmail(localStorage.getItem('rca_user_email') || '')
+    const em = localStorage.getItem('rca_user_email') || ''
+    setEmail(em)
+    setDarkMode(localStorage.getItem('rca_dark_mode') !== 'false')
+
+    // Load from localStorage first (instant), then sync from DB
     setName(localStorage.getItem('rca_user_name') || '')
     setDesignation(localStorage.getItem('rca_user_designation') || '')
-    setDarkMode(localStorage.getItem('rca_dark_mode') !== 'false')
+
+    if (em) {
+      fetch(`${API}/api/user/profile?email=${encodeURIComponent(em)}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data?.name)        { setName(data.name);               localStorage.setItem('rca_user_name', data.name) }
+          if (data?.designation) { setDesignation(data.designation); localStorage.setItem('rca_user_designation', data.designation) }
+        })
+        .catch(() => {})
+    }
   }, [])
 
-  const handleSave = () => {
-    const trimmedName = name.trim()
-    const trimmedDesignation = designation.trim()
-    if (trimmedName) localStorage.setItem('rca_user_name', trimmedName)
-    if (trimmedDesignation) localStorage.setItem('rca_user_designation', trimmedDesignation)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
-    // Reload so the header picks up the new values
-    window.dispatchEvent(new Event('rca_profile_updated'))
+  const handleSave = async () => {
+    const trimName  = name.trim()
+    const trimDesig = designation.trim()
+    if (!trimName && !trimDesig) return
+
+    setStatus('saving')
+    setErrorMsg('')
+    try {
+      const res = await fetch(`${API}/api/user/profile`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name: trimName || null, designation: trimDesig || null }),
+      })
+      if (!res.ok) throw new Error(`Server error ${res.status}`)
+
+      // Update localStorage cache
+      if (trimName)  localStorage.setItem('rca_user_name', trimName)
+      if (trimDesig) localStorage.setItem('rca_user_designation', trimDesig)
+
+      window.dispatchEvent(new Event('rca_profile_updated'))
+      setStatus('saved')
+      setTimeout(() => setStatus('idle'), 3000)
+    } catch (e: any) {
+      setErrorMsg(e.message || 'Failed to save')
+      setStatus('error')
+    }
   }
 
   const cardCls  = darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
@@ -40,10 +73,9 @@ export default function SettingsPage() {
     <div className="p-6 max-w-2xl space-y-6">
       <div>
         <h2 className={`text-xl font-bold ${textCls}`}>Profile Settings</h2>
-        <p className={`text-sm mt-1 ${subCls}`}>Update your display name and designation shown across the dashboard</p>
+        <p className={`text-sm mt-1 ${subCls}`}>Your name and designation are saved to the database and persist across devices</p>
       </div>
 
-      {/* Profile card */}
       <div className={`border rounded-2xl p-6 space-y-5 ${cardCls}`}>
 
         {/* Avatar preview */}
@@ -60,7 +92,7 @@ export default function SettingsPage() {
 
         <hr className={darkMode ? 'border-slate-800' : 'border-slate-200'} />
 
-        {/* Name field */}
+        {/* Name */}
         <div>
           <label className={`flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide mb-1.5 ${labelCls}`}>
             <User size={12} /> Display Name
@@ -75,7 +107,7 @@ export default function SettingsPage() {
           />
         </div>
 
-        {/* Designation field */}
+        {/* Designation */}
         <div>
           <label className={`flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide mb-1.5 ${labelCls}`}>
             <Briefcase size={12} /> Designation / Role
@@ -104,26 +136,31 @@ export default function SettingsPage() {
           <p className={`text-xs mt-1 ${subCls}`}>Email cannot be changed here.</p>
         </div>
 
-        {/* Save button */}
+        {/* Save */}
         <div className="flex items-center gap-3 pt-1">
           <button
             onClick={handleSave}
-            disabled={!name.trim() && !designation.trim()}
+            disabled={status === 'saving' || (!name.trim() && !designation.trim())}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed text-white text-sm font-semibold transition-all"
           >
-            <Save size={15} />
-            Save Changes
+            {status === 'saving' ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
+            {status === 'saving' ? 'Saving…' : 'Save Changes'}
           </button>
-          {saved && (
+          {status === 'saved' && (
             <span className="flex items-center gap-1.5 text-sm text-emerald-400">
-              <CheckCircle size={15} /> Saved!
+              <CheckCircle size={15} /> Saved to database!
+            </span>
+          )}
+          {status === 'error' && (
+            <span className="flex items-center gap-1.5 text-sm text-red-400">
+              <AlertCircle size={15} /> {errorMsg}
             </span>
           )}
         </div>
       </div>
 
       <p className={`text-xs ${subCls}`}>
-        Changes are saved locally in your browser and reflected in the top navigation bar immediately after saving.
+        Changes are saved to MongoDB and also cached in your browser. They will be visible on any device you log in from.
       </p>
     </div>
   )
