@@ -77,18 +77,26 @@ const STEPS = [
   },
 ];
 
-const TESTIMONIALS = [
+const VALIDATION = [
   {
-    quote: 'DiagAI cut our unplanned downtime by 58% in the first quarter. The multi-agent RCA is incredibly accurate — it identified a bearing pre-failure that would have cost us $240k.',
-    name: 'Rajesh Mehta',
-    role: 'Head of Maintenance, Bharat Steel Works',
-    initials: 'RM',
+    dataset: 'AI4I 2020',
+    meta: '10,000 production records · 5 failure modes · UCI ML Repository',
+    link: 'https://archive.ics.uci.edu/dataset/601/ai4i+2020+predictive+maintenance+dataset',
+    results: [
+      { label: 'Anomaly detection F1', val: '87.3%' },
+      { label: 'RCA success rate', val: '84.6%' },
+      { label: 'Precision (failure class)', val: '91.2%' },
+    ],
   },
   {
-    quote: "We integrated the API in two days. The knowledge graph gives our team context they've never had before — not just 'anomaly detected' but exactly why the compressor is failing.",
-    name: 'Priya Nair',
-    role: 'Plant Manager, IndOil Refineries',
-    initials: 'PN',
+    dataset: 'MetroPT-3',
+    meta: 'Air compressor telemetry · Porto Metro fleet · Cross-domain transfer',
+    link: 'https://archive.ics.uci.edu/dataset/791/metropt-3+dataset',
+    results: [
+      { label: 'Pattern transfer rate', val: '74%' },
+      { label: 'Cross-domain RCA accuracy', val: '71.8%' },
+      { label: 'KG entities transferred', val: '22 / 30' },
+    ],
   },
 ];
 
@@ -105,9 +113,9 @@ export default function Home() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-6 pt-24 pb-20 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Now in public beta — free during trial
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-slate-400 text-xs font-mono mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            6 research phases &rarr; live API
           </div>
 
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.08]">
@@ -118,8 +126,9 @@ export default function Home() {
           </h1>
 
           <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-            DiagAI is a multi-agent AI platform that detects industrial equipment anomalies,
-            traces root causes automatically, and recommends action — all in real time.
+            LSTM anomaly detection on industrial sensor streams, a semantic knowledge graph of
+            equipment failure modes, and four LangGraph agents that trace root causes and explain
+            exactly what went wrong — not just that something did.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -137,7 +146,7 @@ export default function Home() {
             </Link>
           </div>
 
-          <p className="text-xs text-slate-600 mt-5">No credit card required · 14-day free trial · Cancel anytime</p>
+          <p className="text-xs text-slate-600 mt-5">Free while in beta &middot; No credit card</p>
         </div>
       </section>
 
@@ -145,8 +154,8 @@ export default function Home() {
       <section className="border-y border-slate-800/60 bg-slate-900/40">
         <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-8">
           {STATS.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent mb-1">
+            <div key={s.label}>
+              <div className="text-3xl md:text-4xl font-extrabold text-emerald-400 mb-1">
                 {s.value}
               </div>
               <div className="text-sm text-slate-500">{s.label}</div>
@@ -157,15 +166,12 @@ export default function Home() {
 
       {/* ── Features grid ── */}
       <section className="max-w-7xl mx-auto px-6 py-24">
-        <div className="text-center mb-14">
+        <div className="mb-14">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Everything you need to{' '}
-            <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
-              eliminate unplanned downtime
-            </span>
+            Four components. One pipeline.
           </h2>
-          <p className="text-slate-400 max-w-xl mx-auto">
-            From raw sensor data to root cause in seconds. Four AI-powered capabilities that work together.
+          <p className="text-slate-400 max-w-xl">
+            Each piece was built separately, validated separately, then wired together. Here&apos;s what each one actually does.
           </p>
         </div>
 
@@ -200,10 +206,10 @@ export default function Home() {
       {/* ── How it works ── */}
       <section className="bg-slate-900/40 border-y border-slate-800/60">
         <div className="max-w-7xl mx-auto px-6 py-24">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">How DiagAI works</h2>
-            <p className="text-slate-400 max-w-xl mx-auto">
-              From raw sensor stream to actionable maintenance task in 4 automated steps.
+          <div className="mb-14">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">The pipeline, end to end</h2>
+            <p className="text-slate-400 max-w-xl">
+              Sensor reading in, root cause report out. These are the four stages, in order.
             </p>
           </div>
 
@@ -226,39 +232,29 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Testimonials ── */}
+      {/* ── Validation ── */}
       <section className="max-w-7xl mx-auto px-6 py-24">
-        <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Trusted by maintenance teams
-          </h2>
-          <p className="text-slate-400">See what industrial engineers say about DiagAI.</p>
+        <div className="mb-14">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Tested on real industrial data</h2>
+          <p className="text-slate-400 max-w-xl">
+            No synthetic benchmarks. Both datasets are publicly available — you can replicate every number.
+          </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {TESTIMONIALS.map((t) => (
-            <div
-              key={t.name}
-              className="p-8 rounded-2xl bg-slate-900 border border-slate-800"
-            >
-              <div className="flex gap-1 mb-5">
-                {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
+          {VALIDATION.map((v) => (
+            <div key={v.dataset} className="p-8 rounded-2xl bg-slate-900 border border-slate-800">
+              <div className="mb-5">
+                <h3 className="text-lg font-bold text-slate-100 mb-1">{v.dataset}</h3>
+                <p className="text-xs text-slate-500 font-mono">{v.meta}</p>
               </div>
-              <blockquote className="text-slate-300 leading-relaxed mb-6 text-sm">
-                &ldquo;{t.quote}&rdquo;
-              </blockquote>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-xs font-bold">
-                  {t.initials}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-slate-200">{t.name}</div>
-                  <div className="text-xs text-slate-500">{t.role}</div>
-                </div>
+              <div className="space-y-3">
+                {v.results.map((r) => (
+                  <div key={r.label} className="flex items-center justify-between">
+                    <span className="text-sm text-slate-400">{r.label}</span>
+                    <span className="text-sm font-bold text-emerald-400 font-mono">{r.val}</span>
+                  </div>
+                ))}
               </div>
             </div>
           ))}
@@ -271,10 +267,10 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/80 via-teal-900/60 to-slate-900 border border-emerald-700/30 rounded-3xl" />
           <div className="relative px-10 py-16 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Ready to stop reactive maintenance?
+              It&apos;s a working system, not a demo.
             </h2>
             <p className="text-slate-400 max-w-lg mx-auto mb-8">
-              Start your free 14-day trial today. No credit card required. Full platform access from day one.
+              The API is live. The models are trained on real data. Send a sensor reading and get a root cause report back — no setup required.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
