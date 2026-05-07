@@ -224,8 +224,10 @@ export default function AnalyzePage() {
               )}
               {prefillStatus === 'done' && (
                 <p className="text-xs text-emerald-400 mt-1.5">
-                  Auto-filled {autoFilled.size} field{autoFilled.size !== 1 ? 's' : ''} from latest reading.
-                  {autoFilled.size < 5 && ' Empty fields will use dataset means.'}
+                  {autoFilled.size > 0
+                    ? `Auto-filled ${autoFilled.size} field${autoFilled.size !== 1 ? 's' : ''} from latest reading.${autoFilled.size < 5 ? ' Empty fields will use dataset means.' : ''}`
+                    : 'Values loaded from latest reading (you may have edited them). Empty fields will use dataset means.'
+                  }
                 </p>
               )}
               {prefillStatus === 'no-data' && (
@@ -253,7 +255,7 @@ export default function AnalyzePage() {
                           auto-filled
                         </span>
                       )}
-                      {!isNA && !isAutoFilled && selectedEqId && prefillStatus === 'done' && (
+                      {!isNA && !isAutoFilled && VALUES[key] === '' && (
                         <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 text-[10px] rounded font-medium normal-case tracking-normal">
                           using mean
                         </span>
@@ -337,7 +339,7 @@ export default function AnalyzePage() {
         {error && (
           <div className="p-6 bg-red-500/10 border border-red-500/50 text-red-300 rounded-2xl mb-8 backdrop-blur-lg animate-pulse">
             <div className="flex items-center gap-3">
-              <span className="text-2xl">\u26a0\ufe0f</span>
+              <span className="text-2xl">⚠️</span>
               <p className="font-medium">{error}</p>
             </div>
           </div>
@@ -359,7 +361,7 @@ export default function AnalyzePage() {
             <div className="grid grid-cols-4 gap-3 mt-6">
               {['Diagnostic', 'Reasoning', 'Planning', 'Learning'].map((agent, i) => (
                 <div key={agent} className="text-center p-3 bg-white/5 rounded-lg border border-white/10 animate-pulse" style={{ animationDelay: `${i * 150}ms` }}>
-                  <div className="text-2xl mb-1">\ud83e\udd16</div>
+                  <div className="text-2xl mb-1">🤖</div>
                   <p className="text-xs text-gray-400">{agent}</p>
                 </div>
               ))}
@@ -371,7 +373,7 @@ export default function AnalyzePage() {
         {noAnomaly && (
           <div className="p-6 bg-gradient-to-r from-green-500/10 to-teal-500/10 border border-green-500/40 rounded-2xl mb-8 backdrop-blur-lg">
             <div className="flex items-start gap-4">
-              <span className="text-4xl">\u2705</span>
+              <span className="text-4xl">✅</span>
               <div className="flex-1">
                 <p className="text-green-300 font-bold text-xl mb-1">No Anomaly Detected</p>
                 <p className="text-gray-400 mb-4">Equipment is operating within normal parameters.</p>
@@ -399,7 +401,7 @@ export default function AnalyzePage() {
             {/* Success Badge */}
             <div className="p-6 bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/50 rounded-2xl backdrop-blur-lg">
               <div className="flex items-center gap-3">
-                <span className="text-3xl">\u2705</span>
+                <span className="text-3xl">✅</span>
                 <div>
                   <p className="text-green-300 font-bold text-lg">Analysis Complete!</p>
                   <p className="text-gray-400 text-sm">Root cause successfully identified</p>
