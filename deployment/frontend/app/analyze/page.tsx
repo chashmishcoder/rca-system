@@ -46,6 +46,7 @@ export default function AnalyzePage() {
   const [selectedEqId, setSelectedEqId]   = useState('')
   const [autoFilled, setAutoFilled]       = useState<Set<string>>(new Set())
   const [prefillStatus, setPrefillStatus] = useState<'idle' | 'loading' | 'done' | 'no-data'>('idle')
+  const [naFields, setNaFields]           = useState<Set<string>>(new Set())
 
   const [airTemp,  setAirTemp]  = useState('')
   const [procTemp, setProcTemp] = useState('')
@@ -83,6 +84,7 @@ export default function AnalyzePage() {
   async function handleEquipmentSelect(eqId: string) {
     setSelectedEqId(eqId)
     setResult(null); setNoAnomaly(null); setError('')
+    setNaFields(new Set())
     if (!eqId) { setAutoFilled(new Set()); setPrefillStatus('idle'); return }
 
     setPrefillStatus('loading')
@@ -112,6 +114,7 @@ export default function AnalyzePage() {
   const applySample = (sample: typeof SAMPLE_READINGS[0]) => {
     setSelectedEqId('')
     setAutoFilled(new Set())
+    setNaFields(new Set())
     setPrefillStatus('idle')
     setAirTemp(sample.values.air_temperature)
     setProcTemp(sample.values.process_temperature)
@@ -122,26 +125,32 @@ export default function AnalyzePage() {
   }
 
   const handleAnalyze = async () => {
-    const resolved = {
-      air_temperature:     parseFloat(airTemp)  || DATASET_MEANS.air_temperature,
-      process_temperature: parseFloat(procTemp) || DATASET_MEANS.process_temperature,
-      rotational_speed:    parseFloat(rpm)      || DATASET_MEANS.rotational_speed,
-      torque:              parseFloat(torque)   || DATASET_MEANS.torque,
-      tool_wear:           parseFloat(toolWear) || DATASET_MEANS.tool_wear,
+    // Build payload — N/A fields are omitted so the backend substitutes dataset means
+    const payload: any = {}
+    const rawMap: Record<string, string> = {
+      air_temperature: airTemp, process_temperature: procTemp,
+      rotational_speed: rpm, torque, tool_wear: toolWear,
     }
+    for (const f of SENSOR_FIELDS) {
+      if (!naFields.has(f.key)) {
+        const val = parseFloat(rawMap[f.key])
+        payload[f.key] = isNaN(val) ? null : val
+      }
+      // N/A fields: don't include in payload at all → backend fills mean
+    }
+    if (selectedEqId) payload.machine_id = selectedEqId
 
-    if (!airTemp && !procTemp && !rpm && !torque && !toolWear && !selectedEqId) {
-      setError('Please select an equipment or enter sensor readings before analyzing.')
+    const hasAnyValue = SENSOR_FIELDS.some(f => !naFields.has(f.key) && rawMap[f.key] !== '')
+    if (!hasAnyValue && !selectedEqId) {
+      setError('Please select an equipment or enter at least one sensor reading before analyzing.')
       return
     }
 
     setLoading(true); setError(''); setResult(null); setNoAnomaly(null)
 
     try {
-      const payload: any = { ...resolved }
-      if (selectedEqId) payload.machine_id = selectedEqId
 
-      const response = await axios.post(`${API_URL}/api/sensor/ingest`, payload)
+      const response = await axios.post(`${API_URL}/api/sensor/ingest`, payload, { params: {} })
       const data = response.data
 
       if (!data.anomaly_detected) { setNoAnomaly(data); return }
@@ -228,36 +237,61 @@ export default function AnalyzePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
               {SENSOR_FIELDS.map(({ key, label, placeholder }) => {
                 const isAutoFilled = autoFilled.has(key)
-                const meanVal = DATASET_MEANS[key]
+                const isNA        = naFields.has(key)
+                const meanVal     = DATASET_MEANS[key]
                 return (
-                  <div key={key}>
+                  <div key={key} className={isNA ? 'opacity-40' : ''}>
                     <label className="flex items-center gap-1.5 text-xs font-semibold mb-1.5 uppercase tracking-wide">
                       <span className="text-gray-400">{label}</span>
-                      {isAutoFilled && (
+                      {isNA && (
+                        <span className="px-1.5 py-0.5 bg-slate-500/30 text-slate-400 text-[10px] rounded font-medium normal-case tracking-normal">
+                          N/A
+                        </span>
+                      )}
+                      {!isNA && isAutoFilled && (
                         <span className="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] rounded font-medium normal-case tracking-normal">
                           auto-filled
                         </span>
                       )}
-                      {!isAutoFilled && selectedEqId && prefillStatus === 'done' && (
+                      {!isNA && !isAutoFilled && selectedEqId && prefillStatus === 'done' && (
                         <span className="px-1.5 py-0.5 bg-amber-500/20 text-amber-400 text-[10px] rounded font-medium normal-case tracking-normal">
                           using mean
                         </span>
                       )}
                     </label>
-                    <input
-                      type="number"
-                      step="any"
-                      value={VALUES[key]}
-                      onChange={(e) => {
-                        SETTERS[key](e.target.value)
-                        setAutoFilled((prev) => { const n = new Set(prev); n.delete(key); return n })
-                      }}
-                      placeholder={isAutoFilled || selectedEqId ? String(meanVal) : placeholder}
-                      className={`w-full px-4 py-3 bg-slate-900/50 border text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-600 transition-all duration-300 ${
-                        isAutoFilled ? 'border-emerald-500/40' : 'border-white/10'
-                      }`}
-                      disabled={loading}
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        step="any"
+                        value={isNA ? '' : VALUES[key]}
+                        onChange={(e) => {
+                          SETTERS[key](e.target.value)
+                          setAutoFilled((prev) => { const n = new Set(prev); n.delete(key); return n })
+                        }}
+                        placeholder={isNA ? 'not applicable' : (isAutoFilled || selectedEqId ? String(meanVal) : placeholder)}
+                        className={`flex-1 px-4 py-3 bg-slate-900/50 border text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent placeholder-gray-600 transition-all duration-300 ${
+                          isNA ? 'border-slate-700/40 cursor-not-allowed' : isAutoFilled ? 'border-emerald-500/40' : 'border-white/10'
+                        }`}
+                        disabled={loading || isNA}
+                      />
+                      <button
+                        type="button"
+                        title={isNA ? 'Mark as applicable' : 'Mark as N/A — not available on this equipment'}
+                        onClick={() => setNaFields((prev) => {
+                          const n = new Set(prev)
+                          if (n.has(key)) { n.delete(key) } else { n.add(key); SETTERS[key]('') }
+                          return n
+                        })}
+                        disabled={loading}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all duration-200 ${
+                          isNA
+                            ? 'bg-slate-600/40 border-slate-500/50 text-slate-300 hover:bg-slate-500/40'
+                            : 'bg-white/5 border-white/10 text-gray-500 hover:bg-red-500/10 hover:border-red-500/30 hover:text-red-400'
+                        }`}
+                      >
+                        {isNA ? 'undo' : 'N/A'}
+                      </button>
+                    </div>
                   </div>
                 )
               })}

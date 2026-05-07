@@ -398,12 +398,16 @@ class FeedbackInput(BaseModel):
 
 
 class SensorReading(BaseModel):
-    """Raw sensor reading from industrial equipment (AI4I dataset format)"""
-    air_temperature: float = Field(..., description="Air temperature in Kelvin (typical: 295–305 K)")
-    process_temperature: float = Field(..., description="Process temperature in Kelvin (typical: 305–314 K)")
-    rotational_speed: float = Field(..., description="Rotational speed in RPM (typical: 1168–2886 rpm)")
-    torque: float = Field(..., description="Torque in Nm (typical: 3.8–76.6 Nm)")
-    tool_wear: float = Field(..., description="Tool wear in minutes (typical: 0–253 min)")
+    """Raw sensor reading from industrial equipment (AI4I dataset format).
+    All sensor fields are optional — missing values are replaced with dataset
+    means before model inference, so equipment that lacks certain sensor types
+    (e.g. a filter has no torque/RPM/tool-wear) can still be analysed.
+    """
+    air_temperature: Optional[float] = Field(None, description="Air temperature in Kelvin (typical: 295–305 K). Defaults to dataset mean 300.0 K if absent.")
+    process_temperature: Optional[float] = Field(None, description="Process temperature in Kelvin (typical: 305–314 K). Defaults to dataset mean 310.0 K if absent.")
+    rotational_speed: Optional[float] = Field(None, description="Rotational speed in RPM (typical: 1168–2886 rpm). Defaults to dataset mean 1539 RPM if absent.")
+    torque: Optional[float] = Field(None, description="Torque in Nm (typical: 3.8–76.6 Nm). Defaults to dataset mean 40.0 Nm if absent.")
+    tool_wear: Optional[float] = Field(None, description="Tool wear in minutes (typical: 0–253 min). Defaults to dataset mean 108.0 min if absent.")
     machine_id: Optional[str] = Field(None, description="Optional machine identifier")
     timestamp: Optional[str] = Field(None, description="Optional ISO timestamp")
 
@@ -624,13 +628,21 @@ async def ingest_sensor_reading(
     No pre-processing of LSTM outputs required — just send raw sensor data.
     """
     try:
+        # Fill any absent sensor fields with dataset means so the LSTM feature
+        # vector is always fully populated (e.g. a filter has no torque/RPM).
+        air_temp_val  = reading.air_temperature    if reading.air_temperature    is not None else _FEATURE_STATS['air_temp']['mean']
+        proc_temp_val = reading.process_temperature if reading.process_temperature is not None else _FEATURE_STATS['proc_temp']['mean']
+        rpm_val       = reading.rotational_speed   if reading.rotational_speed   is not None else _FEATURE_STATS['rpm']['mean']
+        torque_val    = reading.torque             if reading.torque             is not None else _FEATURE_STATS['torque']['mean']
+        tool_wear_val = reading.tool_wear          if reading.tool_wear          is not None else _FEATURE_STATS['tool_wear']['mean']
+
         # Build 13-feature vector and run LSTM inference
         feat_vec = _build_feature_vector(
-            air_temp=reading.air_temperature,
-            proc_temp=reading.process_temperature,
-            rpm=reading.rotational_speed,
-            torque=reading.torque,
-            tool_wear=reading.tool_wear,
+            air_temp=air_temp_val,
+            proc_temp=proc_temp_val,
+            rpm=rpm_val,
+            torque=torque_val,
+            tool_wear=tool_wear_val,
         )
         reconstruction_error, top_features = _run_lstm_inference(feat_vec)
 
@@ -669,11 +681,11 @@ async def ingest_sensor_reading(
                 await db.sensor_readings.insert_one({
                     "equipment_id": equipment_id,
                     "timestamp": ts_now,
-                    "air_temperature": reading.air_temperature,
-                    "process_temperature": reading.process_temperature,
-                    "rotational_speed": reading.rotational_speed,
-                    "torque": reading.torque,
-                    "tool_wear": reading.tool_wear,
+                    "air_temperature": air_temp_val,
+                    "process_temperature": proc_temp_val,
+                    "rotational_speed": rpm_val,
+                    "torque": torque_val,
+                    "tool_wear": tool_wear_val,
                     "reconstruction_error": round(reconstruction_error, 6),
                     "ensemble_score": ensemble_score,
                     "severity": severity,
@@ -729,11 +741,11 @@ async def ingest_sensor_reading(
                 'metadata': {
                     'source': 'sensor_ingest',
                     'equipment_id': equipment_id,
-                    'air_temperature': reading.air_temperature,
-                    'process_temperature': reading.process_temperature,
-                    'rotational_speed': reading.rotational_speed,
-                    'torque': reading.torque,
-                    'tool_wear': reading.tool_wear,
+                    'air_temperature': air_temp_val,
+                    'process_temperature': proc_temp_val,
+                    'rotational_speed': rpm_val,
+                    'torque': torque_val,
+                    'tool_wear': tool_wear_val,
                 },
             }
             workflow_ensemble_scores[workflow_id] = ensemble_scores
