@@ -113,11 +113,6 @@ export default function Home() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-6 pt-24 pb-20 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-slate-400 text-xs font-mono mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            6 research phases &rarr; live API
-          </div>
-
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-[1.08]">
             Predict failures{' '}
             <span className="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
